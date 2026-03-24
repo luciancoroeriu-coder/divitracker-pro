@@ -1,0 +1,17 @@
+{
+  "name": "DiviTracker Pro",
+  "short_name": "DiviTracker",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#1a1a1a",
+  "theme_color": "#34c759",
+  "description": "Professional Dividend and Compound Interest Tracker",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
