@@ -10,68 +10,49 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --stone: #2a2a2a;
-            --neon-green: #34c759;
-            --neon-blue: #007aff;
-            --gold: #d4af37;
-            --bg: radial-gradient(circle, #333 1px, transparent 1px), #1a1a1a;
+            --stone: #2a2a2a; --neon-green: #34c759; --neon-blue: #007aff;
+            --gold: #d4af37; --bg: radial-gradient(circle, #333 1px, transparent 1px), #1a1a1a;
         }
-
         body {
-            font-family: -apple-system, system-ui, sans-serif;
-            background: var(--bg);
-            background-size: 20px 20px;
-            color: #eee; margin: 0; padding-bottom: 100px;
+            font-family: -apple-system, system-ui, sans-serif; background: var(--bg);
+            background-size: 20px 20px; color: #eee; margin: 0; padding-bottom: 100px;
             -webkit-tap-highlight-color: transparent;
         }
-
         .header {
-            padding: 55px 20px 15px;
-            background: linear-gradient(180deg, #333 0%, #111 100%);
-            border-bottom: 2px solid #444;
-            display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            padding: 55px 20px 15px; background: linear-gradient(180deg, #333 0%, #111 100%);
+            border-bottom: 2px solid #444; display: flex; justify-content: space-between; align-items: center;
         }
-
         .container { padding: 15px; max-width: 850px; margin: 0 auto; display: none; }
         .container.active { display: block; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
         .card {
             background: #2a2a2a; border-radius: 16px; padding: 20px; margin-bottom: 20px;
             box-shadow: inset 2px 2px 5px #111, inset -1px -1px 3px #444, 8px 8px 20px rgba(0,0,0,0.5);
             border: 1px solid #333;
         }
-
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; }
         label { font-size: 10px; color: #888; text-transform: uppercase; font-weight: 900; display: block; margin-bottom: 4px; }
-        
         input, select {
             background: #181818; color: var(--gold); border: none; padding: 12px;
             border-radius: 8px; font-size: 16px; width: 100%; box-sizing: border-box;
             box-shadow: inset 3px 3px 6px #000, inset -1px -1px 3px #333; outline: none; font-weight: bold;
         }
-
         .btn-calc {
             background: linear-gradient(145deg, #2a2a2a, #1a1a1a); color: var(--neon-green);
             font-weight: 900; padding: 18px; border: 2px solid var(--neon-green);
             border-radius: 12px; width: 100%; text-transform: uppercase;
             box-shadow: 0 0 10px rgba(52, 199, 89, 0.3); margin-top: 10px; cursor: pointer;
         }
-
         .res-box {
             border: 2px solid var(--neon-green); background: rgba(0,0,0,0.4);
             border-radius: 15px; padding: 20px; text-align: center; margin: 20px 0;
         }
-
         .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
         .summary-item { background: #1a1a1a; padding: 10px; border-radius: 8px; border: 1px solid #333; }
-
         .table-wrap { overflow-x: auto; background: #111; border-radius: 12px; border: 1px solid #333; margin-top: 20px; }
-        table { width: 100%; border-collapse: collapse; font-size: 11px; min-width: 800px; }
-        th { background: #222; color: #777; padding: 12px; border-bottom: 2px solid #333; text-transform: uppercase; }
+        table { width: 100%; border-collapse: collapse; font-size: 10px; min-width: 800px; }
+        th { background: #222; color: #777; padding: 12px; border-bottom: 2px solid #333; text-transform: uppercase; font-weight: 900; }
         td { padding: 12px; text-align: center; border-bottom: 1px solid #222; color: #bbb; }
-
         .tab-bar { position: fixed; bottom: 0; width: 100%; height: 75px; background: #111; display: flex; border-top: 1px solid #333; }
         .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #555; font-size: 10px; font-weight: 800; }
         .tab-item.active { color: var(--neon-green); }
@@ -135,7 +116,15 @@
             </div>
         </div>
         <div class="table-wrap">
-            <table><tbody id="tb_div"></tbody></table>
+            <table>
+                <thead>
+                    <tr>
+                        <th id="h1">Year</th><th id="h2">Shares</th><th id="h3">Div/Share</th><th id="h4">Ann. Div</th>
+                        <th id="h5">Reinvested</th><th id="h6">Contrib.</th><th id="h7">End Price</th><th id="h8">Final Bal</th>
+                    </tr>
+                </thead>
+                <tbody id="tb_div"></tbody>
+            </table>
         </div>
         <div class="chart-wrap"><canvas id="cDiv"></canvas></div>
     </div>
@@ -172,52 +161,45 @@
 </div>
 
 <nav class="tab-bar">
-    <div class="tab-item active" id="m_tab1" onclick="tab('div', this)"><span>💰</span><div id="m_div">PROJECTIONS</div></div>
-    <div class="tab-item" id="m_tab2" onclick="tab('comp', this)"><span>📈</span><div id="m_comp">COMPOUND</div></div>
+    <div class="tab-item active" onclick="tab('div', this)"><span>💰</span><div id="m_div">PROJECTIONS</div></div>
+    <div class="tab-item" onclick="tab('comp', this)"><span>📈</span><div id="m_comp">COMPOUND</div></div>
 </nav>
 
 <script>
 let dChart = null, cChart = null;
-
 function tab(t, el) {
     document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
     document.querySelectorAll('.tab-item').forEach(i => i.classList.remove('active'));
-    document.getElementById(t+'_tab').classList.add('active');
-    el.classList.add('active');
+    document.getElementById(t+'_tab').classList.add('active'); el.classList.add('active');
 }
-
 function liveSum() {
     let p = document.getElementById('p').value, s = document.getElementById('s').value;
     document.getElementById('cur_init').innerText = "$" + Math.round(p * s).toLocaleString();
 }
-
 function calcDiv() {
     let p = parseFloat(document.getElementById('p').value), s = parseFloat(document.getElementById('s').value);
     let y = parseFloat(document.getElementById('y').value)/100, a = parseInt(document.getElementById('a').value);
     let dg = parseFloat(document.getElementById('dg').value)/100, pg = parseFloat(document.getElementById('pg').value)/100;
     let c = parseFloat(document.getElementById('c').value), t = parseFloat(document.getElementById('t').value)/100;
     let df = parseInt(document.getElementById('dfreq').value), drip = document.getElementById('drip').value === 'yes';
-
-    let curS = s, curP = p, dps = p * y, labs = [], vals = [], totInv = p * s, totDivN = 0, totT = 0, dripC = 0, html = '';
-    
+    let curS = s, curP = p, dps = p * y, labs = [], vals = [], totInv = p * s, totD = 0, totT = 0, dripC = 0, html = '';
     for(let i=1; i<=a; i++) {
         let annB = 0;
         for(let f=0; f<df; f++) {
             let pD = (curS * (dps / df)); annB += pD; let net = pD * (1 - t); totT += (pD * t);
             if(drip) { curS += (net / curP); dripC += net; }
         }
-        curS += (c / curP); totInv += c; totDivN += (annB * (1 - t)); curP *= (1 + pg); dps *= (1 + dg);
+        curS += (c / curP); totInv += c; totD += (annB * (1 - t)); curP *= (1 + pg); dps *= (1 + dg);
         let bal = curS * curP; labs.push(i); vals.push(Math.round(bal));
-        html += `<tr><td>${i}</td><td>${curS.toFixed(2)}</td><td>$${dps.toFixed(2)}</td><td>$${Math.round(annB).toLocaleString()}</td><td>$${Math.round(dripC).toLocaleString()}</td><td>$${c.toLocaleString()}</td><td>$${curP.toFixed(2)}</td><td style="color:var(--neon-green);font-weight:bold;">$${Math.round(bal).toLocaleString()}</td></tr>`;
+        html += `<tr><td>${i}</td><td>${curS.toFixed(1)}</td><td>$${dps.toFixed(2)}</td><td>$${Math.round(annB).toLocaleString()}</td><td>$${Math.round(dripC).toLocaleString()}</td><td>$${c.toLocaleString()}</td><td>$${Math.round(curP)}</td><td style="color:var(--neon-green);font-weight:bold;">$${Math.round(bal).toLocaleString()}</td></tr>`;
     }
     document.getElementById('tb_div').innerHTML = html;
     document.getElementById('v_final').innerText = "$" + Math.round(vals[a-1]).toLocaleString();
     document.getElementById('v_total_inv').innerText = "$" + Math.round(totInv).toLocaleString();
-    document.getElementById('v_total_div').innerText = "$" + Math.round(totDivN).toLocaleString();
-    document.getElementById('v_total_pg').innerText = "$" + Math.round(vals[a-1] - totInv - totDivN).toLocaleString();
+    document.getElementById('v_total_div').innerText = "$" + Math.round(totD).toLocaleString();
+    document.getElementById('v_total_pg').innerText = "$" + Math.round(vals[a-1] - totInv - totD).toLocaleString();
     document.getElementById('v_total_tax').innerText = "$" + Math.round(totT).toLocaleString();
     document.getElementById('res_div').style.display = 'block';
-    
     if(dChart) dChart.destroy();
     dChart = new Chart(document.getElementById('cDiv'), { type: 'line', data: { labels: labs, datasets: [{ data: vals, borderColor: '#34c759', backgroundColor: 'rgba(52,199,89,0.1)', fill: true, tension: 0.3 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } });
 }
@@ -227,7 +209,6 @@ function calcComp() {
     let r = parseFloat(document.getElementById('cr').value)/100, tax = parseFloat(document.getElementById('ct').value)/100;
     let ani = parseInt(document.getElementById('ca').value), freq = parseInt(document.getElementById('cfreq').value);
     let labs = [], dDep = [], dMth = [], dProf = [], cur = p, inv = p, pBrut = 0;
-    
     for(let i=1; i<=ani; i++) {
         let sAn = cur;
         for(let j=0; j<12; j++) { cur += m; inv += m; if(freq === 12) cur *= Math.pow(1 + r, 1/12); }
@@ -236,7 +217,6 @@ function calcComp() {
     }
     document.getElementById('cv_final').innerText = "$" + Math.round(inv + pBrut*(1-tax)).toLocaleString();
     document.getElementById('res_comp').style.display = 'block';
-    
     if(cChart) cChart.destroy();
     cChart = new Chart(document.getElementById('cComp'), { type: 'bar', data: { labels: labs, datasets: [{ label: 'Initial', data: dDep, backgroundColor: '#0d47a1' }, { label: 'Contributions', data: dMth, backgroundColor: '#1976d2' }, { label: 'Profit', data: dProf, backgroundColor: '#34c759' }] }, options: { responsive: true, maintainAspectRatio: false, scales: { x: { stacked: true }, y: { stacked: true } } } });
 }
@@ -244,15 +224,15 @@ function calcComp() {
 function updateLang() {
     const l = document.getElementById('lang').value;
     const map = {
-        ro: { p:"Preț", s:"Acțiuni", y:"Yield Anual %", a:"Ani", dg:"Creșt. Div %", pg:"Creșt. Preț %", c:"Contrib. Anuală", t:"Impozit Div %", df:"Compunere", dr:"Strategie", bc:"GENEREAZĂ ANALIZA", md:"PROIECȚII", mc:"DOBÂNDĂ", ti:"Investit", dn:"Profit Dividende", ap:"Apreciere", tx:"Taxe", rf:"VALOARE ESTIMATĂ", init:"INVESTIȚIE INIȚIALĂ:", cp:"Depozit Inițial", cm:"Depunere Lunară", cr:"Dobândă %", ct:"Impozit Profit %", ca:"Ani", cf:"Compunere", b2:"CALCULEAZĂ", cf1:"BALANȚĂ NETĂ FINALĂ", om:"Lunar (Compus)", oy:"Anual (Simplu)" },
-        en: { p:"Price", s:"Shares", y:"Annual Yield %", a:"Years", dg:"Div Growth %", pg:"Price Growth %", c:"Annual Contrib.", t:"Div Tax %", df:"Compounding", dr:"Strategy", bc:"GENERATE ANALYSIS", md:"PROJECTIONS", mc:"COMPOUND", ti:"Invested", dn:"Net Dividends", ap:"Appreciation", tx:"Taxes", rf:"ESTIMATED VALUE", init:"INITIAL INVESTMENT:", cp:"Initial Deposit", cm:"Monthly Contribution", cr:"Interest Rate %", ct:"Profit Tax %", ca:"Years", cf:"Compounding", b2:"CALCULATE", cf1:"ESTIMATED FINAL NET BALANCE", om:"Monthly (Compound)", oy:"Yearly (Simple)" },
-        es: { p:"Precio", s:"Acciones", y:"Rendimiento %", a:"Años", dg:"Crec. Div %", pg:"Crec. Precio %", c:"Contribución", t:"Impuesto %", df:"Compuesto", dr:"Estrategia", bc:"GENERAR ANÁLISIS", md:"PROYECCIONES", mc:"INTERÉS", ti:"Invertido", dn:"Dividendos", ap:"Plusvalía", tx:"Impuestos", rf:"VALOR ESTIMADO", init:"INVERSIÓN INICIAL:", cp:"Depósito Inicial", cm:"Contribución Mensual", cr:"Interés %", ct:"Impuesto %", ca:"Años", cf:"Compuesto", b2:"CALCULAR", cf1:"BALANCE NETO FINAL", om:"Mensual", oy:"Anual" },
-        fr: { p:"Prix", s:"Actions", y:"Rendement %", a:"Années", dg:"Croiss. Div %", pg:"Croiss. Prix %", c:"Contrib. Annuelle", t:"Impôt %", df:"Composition", dr:"Stratégie", bc:"GÉNÉRER ANALYSE", md:"PROJECTIONS", mc:"INTÉRÊT", ti:"Investi", dn:"Dividendes", ap:"Plus-value", tx:"Impôts", rf:"VALEUR ESTIMÉE", init:"INVESTISSEMENT INITIAL:", cp:"Dépôt Initial", cm:"Contribution Mensuelle", cr:"Intérêt %", ct:"Impôt %", ca:"Années", cf:"Composition", b2:"CALCULER", cf1:"SOLDE NET FINAL ESTIMÉ", om:"Mensuel", oy:"Annuel" },
-        de: { p:"Kurs", s:"Aktien", y:"Rendite %", a:"Jahre", dg:"Div-Wachstum %", pg:"Kurs-Wachstum %", c:"Beitrag", t:"Steuer %", df:"Zinseszins", dr:"Strategie", bc:"ANALYSE ERSTELLEN", md:"PROGNOSE", mc:"ZINSESZINS", ti:"Investiert", dn:"Dividenden", ap:"Zuwachs", tx:"Steuern", rf:"SCHÄTZWERT", init:"STARTKAPITAL:", cp:"Anfangskapital", cm:"Monatl. Beitrag", cr:"Zinsatz %", ct:"Steuer %", ca:"Jahre", cf:"Zinseszins", b2:"BERECHNEN", cf1:"GESCHÄTZTER NETTOSALDO", om:"Monatlich", oy:"Jährlich" },
-        cn: { p:"股价", s:"持股量", y:"股息率 %", a:"年数", dg:"股息增长 %", pg:"股价增长 %", c:"年投入", t:"税率 %", df:"频率", dr: "策略", bc:"生成分析", md:"项目预测", mc:"复利计算", ti:"总投入", dn:"净股息", ap:"市值增值", tx:"总税收", rf:"预估总值", init:"初始投资:", cp:"初始存款", cm: "每月投入", cr:"利率 %", ct:"税率 %", ca:"年数", cf:"复利频率", b2:"计算", cf1:"预估最终净余额", om:"每月", oy:"每年" }
+        ro: { p:"Preț", s:"Acțiuni", y:"Yield Anual %", a:"Ani", dg:"Creșt. Div %", pg:"Creșt. Preț %", c:"Contrib. Anuală", t:"Impozit Div %", df:"Compunere", dr:"Strategie", bc:"GENEREAZĂ ANALIZA", md:"PROIECȚII", mc:"DOBÂNDĂ", ti:"Investit", dn:"Dividende Net", ap:"Apreciere", tx:"Taxe", rf:"VALOARE ESTIMATĂ", init:"INVESTIȚIE INIȚIALĂ:", cp:"Depozit Inițial", cm:"Depunere Lunară", cr:"Dobândă %", ct:"Impozit Profit %", ca:"Ani", cf:"Compunere", b2:"CALCULEAZĂ", cf1:"BALANȚĂ NETĂ FINALĂ", om:"Lunar (Compus)", oy:"Anual (Simplu)", h1:"An", h2:"Acțiuni", h3:"Div/Acțiune", h4:"Div. Anual", h5:"Reinvestit", h6:"Contrib.", h7:"Preț Final", h8:"Sold Final" },
+        en: { p:"Price", s:"Shares", y:"Annual Yield %", a:"Years", dg:"Div Growth %", pg:"Price Growth %", c:"Annual Contrib.", t:"Div Tax %", df:"Compounding", dr:"Strategy", bc:"GENERATE ANALYSIS", md:"PROJECTIONS", mc:"COMPOUND", ti:"Invested", dn:"Net Dividends", ap:"Appreciation", tx:"Taxes", rf:"ESTIMATED VALUE", init:"INITIAL INVESTMENT:", cp:"Initial Deposit", cm:"Monthly Contribution", cr:"Interest Rate %", ct:"Profit Tax %", ca:"Years", cf:"Compounding", b2:"CALCULATE", cf1:"ESTIMATED FINAL NET BALANCE", om:"Monthly (Compound)", oy:"Yearly (Simple)", h1:"Year", h2:"Shares", h3:"Div/Share", h4:"Ann. Div", h5:"Reinvested", h6:"Contrib.", h7:"End Price", h8:"Final Bal" },
+        es: { p:"Precio", s:"Acciones", y:"Rendimiento %", a:"Años", dg:"Crec. Div %", pg:"Crec. Precio %", c:"Contribución", t:"Impuesto %", df:"Compuesto", dr:"Estrategia", bc:"GENERAR ANÁLISIS", md:"PROYECCIONES", mc:"INTERÉS", ti:"Invertido", dn:"Dividendos", ap:"Plusvalía", tx:"Impuestos", rf:"VALOR ESTIMADO", init:"INVERSIÓN INICIAL:", cp:"Depósito Inicial", cm:"Contribución Mensual", cr:"Interés %", ct:"Impuesto %", ca:"Años", cf:"Compuesto", b2:"CALCULAR", cf1:"BALANCE NETO FINAL", om:"Mensual", oy:"Anual", h1:"Año", h2:"Acciones", h3:"Div/Acc.", h4:"Div. Anual", h5:"Reinversión", h6:"Contrib.", h7:"Precio Final", h8:"Saldo Final" },
+        fr: { p:"Prix", s:"Actions", y:"Rendement %", a:"Années", dg:"Croiss. Div %", pg:"Croiss. Prix %", c:"Contrib. Annuelle", t:"Impôt %", df:"Composition", dr:"Stratégie", bc:"GÉNÉRER ANALYSE", md:"PROJECTIONS", mc:"INTÉRÊT", ti:"Investi", dn:"Dividendes", ap:"Plus-value", tx:"Impôts", rf:"VALEUR ESTIMÉE", init:"INVESTISSEMENT INITIAL:", cp:"Dépôt Initial", cm:"Contribution Mensuelle", cr:"Intérêt %", ct:"Impôt %", ca:"Années", cf:"Composition", b2:"CALCULER", cf1:"SOLDE NET FINAL ESTIMÉ", om:"Mensuel", oy:"Annuel", h1:"Année", h2:"Actions", h3:"Div/Action", h4:"Div. Annuel", h5:"Réinvesti", h6:"Contrib.", h7:"Prix Final", h8:"Solde Final" },
+        de: { p:"Kurs", s:"Aktien", y:"Rendite %", a:"Jahre", dg:"Div-Wachstum %", pg:"Kurs-Wachstum %", c:"Beitrag", t:"Steuer %", df:"Zinseszins", dr:"Strategie", bc:"ANALYSE ERSTELLEN", md:"PROGNOSE", mc:"ZINSESZINS", ti:"Investiert", dn:"Dividenden", ap:"Zuwachs", tx:"Steuern", rf:"SCHÄTZWERT", init:"STARTKAPITAL:", cp:"Anfangskapital", cm:"Monatl. Beitrag", cr:"Zinsatz %", ct:"Steuer %", ca:"Jahre", cf:"Zinseszins", b2:"BERECHNEN", cf1:"GESCHÄTZTER NETTOSALDO", om:"Monatlich", oy:"Jährlich", h1:"Jahr", h2:"Aktien", h3:"Div/Aktie", h4:"Div. Jährl.", h5:"Reinvestiert", h6:"Beitrag", h7:"Endpreis", h8:"Endsaldo" },
+        cn: { p:"股价", s:"持股量", y:"股息率 %", a:"年数", dg:"股息增长 %", pg:"股价增长 %", c:"年投入", t:"税率 %", df:"频率", dr: "策略", bc:"生成分析", md:"项目预测", mc:"复利计算", ti:"总投入", dn:"净股息", ap:"市值增值", tx:"总税收", rf:"预估总值", init:"初始投资:", cp:"初始存款", cm: "每月投入", cr:"利率 %", ct:"税率 %", ca:"年数", cf:"复利频率", b2:"计算", cf1:"预估最终净余额", om:"每月", oy:"每年", h1:"年份", h2:"持股", h3:"每股股息", h4:"年度股息", h5:"再投资", h6:"投入", h7:"最终价格", h8:"最终余额" }
     };
     const t = map[l];
-    // Pagina 1
+    // Traduceri Tab 1
     document.getElementById('l_p').innerText = t.p; document.getElementById('l_s').innerText = t.s;
     document.getElementById('l_y').innerText = t.y; document.getElementById('l_a').innerText = t.a;
     document.getElementById('l_dg').innerText = t.dg; document.getElementById('l_pg').innerText = t.pg;
@@ -262,7 +242,12 @@ function updateLang() {
     document.getElementById('l_tinv').innerText = t.ti; document.getElementById('l_tdiv').innerText = t.dn;
     document.getElementById('l_tpg').innerText = t.ap; document.getElementById('l_ttax').innerText = t.tx;
     document.getElementById('l_res_final').innerText = t.rf; document.getElementById('l_init').innerText = t.init;
-    // Pagina 2 (DOBÂNDĂ) - Toate ID-urile acum conectate
+    // Traduceri Capete Tabel (Coloane)
+    document.getElementById('h1').innerText = t.h1; document.getElementById('h2').innerText = t.h2;
+    document.getElementById('h3').innerText = t.h3; document.getElementById('h4').innerText = t.h4;
+    document.getElementById('h5').innerText = t.h5; document.getElementById('h6').innerText = t.h6;
+    document.getElementById('h7').innerText = t.h7; document.getElementById('h8').innerText = t.h8;
+    // Traduceri Tab 2
     document.getElementById('l_cp').innerText = t.cp; document.getElementById('l_cm').innerText = t.cm;
     document.getElementById('l_cr').innerText = t.cr; document.getElementById('l_ct').innerText = t.ct;
     document.getElementById('l_ca').innerText = t.ca; document.getElementById('l_cf').innerText = t.cf;
