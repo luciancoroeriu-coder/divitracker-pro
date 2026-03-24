@@ -2,12 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="DiviTracker">
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#000000">
+
+    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icon.png">
 
     <title>DiviTracker Pro</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -15,31 +20,49 @@
     <style>
         :root { --bg: #000; --card: #121212; --accent: #34c759; --text: #fff; --muted: #8e8e93; --border: #2c2c2e; --blue: #007aff; --red: #ff3b30; }
         body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 90px; -webkit-tap-highlight-color: transparent; }
-        .header { padding: 15px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.9); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); padding-top: 50px; /* Spatiu pentru ceasul de la iPhone */ }
+        
+        /* Spatiu pentru ceasul de la iPhone - for PWA mode */
+        .header { padding: 15px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.9); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); padding-top: 50px; }
         .lang-select { background: #1e1e1e; color: #fff; border: 1px solid var(--border); padding: 5px; border-radius: 5px; font-size: 14px; outline: none; }
-        .container { padding: 15px; max-width: 600px; margin: 0 auto; display: none; }
+
+        .container { padding: 15px; max-width: 800px; margin: 0 auto; display: none; }
         .container.active { display: block; }
+
         .card { background: var(--card); border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid var(--border); }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-        label { font-size: 10px; color: var(--muted); text-transform: uppercase; font-weight: 800; display: block; margin-bottom: 4px; }
-        input { background: #1e1e1e; color: #fff; border: 1px solid var(--border); padding: 12px; border-radius: 8px; font-size: 16px; width: 100%; box-sizing: border-box; outline: none; }
-        .drip-toggle { display: flex; background: #1e1e1e; border-radius: 8px; margin-bottom: 15px; border: 1px solid var(--border); overflow: hidden; }
-        .drip-btn { flex: 1; padding: 10px; text-align: center; font-size: 11px; font-weight: bold; color: var(--muted); cursor: pointer; }
-        .drip-btn.active { background: var(--accent); color: #000; }
-        .btn-calc { background: var(--accent); color: #000; font-weight: 900; padding: 15px; border: none; border-radius: 10px; width: 100%; font-size: 16px; cursor: pointer; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; }
+        label { font-size: 10px; color: var(--muted); text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 4px; }
+        input, select { background: #1e1e1e; color: #fff; border: 1px solid var(--border); padding: 12px; border-radius: 8px; font-size: 16px; width: 100%; box-sizing: border-box; outline: none; }
+        input:focus { border-color: var(--blue); }
+
+        /* Investment Amount Display */
+        #l_inv_amount_prefix { color: #fff; font-size: 11px; }
+        #inv_amount { font-weight:bold; font-size: 16px; color: #fff; display: inline; }
+        #inv_amount_box { background-color: #1a1a1a; padding: 10px; border-radius: 8px; margin-bottom: 15px; }
+
+        .btn-calc { background: var(--accent); color: #000; font-weight: 900; padding: 16px; border: none; border-radius: 10px; width: 100%; font-size: 16px; cursor: pointer; text-transform: uppercase; }
         .btn-reset { background: none; color: var(--red); border: 1px solid var(--red); padding: 10px; border-radius: 8px; width: 100%; margin-top: 10px; font-size: 11px; font-weight: bold; cursor: pointer; }
-        .res-box { display: none; margin-top: 20px; animation: fadeIn 0.3s; }
+
+        .res-box { display: none; margin-top: 25px; animation: fadeIn 0.4s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .chart-wrap { background: var(--card); border-radius: 12px; border: 1px solid var(--border); padding: 10px; margin-bottom: 15px; height: 320px; }
+
+        .chart-wrap { background: var(--card); border-radius: 12px; border: 1px solid var(--border); padding: 10px; margin-bottom: 15px; height: 320px; position: relative; }
+        
         .summary-item { background: #1c1c1e; padding: 15px; border-radius: 10px; margin-bottom: 10px; border-left: 4px solid var(--accent); }
-        .val-big { font-size: 32px; font-weight: 900; color: var(--accent); }
+        .val-big { font-size: 28px; font-weight: 900; color: var(--accent); }
+        
+        /* Custom displays for Withdrawn and Pure Growth */
+        #salary_msg { color: #fff; font-size: 12px; font-weight: bold; display: block; margin-top:5px;}
+        #pure_growth_msg { color: var(--blue); font-size: 11px; font-weight: bold; display: block; margin-top:5px; }
+
+        .table-wrap { overflow-x: auto; margin-top: 15px; border-radius: 8px; border: 1px solid var(--border); background: #0a0a0a; }
+        table { width: 100%; border-collapse: collapse; font-size: 10px; min-width: 600px; }
+        th, td { padding: 12px; text-align: right; border-bottom: 1px solid var(--border); white-space: nowrap; }
+        th { background: #161616; color: var(--muted); font-size: 8px; text-transform: uppercase; font-weight: 900; }
+        tr:nth-child(even) { background: #111; }
+
         .tab-bar { position: fixed; bottom: 0; width: 100%; height: 75px; background: #121212; border-top: 1px solid var(--border); display: flex; z-index: 1000; padding-bottom: 15px; }
         .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--muted); font-size: 10px; font-weight: bold; cursor: pointer; }
         .tab-item.active { color: var(--accent); }
-        .table-wrap { overflow-x: auto; margin-top: 15px; border-radius: 8px; border: 1px solid var(--border); }
-        table { width: 100%; border-collapse: collapse; font-size: 10px; }
-        th, td { padding: 12px; text-align: right; border-bottom: 1px solid var(--border); white-space: nowrap; }
-        th { background: #161616; color: var(--muted); font-size: 8px; text-transform: uppercase; }
     </style>
 </head>
 <body>
@@ -56,43 +79,68 @@
     <div id="div_tab" class="container active">
         <div class="card">
             <div class="grid">
-                <div><label id="l_p">Price ($)</label><input type="number" id="p" value="27"></div>
-                <div><label id="l_s">Shares</label><input type="number" id="s" value="250"></div>
+                <div><label id="l_p">Stock Price ($)</label><input type="number" id="p" value="27"></div>
+                <div><label id="l_s">Shares Owned</label><input type="number" id="s" value="250"></div>
             </div>
+            
+            <div id="inv_amount_box">
+                <span id="l_inv_amount_prefix">Investment amount:</span> <span id="inv_amount"></span>
+            </div>
+            
             <div class="grid">
                 <div><label id="l_y">Yield (%)</label><input type="number" id="y" value="4"></div>
-                <div><label id="l_a">Years</label><input type="number" id="a" value="10"></div>
+                <div><label id="l_a">Years Projection</label><input type="number" id="a" value="18"></div>
             </div>
             <div class="grid">
-                <div><label id="l_dg">Div Growth (%)</label><input type="number" id="dg" value="5"></div>
+                <div><label id="l_dg">Div Growth (%)</label><input type="number" id="dg" value="4"></div>
                 <div><label id="l_pg">Price Growth (%)</label><input type="number" id="pg" value="7"></div>
             </div>
             <div class="grid">
-                <div><label id="l_c">Annual Contrib ($)</label><input type="number" id="c" value="1200"></div>
-                <div><label id="l_t">Tax (%)</label><input type="number" id="t" value="10"></div>
+                <div><label id="l_c">Annual Contribution ($)</label><input type="number" id="c" value="1200"></div>
+                <div><label id="l_t">Tax Rate (%)</label><input type="number" id="t" value="0"></div>
             </div>
-            <div class="drip-toggle">
-                <div class="drip-btn active" id="d_on" onclick="setDrip(true)">REINVEST (DRIP ON)</div>
-                <div class="drip-btn" id="d_off" onclick="setDrip(false)">LIVE OFF (DRIP OFF)</div>
+            <div class="grid">
+                <div>
+                    <label id="l_freq">Distribution Frequency</label>
+                    <select id="freq">
+                        <option value="4">Quarterly</option>
+                        <option value="12">Monthly</option>
+                        <option value="1">Annual</option>
+                    </select>
+                </div>
+                <div>
+                    <label id="l_drip_mode">DRIP Mode</label>
+                    <select id="drip_mode">
+                        <option value="yes">With DRIP</option>
+                        <option value="no">Cash (No DRIP)</option>
+                    </select>
+                </div>
             </div>
-            <button class="btn-calc" id="btn_calc" onclick="calculateDiv()">CALCULATE RETURNS</button>
-            <button class="btn-reset" id="btn_reset" onclick="hardReset()">RESET ALL DATA</button>
+            <button class="btn-calc" id="btn_calc" onclick="calculateDiv()">Calculate Returns</button>
+            <button class="btn-reset" id="btn_reset" onclick="hardResetDiv()">Reset All Data</button>
         </div>
 
         <div id="res_box" class="res-box">
             <div class="summary-item">
-                <label id="l_vfinal">FINAL PORTFOLIO VALUE</label>
+                <label id="l_vfinal">Final Value</label>
                 <div class="val-big" id="v_final">$0</div>
-                <div id="salary_msg" style="color:var(--blue); font-size: 11px; margin-top:5px; font-weight:bold;"></div>
+                <div id="sub_summary_display">
+                    <span id="salary_msg"></span>
+                    <span id="pure_growth_msg"></span>
+                </div>
             </div>
             <div class="chart-wrap"><canvas id="divChart"></canvas></div>
             <div class="grid">
-                <div class="summary-item" style="border-left-color: var(--blue);"><label id="l_vinv">OUT OF POCKET</label><div id="v_inv" style="font-weight:bold;">$0</div></div>
-                <div class="summary-item" style="border-left-color: #ff9500;"><label id="l_vprof">TOTAL PROFIT</label><div id="v_profit" style="font-weight:bold;">$0</div></div>
+                <div class="summary-item" style="border-left-color: var(--blue);"><label id="l_vinv">Total Invested (Our Pocket)</label><div id="v_inv" style="font-weight:bold;">$0</div></div>
+                <div class="summary-item" style="border-left-color: #ff9500;"><label id="l_vprof">Total Gain (Profit)</label><div id="v_profit" style="font-weight:bold;">$0</div></div>
             </div>
             <div class="table-wrap">
                 <table>
-                    <thead><tr id="table_head"><th>Year</th><th>Shares</th><th>Price</th><th>Div/S</th><th>Yearly Div</th><th>Balance</th></tr></thead>
+                    <thead>
+                        <tr id="table_head">
+                            <th>Year</th><th>Shares Owned</th><th>Stock Price</th><th>Div/Share</th><th>Annual Div</th><th>Contrib</th><th>Balance</th>
+                        </tr>
+                    </thead>
                     <tbody id="tb"></tbody>
                 </table>
             </div>
@@ -101,16 +149,20 @@
 
     <div id="comp_tab" class="container">
         <div class="card">
-            <h3 id="l_ctitle" style="margin-top:0;">Compound Interest</h3>
-            <label id="l_cp">Initial Deposit</label><input type="number" id="cp" value="10000"><br>
-            <label id="l_cm">Monthly Contribution</label><input type="number" id="cm" value="200"><br>
-            <label id="l_cr">Annual Rate (%)</label><input type="number" id="cr" value="8"><br>
+            <h3 id="l_ctitle">Compound Interest</h3>
+            <label id="l_cp">Initial Deposit ($)</label><input type="number" id="cp" value="10000"><br>
+            <label id="l_cm">Monthly Contribution ($)</label><input type="number" id="cm" value="200"><br>
+            <label id="l_cr">Annual Interest (%)</label><input type="number" id="cr" value="8"><br>
             <label id="l_ca">Years</label><input type="number" id="ca" value="15"><br>
-            <button class="btn-calc" id="btn_ccalc" style="background:var(--blue); color:#fff;" onclick="calculateComp()">CALCULATE GROWTH</button>
+            <button class="btn-calc" id="btn_ccalc" style="background:var(--blue); color:#fff;" onclick="calculateComp()">Calculate Growth</button>
         </div>
         <div id="c_res_box" class="res-box">
             <div class="summary-item" style="border-left-color:var(--blue);"><label id="l_cf">FINAL AMOUNT</label><div class="val-big" id="cv_f" style="color:var(--blue)">$0</div></div>
             <div class="chart-wrap" style="height: 400px;"><canvas id="compChart"></canvas></div>
+            <div class="grid">
+                <div class="summary-item" style="border-left-color: var(--blue);"><label id="l_vinv_comp">Total Invested</label><div id="v_inv_comp" style="font-weight:bold;">$0</div></div>
+                <div class="summary-item" style="border-left-color: #ff9500;"><label id="l_vprof_comp">Total Profit</label><div id="v_profit_comp" style="font-weight:bold;">$0</div></div>
+            </div>
         </div>
     </div>
 
@@ -121,100 +173,160 @@
 
     <script>
         Chart.register(ChartDataLabels);
-        let dChart = null, cChart = null, dripOn = true, curL = 'en';
+        let dChart = null, cChart = null, curL = 'en';
 
         const langData = {
             en: {
-                l_p:"Price", l_s:"Shares", l_y:"Yield %", l_a:"Years", l_dg:"Div Growth %", l_pg:"Price Growth %", l_c:"Contrib", l_t:"Tax %",
-                d_on:"REINVEST (DRIP ON)", d_off:"LIVE OFF (DRIP OFF)", btn_calc:"CALCULATE", btn_reset:"RESET ALL DATA",
-                l_vfinal:"FINAL PORTFOLIO VALUE", l_vinv:"OUT OF POCKET", l_vprof:"TOTAL PROFIT",
-                table_head:"<th>Year</th><th>Shares</th><th>Price</th><th>Div/S</th><th>Yearly Div</th><th>Balance</th>",
-                salary:"Total Dividends Withdrawn: ", tab_div:"DIVIDENDS", tab_comp:"COMPOUND"
+                l_p:"Stock Price", l_s:"Shares Owned", l_y:"Yield %", l_a:"Holding Period", l_dg:"Div Growth %", l_pg:"Price Growth %", l_c:"Annual Contrib", l_t:"Tax Rate",
+                l_freq:"Frequency", l_drip_mode:"DRIP Mode", btn_calc:"Calculate Returns", btn_reset:"Reset All", l_vfinal:"FINAL PORTFOLIO VALUE", l_vinv:"OUT OF POCKET", l_vprof:"TOTAL PROFIT",
+                table_head:"<th>Year</th><th>Shares Owned</th><th>Stock Price</th><th>Div/Share</th><th>Ann. Div</th><th>Contrib</th><th>Balance</th>",
+                salary:"Total Dividends Withdrawn: ", pure_msg:"Without dividends, you'd have: ", tab_div:"DIVIDENDS", tab_comp:"COMPOUND", l_ctitle:"Compound Interest", l_cp:"Initial", l_cm:"Monthly", l_cr:"Rate %", l_ca:"Years", btn_ccalc:"Calculate Growth", l_cf:"Final Accumulated", l_inv_amount_prefix:"Investment Amount: ", l_vinv_comp:"TOTAL INVESTED", l_vprof_comp:"TOTAL PROFIT"
             },
             ro: {
-                l_p:"Preț", l_s:"Acțiuni", l_y:"Yield %", l_a:"Ani", l_dg:"Creșt. Div %", l_pg:"Creșt. Preț %", l_c:"Depunere", l_t:"Impozit %",
-                d_on:"REINVESTEȘTE (DRIP)", d_off:"TRĂIEȘTE (SCOATE CASH)", btn_calc:"CALCULEAZĂ", btn_reset:"RESETEAZĂ TOT",
-                l_vfinal:"VALOARE PORTOFOLIU", l_vinv:"BANI DIN BUZUNAR", l_vprof:"PROFIT TOTAL",
-                table_head:"<th>An</th><th>Acțiuni</th><th>Preț</th><th>Div/Acț</th><th>Div. Anual</th><th>Sold Final</th>",
-                salary:"Dividende Totale Încasate (Salariu): ", tab_div:"DIVIDENDE", tab_comp:"DOBÂNDĂ"
-            }
+                l_p:"Preț", l_s:"Acțiuni", l_y:"Yield %", l_a:"Ani proiecție", l_dg:"Creșt. Div %", l_pg:"Creșt. Preț %", l_c:"Contribuție", l_t:"Impozit %",
+                l_freq:"Frecvență", l_drip_mode:"Mod DRIP", btn_calc:"Calculează", btn_reset:"RESETEAZĂ TOT", l_vfinal:"VALOARE PORTOFOLIU", l_vinv:"DIN BUZUNAR", l_vprof:"PROFIT TOTAL",
+                table_head:"<th>An</th><th>Acțiuni</th><th>Preț</th><th>Div/Acț</th><th>Div. Anual</th><th>Depunere</th><th>Sold Final</th>",
+                salary:"Total Dividende Încasate (Salariu): ", pure_msg:"Fără dividende, ai avea doar: ", tab_div:"DIVIDENDE", tab_comp:"DOBÂNDĂ", l_ctitle:"Dobândă Compusă", l_cp:"Suma Inițială", l_cm:"Depunere Lunară", l_cr:"Dobândă %", l_ca:"Ani", btn_ccalc:"CALCULEAZĂ", l_cf:"Suma Finală", l_inv_amount_prefix:"Investiția Inițială: ", l_vinv_comp:"TOTAL INVESTIT", l_vprof_comp:"PROFIT TOTAL"
+            },
+            es: { l_p:"Precio", l_s:"Acciones", l_y:"Rend.", l_a:"Años", l_dg:"Crec. Div.", l_pg:"Crec. Prec.", l_c:"Contrib.", l_t:"Impuesto", l_freq:"Frec.", l_drip_mode:"Modo", btn_calc:"CALCULAR", btn_reset:"REINICIAR", l_vfinal:"VALOR FINAL", l_vinv:"INVERTIDO", l_vprof:"GANANCIA", table_head:"<th>Año</th><th>Acciones</th><th>Precio</th><th>Div/A</th><th>Div. Anual</th><th>Saldo</th>", salary:"Retirado: ", pure_msg:"Sin dividendos: ", tab_div:"DIVIDENDOS", tab_comp:"INTERÉS", l_ctitle:"Interés", l_cp:"Inicial", l_cm:"Mensual", l_cr:"Tasa", l_ca:"Años", btn_ccalc:"CALCULAR", l_cf:"MONTO FINAL", l_inv_amount_prefix:"Inversión: ", l_vinv_comp:"TOTAL INVERTIDO", l_vprof_comp:"PROFIT TOTAL" },
+            de: { l_p:"Preis", l_s:"Aktien", l_y:"Rendite", l_a:"Jahre", l_dg:"Div.Wachs.", l_pg:"Preis.Wachs.", l_c:"Beitrag", l_t:"Steuer", l_freq:"Frequ.", l_drip_mode:"Modus", btn_calc:"BERECHNEN", btn_reset:"RESET", l_vfinal:"ENDWERT", l_vinv:"INVESTIERT", l_vprof:"GEWINN", table_head:"<th>Jahr</th><th>Aktien</th><th>Preis</th><th>Div/A</th><th>Jäh. Div</th><th>Gesamt</th>", salary:"Entnommen: ", pure_msg:"Ohne DRIP: ", tab_div:"DIVIDENDEN", tab_comp:"ZINSEN", l_ctitle:"Zinseszins", l_cp:"Start", l_cm:"Monatlich", l_cr:"Satz", l_ca:"Jahre", btn_ccalc:"BERECHNEN", l_cf:"ENDBETRAG", l_inv_amount_prefix:"Investition: ", l_vinv_comp:"GESAMTINVEST", l_vprof_comp:"PROFIT TOTAL" },
+            fr: { l_p:"Prix", l_s:"Actions", l_y:"Rendement", l_a:"Années", l_dg:"Croiss. Div.", l_pg:"Croiss. Prix", l_c:"Contrib.", l_t:"Impôt", l_freq:"Fréq.", l_drip_mode:"Mode", btn_calc:"CALCULER", btn_reset:"RESET", l_vfinal:"VALEUR FINALE", l_vinv:"INVESTI", l_vprof:"PROFIT", table_head:"<th>Année</th><th>Actions</th><th>Prix</th><th>Div/A</th><th>Div. Annuel</th><th>Solde</th>", salary:"Retiré: ", pure_msg:"Sans DRIP: ", tab_div:"DIVIDENDES", tab_comp:"INTÉRÊTS", l_ctitle:"Intérêts", l_cp:"Initial", l_cm:"Mensuel", l_cr:"Taux", l_ca:"Années", btn_ccalc:"CALCULER", l_cf:"MONTANT FINAL", l_inv_amount_prefix:"Investissement: ", l_vinv_comp:"TOTAL INVESTI", l_vprof_comp:"PROFIT TOTAL" },
+            zh: { l_p:"价格", l_s:"股数", l_y:"收益率", l_a:"年数", l_dg:"股息增长", l_pg:"股价增长", l_c:"投入", l_t:"税率", l_freq:"频率", l_drip_mode:"模式", btn_calc:"计算", btn_reset:"重置", l_vfinal:"最终价值", l_vinv:"投入", l_vprof:"利润", table_head:"<th>年份</th><th>股数</th><th>价格</th><th>每股息</th><th>年度股息</th><th>总额</th>", salary:"提取: ", pure_msg:"无再投资将为: ", tab_div:"股息", tab_comp:"复利", l_ctitle:"复利", l_cp:"初始", l_cm:"每月", l_cr:"利率", l_ca:"年数", btn_ccalc:"计算", l_cf:"最终金额", l_inv_amount_prefix:"总投入: ", l_vinv_comp:"投入投入投入", l_vprof_comp:"利润利润利润" }
         };
 
         function changeLanguage(lang){
             curL = lang; const d = langData[lang] || langData['en'];
             for(let id in d){ const el=document.getElementById(id); if(el){ if(id==='table_head') el.innerHTML=d[id]; else el.innerText=d[id]; } }
+            localStorage.setItem('divitracker_pref_lang', lang);
         }
 
-        function setDrip(v){ dripOn=v; document.getElementById('d_on').classList.toggle('active', v); document.getElementById('d_off').classList.toggle('active', !v); }
+        // Switch standard PWA tabs
         function switchTab(t){ document.querySelectorAll('.container').forEach(c=>c.classList.remove('active')); document.querySelectorAll('.tab-item').forEach(i=>i.classList.remove('active')); document.getElementById(t+'_tab').classList.add('active'); document.getElementById('t_'+t).classList.add('active'); window.scrollTo(0,0); }
-
-        function hardReset(){
-            const def = { p:27, s:250, y:4, a:10, dg:5, pg:7, c:1200, t:10, cp:10000, cm:200, cr:8, ca:15 };
-            for(let id in def) document.getElementById(id).value = def[id];
-            setDrip(true); document.getElementById('res_box').style.display='none'; document.getElementById('c_res_box').style.display='none';
-            if(dChart) dChart.destroy(); if(cChart) cChart.destroy();
+        
+        // Investment Amount real-time calculator
+        function updateInvestmentAmount() {
+            let pVal = parseFloat(document.getElementById('p').value) || 0;
+            let sVal = parseFloat(document.getElementById('s').value) || 0;
+            let amount = Math.round(pVal * sVal);
+            document.getElementById('inv_amount').innerText = "$" + amount.toLocaleString();
         }
+        document.getElementById('p').addEventListener('input', updateInvestmentAmount);
+        document.getElementById('s').addEventListener('input', updateInvestmentAmount);
+
+        function hardResetDiv(){
+            const d = { p:27, s:250, y:4, a:18, dg:4, pg:7, c:1200, t:0, cp:10000, cm:200, cr:8, ca:15 };
+            for(let id in d) document.getElementById(id).value = d[id];
+            updateInvestmentAmount(); document.getElementById('freq').value="4"; document.getElementById('drip_mode').value="yes";
+            document.getElementById('res_box').style.display='none'; document.getElementById('pure_growth_msg').innerText = ""; document.getElementById('salary_msg').innerText = "";
+            if(dChart) dChart.destroy(); window.scrollTo(0,0);
+        }
+
+        // STRICT formatting: no decimals
+        function format(n){ return n.toLocaleString('en-US', {minimumFractionDigits:0, maximumFractionDigits:0}); }
+        function formatLabel(n){ if(n < 1000) return '$' + Math.round(n); if(n < 1000000) return '$' + (n/1000).toFixed(0) + 'k'; return '$' + (n/1000000).toFixed(0) + 'm'; }
 
         function calculateDiv(){
             const P = parseFloat(document.getElementById('p').value), S = parseFloat(document.getElementById('s').value);
             const Y = parseFloat(document.getElementById('y').value)/100, A = parseInt(document.getElementById('a').value);
             const DG = parseFloat(document.getElementById('dg').value)/100, PG = parseFloat(document.getElementById('pg').value)/100;
             const C = parseFloat(document.getElementById('c').value), T = parseFloat(document.getElementById('t').value)/100;
+            const dripOn = document.getElementById('drip_mode').value === 'yes';
 
-            let curS = S, curP = P, curDivVal = P*Y, invested = P*S, html = '', labs = [], vals = [];
-            let totalSalary = 0;
+            let curS = S, curP = P, curDivVal = P*Y, invested = P*S, html = '', labs = [], vals = [], invs = [];
+            let withdrawnDivs = 0;
+            let pureS = S, pureP = P; // Pure stock growth (No withdrawn dividends factor in system)
 
             for(let i=1; i<=A; i++){
                 invested += C;
                 curS += (C/curP); 
+                pureS += (C/pureP); // New pure shares from contribution
+
                 let annDivBrut = curS * curDivVal;
                 let annDivNet = annDivBrut * (1 - T);
-                if(dripOn) curS += (annDivNet / curP); else totalSalary += annDivNet;
+                
+                if(dripOn) {
+                    curS += (annDivNet / curP);
+                } else {
+                    withdrawnDivs += annDivNet; // Dividend leaves system to pay bills
+                }
+
                 curP *= (1+PG);
+                pureP *= (1+PG); // Pure growth price factor
                 curDivVal *= (1+DG);
+
                 let balance = curS * curP;
-                labs.push(i); vals.push(Math.round(balance));
-                html += `<tr><td>${i}</td><td>${curS.toFixed(1)}</td><td>$${curP.toFixed(1)}</td><td>$${(curDivVal/curP*curP).toFixed(2)}</td><td>$${annDivBrut.toFixed(0)}</td><td>$${Math.round(balance).toLocaleString()}</td></tr>`;
+                labs.push(i); vals.push(Math.round(balance)); invs.push(invested);
+                html += `<tr><td>${i}</td><td>${curS.toFixed(2)}</td><td>$${curP.toFixed(2)}</td><td>$${(curDivVal/curP*curP).toFixed(2)}</td><td>$${format(annDivBrut)}</td><td>$${C}</td><td>$${format(Math.round(balance))}</td></tr>`;
             }
 
             document.getElementById('tb').innerHTML = html;
-            document.getElementById('v_final').innerText = "$" + Math.round(vals[vals.length-1]).toLocaleString();
-            document.getElementById('v_inv').innerText = "$" + invested.toLocaleString();
-            document.getElementById('v_profit').innerText = "$" + Math.round(vals[vals.length-1] + totalSalary - invested).toLocaleString();
-            if(!dripOn) document.getElementById('salary_msg').innerText = (langData[curL].salary || "Withdrawn: ") + "$" + Math.round(totalSalary).toLocaleString();
-            else document.getElementById('salary_msg').innerText = "";
+            document.getElementById('v_final').innerText = "$" + format(Math.round(vals[vals.length-1]));
+            document.getElementById('v_inv').innerText = "$" + format(invested);
+            
+            if(dripOn) {
+                // Profit = final portfolio vs user invested pocket
+                document.getElementById('v_profit').innerText = "$" + format(Math.round(vals[vals.length-1] - invested));
+                
+                // Show pure comparison element
+                let pureBalance = pureS * pureP;
+                document.getElementById('pure_growth_msg').innerText = langData[curL].pure_msg + "$" + format(Math.round(pureBalance));
+                document.getElementById('salary_msg').innerText = "";
+            } else {
+                // Profit = Pure stock value + cash withdrawn deloc vs out of pocket deloc. PureStock deloc. PureStock = User money purely.
+                document.getElementById('v_profit').innerText = "$" + format(Math.round(vals[vals.length-1] + withdrawnDivs - invested));
+                
+                // Show total withdrawn (salariu)
+                document.getElementById('salary_msg').innerText = langData[curL].salary + "$" + format(Math.round(withdrawnDivs));
+                document.getElementById('pure_growth_msg').innerText = "";
+            }
+            
             document.getElementById('res_box').style.display = 'block';
+
             if(dChart) dChart.destroy();
             dChart = new Chart(document.getElementById('divChart'), {
-                type: 'line', data: { labels: labs, datasets: [{ label: 'Portfolio', data: vals, borderColor: '#34c759', fill: true, tension: 0.3 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#2c2c2e' } }, x: { grid: { display: false } } } }
+                type: 'line', data: { labels: labs, datasets: [{ label: 'Value', data: vals, borderColor: '#34c759', fill: true, tension: 0.3 }, { label: 'Invested', data: invs, borderColor: '#007aff', borderDash: [5,5] }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false } } } }
             });
         }
 
         function calculateComp(){
-            let P = parseFloat(document.getElementById('cp').value), M = parseFloat(document.getElementById('cm').value);
-            let R = parseFloat(document.getElementById('cr').value)/100/12, A = parseInt(document.getElementById('ca').value);
-            let labels = [], data = [];
+            const P = parseFloat(document.getElementById('cp').value);
+            const M = parseFloat(document.getElementById('cm').value);
+            const R = parseFloat(document.getElementById('cr').value)/100/12;
+            const A = parseInt(document.getElementById('ca').value);
+            const labs = [], dataVal = [], dataInv = [];
+
+            let curP = P, totalInv = P;
             for(let i=1; i<=A; i++){
-                let res = P * Math.pow(1+R, i*12) + M * (Math.pow(1+R, i*12) - 1) / R;
-                labels.push(i); data.push(Math.round(res));
+                for(let m=1; m<=12; m++) { curP = (curP + M) * (1+R); }
+                totalInv += (M * 12);
+                labs.push(i); dataVal.push(Math.round(curP)); dataInv.push(totalInv);
             }
-            document.getElementById('cv_f').innerText = '$' + data[data.length-1].toLocaleString();
+            
+            document.getElementById('cv_f').innerText = '$' + format(Math.round(curP));
+            document.getElementById('v_inv_comp').innerText = "$" + format(totalInv);
+            document.getElementById('v_profit_comp').innerText = "$" + format(Math.round(curP - totalInv));
             document.getElementById('c_res_box').style.display = 'block';
+            
             if(cChart) cChart.destroy();
             cChart = new Chart(document.getElementById('compChart'), {
-                type: 'bar', data: { labels: labels, datasets: [{ data: data, backgroundColor: '#34c759' }] },
+                type: 'bar', data: { labels: labs, datasets: [{ data: dataVal, backgroundColor: '#34c759', borderRadius: 5 }] },
                 options: { 
                     responsive: true, maintainAspectRatio: false,
                     plugins: { 
                         legend: { display: false },
-                        datalabels: { anchor: 'end', align: 'top', color: '#34c759', font: { weight: 'bold', size: 10 }, formatter: (v) => '$' + (v/1000).toFixed(0) + 'k' }
+                        datalabels: { anchor: 'end', align: 'top', color: '#34c759', font: { weight: 'bold', size: 11 }, formatter: (v) => formatLabel(v) }
                     },
                     scales: { y: { display: false }, x: { grid: { display: false }, ticks: { color: '#8e8e93' } } }
                 }
             });
         }
-        window.onload = () => changeLanguage('en');
+        window.onload = () => {
+            const saved = localStorage.getItem('divitracker_pref_lang') || 'en';
+            document.getElementById('lang_switcher').value = saved;
+            changeLanguage(saved);
+            updateInvestmentAmount();
+        };
     </script>
 </body>
 </html>
