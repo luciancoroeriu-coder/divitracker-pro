@@ -18,12 +18,10 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: -apple-system, system-ui, sans-serif;
             background: var(--bg);
             background-size: 20px 20px;
-            color: #eee;
-            margin: 0;
-            padding-bottom: 100px;
+            color: #eee; margin: 0; padding-bottom: 100px;
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -31,89 +29,58 @@
             padding: 55px 20px 15px;
             background: linear-gradient(180deg, #333 0%, #111 100%);
             border-bottom: 2px solid #444;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            display: flex; justify-content: space-between; align-items: center;
         }
 
-        .container { padding: 15px; max-width: 800px; margin: 0 auto; display: none; }
-        .container.active { display: block; animation: fadeIn 0.3s ease-in; }
+        .container { padding: 15px; max-width: 850px; margin: 0 auto; display: none; }
+        .container.active { display: block; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         .card {
-            background: #2a2a2a;
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 20px;
+            background: #2a2a2a; border-radius: 16px; padding: 20px; margin-bottom: 20px;
             box-shadow: inset 2px 2px 5px #111, inset -1px -1px 3px #444, 8px 8px 20px rgba(0,0,0,0.5);
             border: 1px solid #333;
         }
 
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; }
-        label { font-size: 10px; color: #888; text-transform: uppercase; font-weight: 900; letter-spacing: 0.5px; margin-bottom: 5px; display: block; }
+        label { font-size: 10px; color: #888; text-transform: uppercase; font-weight: 900; display: block; margin-bottom: 4px; }
         
         input, select {
-            background: #181818;
-            color: var(--gold);
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 16px;
-            width: 100%;
-            box-sizing: border-box;
-            box-shadow: inset 3px 3px 6px #000, inset -1px -1px 3px #333;
-            outline: none;
-            font-weight: bold;
+            background: #181818; color: var(--gold); border: none; padding: 12px;
+            border-radius: 8px; font-size: 16px; width: 100%; box-sizing: border-box;
+            box-shadow: inset 3px 3px 6px #000, inset -1px -1px 3px #333; outline: none; font-weight: bold;
         }
 
         .btn-calc {
-            background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
-            color: var(--neon-green);
-            font-weight: 900;
-            padding: 18px;
-            border: 2px solid var(--neon-green);
-            border-radius: 12px;
-            width: 100%;
-            text-transform: uppercase;
-            box-shadow: 0 0 10px rgba(52, 199, 89, 0.3);
-            margin-top: 10px;
-            cursor: pointer;
+            background: linear-gradient(145deg, #2a2a2a, #1a1a1a); color: var(--neon-green);
+            font-weight: 900; padding: 18px; border: 2px solid var(--neon-green);
+            border-radius: 12px; width: 100%; text-transform: uppercase;
+            box-shadow: 0 0 10px rgba(52, 199, 89, 0.3); margin-top: 10px; cursor: pointer;
         }
 
         .res-box {
-            border: 2px solid var(--neon-green);
-            background: rgba(0,0,0,0.4);
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 0 20px rgba(52, 199, 89, 0.2);
-            margin: 20px 0;
+            border: 2px solid var(--neon-green); background: rgba(0,0,0,0.4);
+            border-radius: 15px; padding: 20px; text-align: center; margin: 20px 0;
         }
 
         .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
-        .summary-item { background: #1a1a1a; padding: 10px; border-radius: 8px; border: 1px solid #333; text-align: center; }
-        .summary-item div { font-size: 14px; font-weight: 800; margin-top: 4px; }
+        .summary-item { background: #1a1a1a; padding: 10px; border-radius: 8px; border: 1px solid #333; }
 
         .table-wrap { overflow-x: auto; background: #111; border-radius: 12px; border: 1px solid #333; margin-top: 20px; }
         table { width: 100%; border-collapse: collapse; font-size: 11px; min-width: 800px; }
-        th { background: #222; color: #777; padding: 12px; text-align: center; border-bottom: 2px solid #333; text-transform: uppercase; }
+        th { background: #222; color: #777; padding: 12px; border-bottom: 2px solid #333; }
         td { padding: 12px; text-align: center; border-bottom: 1px solid #222; color: #bbb; }
-        .highlight-td { color: var(--neon-green); font-weight: bold; }
 
-        .chart-wrap { height: 300px; margin-top: 20px; border-radius: 12px; background: rgba(0,0,0,0.2); padding: 10px; }
-
-        .tab-bar { position: fixed; bottom: 0; width: 100%; height: 75px; background: #111; display: flex; border-top: 1px solid #333; padding-bottom: env(safe-area-inset-bottom); }
+        .tab-bar { position: fixed; bottom: 0; width: 100%; height: 75px; background: #111; display: flex; border-top: 1px solid #333; }
         .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #555; font-size: 10px; font-weight: 800; }
         .tab-item.active { color: var(--neon-green); }
-        .tab-item span { font-size: 20px; margin-bottom: 3px; }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <div style="font-weight: 900; font-size: 20px; letter-spacing: -1px;">DIVITRACKER <span style="color:var(--neon-green)">PRO</span></div>
-    <select id="lang" style="width: auto; padding: 5px; font-size: 12px; border-radius: 20px;" onchange="updateLang()">
+    <div style="font-weight: 900; font-size: 20px;">DIVITRACKER <span style="color:var(--neon-green)">PRO</span></div>
+    <select id="lang" style="width: auto; padding: 5px;" onchange="updateLang()">
         <option value="ro">🇷🇴 RO</option><option value="en">🇺🇸 EN</option>
         <option value="es">🇪🇸 ES</option><option value="fr">🇫🇷 FR</option>
         <option value="de">🇩🇪 DE</option><option value="cn">🇨🇳 CN</option>
@@ -126,12 +93,12 @@
             <div><label id="l_p">Preț Acțiune</label><input type="number" id="p" value="100" oninput="liveSum()"></div>
             <div><label id="l_s">Nr. Acțiuni</label><input type="number" id="s" value="250" oninput="liveSum()"></div>
         </div>
-        <div style="text-align:center; margin-bottom:15px; font-size:12px; color:#888; font-weight: bold;">
+        <div style="text-align:center; margin-bottom:15px; font-size:12px; color:#888;">
             <span id="l_init">INVESTIȚIE INIȚIALĂ:</span> <span id="cur_init" style="color:var(--neon-green); font-size: 16px;">$25.000</span>
         </div>
         <div class="grid">
             <div><label id="l_y">Yield Anual %</label><input type="number" id="y" value="4.4" step="0.1"></div>
-            <div><label id="l_a">Ani Proiecție</label><input type="number" id="a" value="10"></div>
+            <div><label id="l_a">Ani</label><input type="number" id="a" value="10"></div>
         </div>
         <div class="grid">
             <div><label id="l_dg">Creșt. Div %</label><input type="number" id="dg" value="5"></div>
@@ -142,14 +109,14 @@
             <div><label id="l_t">Impozit Div %</label><input type="number" id="t" value="10"></div>
         </div>
         <div class="grid">
-            <div><label id="l_df">Frecv. Dividend</label>
+            <div><label id="l_df">Compunere</label>
                 <select id="dfreq"><option value="4">Trimestrial (4x)</option><option value="12">Lunar (12x)</option></select>
             </div>
-            <div><label id="l_dr">Strategie Reinvestire</label>
+            <div><label id="l_dr">Reinvestire</label>
                 <select id="drip"><option value="yes">ACTIV (DRIP)</option><option value="no">LIFESTYLE (CASH)</option></select>
             </div>
         </div>
-        <button class="btn-calc" id="b_calc" onclick="calcDiv()">Generează Raportul</button>
+        <button class="btn-calc" id="b_calc" onclick="calcDiv()">GENEREAZĂ ANALIZA</button>
     </div>
 
     <div id="res_div" style="display:none;">
@@ -157,10 +124,10 @@
             <label id="l_res_final">BALANȚĂ ESTIMATĂ PORTOFOLIU</label>
             <div id="v_final" style="font-size:32px; font-weight:900; color:var(--neon-green);">$0</div>
             <div class="summary-grid">
-                <div class="summary-item"><label id="l_tinv">Total Investit</label><div id="v_total_inv">$0</div></div>
+                <div class="summary-item"><label id="l_tinv">Investit</label><div id="v_total_inv">$0</div></div>
                 <div class="summary-item"><label id="l_tdiv">Dividende Net</label><div id="v_total_div" style="color:var(--neon-green);">$0</div></div>
-                <div class="summary-item"><label id="l_tpg">Apreciere Preț</label><div id="v_total_pg">$0</div></div>
-                <div class="summary-item"><label id="l_ttax">Taxe Plătite</label><div id="v_total_tax" style="color:#ff3b30;">$0</div></div>
+                <div class="summary-item"><label id="l_tpg">Apreciere</label><div id="v_total_pg">$0</div></div>
+                <div class="summary-item"><label id="l_ttax">Taxe</label><div id="v_total_tax" style="color:#ff3b30;">$0</div></div>
             </div>
         </div>
         <div class="table-wrap">
@@ -189,9 +156,9 @@
         </div>
         <div class="grid">
             <div><label id="l_ca">Ani</label><input type="number" id="ca" value="15"></div>
-            <div><label id="l_cf">Compunere</label><select id="cfreq"><option value="12">Lunar</option><option value="1">Anual</option></select></div>
+            <div><label id="l_cf">Compunere</label><select id="cfreq"><option value="12">Lunar (Efect Compus)</option><option value="1">Anual (Simplu)</option></select></div>
         </div>
-        <button class="btn-calc" style="color:var(--neon-blue); border-color:var(--neon-blue);" id="b_calc2" onclick="calcComp()">Calculează Creșterea</button>
+        <button class="btn-calc" style="color:var(--neon-blue); border-color:var(--neon-blue);" id="b_calc2" onclick="calcComp()">CALCULEAZĂ</button>
     </div>
     <div id="res_comp" style="display:none;">
         <div class="res-box" style="border-color:var(--neon-blue);">
@@ -246,8 +213,7 @@ function calcDiv() {
         curP *= (1 + pg); dps *= (1 + dg);
         let bal = curS * curP;
         labs.push(i); vals.push(Math.round(bal));
-
-        html += `<tr><td>${i}</td><td>${curS.toFixed(2)}</td><td>$${dps.toFixed(2)}</td><td>$${Math.round(annDivBrut).toLocaleString()}</td><td>$${Math.round(dripCumul).toLocaleString()}</td><td>$${c.toLocaleString()}</td><td>$${curP.toFixed(2)}</td><td class="highlight-td">$${Math.round(bal).toLocaleString()}</td></tr>`;
+        html += `<tr><td>${i}</td><td>${curS.toFixed(2)}</td><td>$${dps.toFixed(2)}</td><td>$${Math.round(annDivBrut).toLocaleString()}</td><td>$${Math.round(dripCumul).toLocaleString()}</td><td>$${c.toLocaleString()}</td><td>$${curP.toFixed(2)}</td><td style="color:var(--neon-green); font-weight:bold;">$${Math.round(bal).toLocaleString()}</td></tr>`;
     }
 
     document.getElementById('tb_div').innerHTML = html;
@@ -276,9 +242,9 @@ function calcComp() {
         let sAn = cur;
         for(let j=0; j<12; j++) {
             cur += m; inv += m;
-            if(freq === 12) cur *= (1 + r/12);
+            if(freq === 12) cur *= Math.pow(1 + r, 1/12); // Compunere lunară reală
         }
-        if(freq === 1) cur *= (1 + r);
+        if(freq === 1) cur *= (1 + r); // Compunere anuală simplă
         pBrut += (cur - sAn - (m * 12));
         labs.push(2025+i); dDep.push(p); dMth.push(inv-p); dProf.push(Math.round(pBrut*(1-tax)));
     }
@@ -287,7 +253,7 @@ function calcComp() {
     if(cChart) cChart.destroy();
     cChart = new Chart(document.getElementById('cComp'), {
         type: 'bar',
-        data: { labels: labs, datasets: [{ label: 'Capital', data: dDep, backgroundColor: '#0d47a1' }, { label: 'Depuneri', data: dMth, backgroundColor: '#1976d2' }, { label: 'Profit', data: dProf, backgroundColor: '#34c759' }] },
+        data: { labels: labs, datasets: [{ label: 'Inițial', data: dDep, backgroundColor: '#0d47a1' }, { label: 'Depuneri', data: dMth, backgroundColor: '#1976d2' }, { label: 'Profit', data: dProf, backgroundColor: '#34c759' }] },
         options: { responsive: true, maintainAspectRatio: false, scales: { x: { stacked: true }, y: { stacked: true } } }
     });
 }
@@ -295,12 +261,12 @@ function calcComp() {
 function updateLang() {
     const l = document.getElementById('lang').value;
     const map = {
-        ro: { p: "Preț Acțiune", s: "Nr. Acțiuni", y: "Yield Anual %", a: "Ani Proiecție", dg: "Creșt. Div %", pg: "Creșt. Preț %", c: "Contrib. Anuală", t: "Impozit Div %", df: "Frecv. Dividend", dr: "Strategie", bc: "Generează Raport", bc2: "Calculează", md: "PROIECȚII", mc: "DOBÂNDĂ", ti: "Total Investit", dn: "Dividende Net", ap: "Apreciere", tp: "Taxe", init: "INVESTIȚIE INIȚIALĂ:" },
-        en: { p: "Stock Price", s: "Shares Owned", y: "Annual Yield %", a: "Projection Years", dg: "Div Growth %", pg: "Price Growth %", c: "Annual Contrib.", t: "Div Tax %", df: "Div Frequency", dr: "Strategy", bc: "Generate Report", bc2: "Calculate", md: "PROJECTIONS", mc: "COMPOUND", ti: "Total Invested", dn: "Net Dividends", ap: "Appreciation", tp: "Taxes", init: "INITIAL INVESTMENT:" },
-        es: { p: "Precio Acción", s: "Acciones", y: "Rendimiento %", a: "Años", dg: "Crec. Div %", pg: "Crec. Precio %", c: "Contrib. Anual", t: "Impuesto %", df: "Frecuencia", dr: "Estrategia", bc: "Generar Informe", bc2: "Calcular", md: "PROYECCIONES", mc: "INTERÉS", ti: "Total Invertido", dn: "Dividendos", ap: "Plusvalía", tp: "Impuestos", init: "INVERSIÓN INICIAL:" },
-        fr: { p: "Prix Action", s: "Actions", y: "Rendement %", a: "Années", dg: "Croiss. Div %", pg: "Croiss. Prix %", c: "Contrib. Annuelle", t: "Impôt %", df: "Fréquence", dr: "Stratégie", bc: "Générer Rapport", bc2: "Calculer", md: "PROJECTIONS", mc: "INTÉRÊT", ti: "Total Investi", dn: "Dividendes", ap: "Plus-value", tp: "Impôts", init: "INVESTISSEMENT INITIAL:" },
-        de: { p: "Kurs", s: "Aktien", y: "Rendite %", a: "Jahre", dg: "Wachstum Div %", pg: "Wachstum Kurs %", c: "Beitrag", t: "Steuer %", df: "Frequenz", dr: "Strategie", bc: "Bericht Erstellen", bc2: "Berechnen", md: "PROGNOSE", mc: "ZINSESZINS", ti: "Investiert", dn: "Dividenden", ap: "Zuwachs", tp: "Steuern", init: "STARTKAPITAL:" },
-        cn: { p: "股价", s: "持股量", y: "股息率 %", a: "年数", dg: "股息增长 %", pg: "股价增长 %", c: "年投入", t: "税率 %", df: "频率", dr: "策略", bc: "生成报告", bc2: "计算", md: "项目预测", mc: "复利计算", ti: "总投入", dn: "净股息", ap: "市值增值", tp: "总税收", init: "初始投资:" }
+        ro: { p: "Preț Acțiune", s: "Nr. Acțiuni", y: "Yield Anual %", a: "Ani", dg: "Creșt. Div %", pg: "Creșt. Preț %", c: "Contrib. Anuală", t: "Impozit Div %", df: "Compunere", dr: "Reinvestire", bc: "GENEREAZĂ ANALIZA", bc2: "CALCULEAZĂ", md: "PROIECȚII", mc: "DOBÂNDĂ", ti: "Investit", dn: "Profit Dividende", ap: "Apreciere", tp: "Taxe", init: "INVESTIȚIE INIȚIALĂ:" },
+        en: { p: "Stock Price", s: "Shares Owned", y: "Annual Yield %", a: "Years", dg: "Div Growth %", pg: "Price Growth %", c: "Annual Contrib.", t: "Div Tax %", df: "Compounding", dr: "Reinvestment", bc: "GENERATE ANALYSIS", bc2: "CALCULATE", md: "PROJECTIONS", mc: "COMPOUND", ti: "Invested", dn: "Net Dividends", ap: "Appreciation", tp: "Taxes", init: "INITIAL INVESTMENT:" },
+        es: { p: "Precio Acción", s: "Acciones", y: "Rendimiento %", a: "Años", dg: "Crec. Div %", pg: "Crec. Precio %", c: "Contribución", t: "Impuesto %", df: "Compuesto", dr: "Reinversión", bc: "GENERAR ANÁLISIS", bc2: "CALCULAR", md: "PROYECCIONES", mc: "INTERÉS", ti: "Invertido", dn: "Dividendos", ap: "Plusvalía", tp: "Impuestos", init: "INVERSIÓN INICIAL:" },
+        fr: { p: "Prix Action", s: "Actions", y: "Rendement %", a: "Années", dg: "Croiss. Div %", pg: "Croiss. Prix %", c: "Contrib. Annuelle", t: "Impôt %", df: "Composition", dr: "Réinvestissement", bc: "GÉNÉRER ANALYSE", bc2: "CALCULER", md: "PROJECTIONS", mc: "INTÉRÊT", ti: "Investi", dn: "Dividendes", ap: "Plus-value", tp: "Impôts", init: "INVESTISSEMENT INITIAL:" },
+        de: { p: "Aktienkurs", s: "Aktien", y: "Rendite %", a: "Jahre", dg: "Div-Wachstum %", pg: "Kurs-Wachstum %", c: "Beitrag", t: "Steuer %", df: "Zinseszins", dr: "Reinvestition", bc: "ANALYSE ERSTELLEN", bc2: "BERECHNEN", md: "PROGNOSE", mc: "ZINSESZINS", ti: "Investiert", dn: "Dividenden", ap: "Zuwachs", tp: "Steuern", init: "STARTKAPITAL:" },
+        cn: { p: "股价", s: "持股量", y: "股息率 %", a: "年数", dg: "股息增长 %", pg: "股价增长 %", c: "年投入", t: "税率 %", df: "复利频率", dr: "再投资", bc: "生成分析", bc2: "计算", md: "项目预测", mc: "复利计算", ti: "总投入", dn: "净股息", ap: "市值增值", tp: "总税收", init: "初始投资:" }
     };
     const t = map[l];
     document.getElementById('l_p').innerText = t.p; document.getElementById('l_s').innerText = t.s;
@@ -310,8 +276,8 @@ function updateLang() {
     document.getElementById('l_df').innerText = t.df; document.getElementById('l_dr').innerText = t.dr;
     document.getElementById('b_calc').innerText = t.bc; document.getElementById('b_calc2').innerText = t.bc2;
     document.getElementById('m_div').innerText = t.md; document.getElementById('m_comp').innerText = t.mc;
-    document.getElementById('l_total_inv').innerText = t.ti; document.getElementById('l_total_div').innerText = t.dn;
-    document.getElementById('l_total_pg').innerText = t.ap; document.getElementById('l_total_tax').innerText = t.tp;
+    document.getElementById('l_tinv').innerText = t.ti; document.getElementById('l_tdiv').innerText = t.dn;
+    document.getElementById('l_tpg').innerText = t.ap; document.getElementById('l_ttax').innerText = t.tp;
     document.getElementById('l_init').innerText = t.init;
 }
 </script>
