@@ -27,7 +27,6 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* UI Industrial / Beton */
         .header {
             padding: 55px 20px 15px;
             background: linear-gradient(180deg, #333 0%, #111 100%);
@@ -39,7 +38,8 @@
         }
 
         .container { padding: 15px; max-width: 800px; margin: 0 auto; display: none; }
-        .container.active { display: block; }
+        .container.active { display: block; animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         .card {
             background: #2a2a2a;
@@ -51,7 +51,6 @@
         }
 
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; }
-        
         label { font-size: 10px; color: #888; text-transform: uppercase; font-weight: 900; letter-spacing: 0.5px; margin-bottom: 5px; display: block; }
         
         input, select {
@@ -65,6 +64,7 @@
             box-sizing: border-box;
             box-shadow: inset 3px 3px 6px #000, inset -1px -1px 3px #333;
             outline: none;
+            font-weight: bold;
         }
 
         .btn-calc {
@@ -78,9 +78,9 @@
             text-transform: uppercase;
             box-shadow: 0 0 10px rgba(52, 199, 89, 0.3);
             margin-top: 10px;
+            cursor: pointer;
         }
 
-        /* Summary Boxes (Andrei Horciu Style) */
         .res-box {
             border: 2px solid var(--neon-green);
             background: rgba(0,0,0,0.4);
@@ -91,21 +91,19 @@
             margin: 20px 0;
         }
 
-        .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-        .summary-item { background: #1a1a1a; padding: 10px; border-radius: 8px; border: 1px solid #333; }
-        .summary-item div { font-size: 14px; font-weight: 800; }
+        .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .summary-item { background: #1a1a1a; padding: 10px; border-radius: 8px; border: 1px solid #333; text-align: center; }
+        .summary-item div { font-size: 14px; font-weight: 800; margin-top: 4px; }
 
-        /* Tabel TipRanks */
         .table-wrap { overflow-x: auto; background: #111; border-radius: 12px; border: 1px solid #333; margin-top: 20px; }
-        table { width: 100%; border-collapse: collapse; font-size: 11px; min-width: 700px; }
-        th { background: #222; color: #777; padding: 12px; text-align: center; border-bottom: 2px solid #333; }
+        table { width: 100%; border-collapse: collapse; font-size: 11px; min-width: 800px; }
+        th { background: #222; color: #777; padding: 12px; text-align: center; border-bottom: 2px solid #333; text-transform: uppercase; }
         td { padding: 12px; text-align: center; border-bottom: 1px solid #222; color: #bbb; }
         .highlight-td { color: var(--neon-green); font-weight: bold; }
 
-        .chart-wrap { height: 300px; margin-top: 20px; }
+        .chart-wrap { height: 300px; margin-top: 20px; border-radius: 12px; background: rgba(0,0,0,0.2); padding: 10px; }
 
-        /* Tab Bar */
-        .tab-bar { position: fixed; bottom: 0; width: 100%; height: 75px; background: #111; display: flex; border-top: 1px solid #333; }
+        .tab-bar { position: fixed; bottom: 0; width: 100%; height: 75px; background: #111; display: flex; border-top: 1px solid #333; padding-bottom: env(safe-area-inset-bottom); }
         .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #555; font-size: 10px; font-weight: 800; }
         .tab-item.active { color: var(--neon-green); }
         .tab-item span { font-size: 20px; margin-bottom: 3px; }
@@ -114,14 +112,11 @@
 <body>
 
 <div class="header">
-    <div style="font-weight: 900; font-size: 20px;">DIVITRACKER <span style="color:var(--neon-green)">PRO</span></div>
-    <select id="lang" style="width: auto; padding: 5px; font-size: 12px;" onchange="updateLang()">
-        <option value="ro">🇷🇴 RO</option>
-        <option value="en">🇺🇸 EN</option>
-        <option value="es">🇪🇸 ES</option>
-        <option value="fr">🇫🇷 FR</option>
-        <option value="de">🇩🇪 DE</option>
-        <option value="cn">🇨🇳 CN</option>
+    <div style="font-weight: 900; font-size: 20px; letter-spacing: -1px;">DIVITRACKER <span style="color:var(--neon-green)">PRO</span></div>
+    <select id="lang" style="width: auto; padding: 5px; font-size: 12px; border-radius: 20px;" onchange="updateLang()">
+        <option value="ro">🇷🇴 RO</option><option value="en">🇺🇸 EN</option>
+        <option value="es">🇪🇸 ES</option><option value="fr">🇫🇷 FR</option>
+        <option value="de">🇩🇪 DE</option><option value="cn">🇨🇳 CN</option>
     </select>
 </div>
 
@@ -131,12 +126,12 @@
             <div><label id="l_p">Preț Acțiune</label><input type="number" id="p" value="100" oninput="liveSum()"></div>
             <div><label id="l_s">Nr. Acțiuni</label><input type="number" id="s" value="250" oninput="liveSum()"></div>
         </div>
-        <div style="text-align:center; margin-bottom:15px; font-size:14px; color:#888;">
-            <span id="l_init">Investiție Inițială:</span> <span id="cur_init" style="color:var(--neon-green); font-weight:800;">$25.000</span>
+        <div style="text-align:center; margin-bottom:15px; font-size:12px; color:#888; font-weight: bold;">
+            <span id="l_init">INVESTIȚIE INIȚIALĂ:</span> <span id="cur_init" style="color:var(--neon-green); font-size: 16px;">$25.000</span>
         </div>
         <div class="grid">
-            <div><label id="l_y">Yield Anual %</label><input type="number" id="y" value="4.4"></div>
-            <div><label id="l_a">Ani</label><input type="number" id="a" value="10"></div>
+            <div><label id="l_y">Yield Anual %</label><input type="number" id="y" value="4.4" step="0.1"></div>
+            <div><label id="l_a">Ani Proiecție</label><input type="number" id="a" value="10"></div>
         </div>
         <div class="grid">
             <div><label id="l_dg">Creșt. Div %</label><input type="number" id="dg" value="5"></div>
@@ -150,29 +145,29 @@
             <div><label id="l_df">Frecv. Dividend</label>
                 <select id="dfreq"><option value="4">Trimestrial (4x)</option><option value="12">Lunar (12x)</option></select>
             </div>
-            <div><label id="l_dr">DRIP</label>
-                <select id="drip"><option value="yes">ACTIV</option><option value="no">DEZACTIVAT</option></select>
+            <div><label id="l_dr">Strategie Reinvestire</label>
+                <select id="drip"><option value="yes">ACTIV (DRIP)</option><option value="no">LIFESTYLE (CASH)</option></select>
             </div>
         </div>
-        <button class="btn-calc" onclick="calcDiv()">CALCULEAZĂ (TIPRANKS STYLE)</button>
+        <button class="btn-calc" id="b_calc" onclick="calcDiv()">Generează Raportul</button>
     </div>
 
     <div id="res_div" style="display:none;">
         <div class="res-box">
-            <label id="l_res_final">VALOARE FINALĂ PORTOFOLIU</label>
+            <label id="l_res_final">BALANȚĂ ESTIMATĂ PORTOFOLIU</label>
             <div id="v_final" style="font-size:32px; font-weight:900; color:var(--neon-green);">$0</div>
             <div class="summary-grid">
-                <div class="summary-item"><label id="l_total_inv">Investit (Banii Tăi)</label><div id="v_total_inv">$0</div></div>
-                <div class="summary-item"><label id="l_total_div">Dividende (Net)</label><div id="v_total_div" style="color:var(--neon-green);">$0</div></div>
-                <div class="summary-item"><label id="l_total_pg">Creșt. Capital</label><div id="v_total_pg">$0</div></div>
-                <div class="summary-item"><label id="l_total_tax">Taxe Plătite</label><div id="v_total_tax" style="color:#ff3b30;">$0</div></div>
+                <div class="summary-item"><label id="l_tinv">Total Investit</label><div id="v_total_inv">$0</div></div>
+                <div class="summary-item"><label id="l_tdiv">Dividende Net</label><div id="v_total_div" style="color:var(--neon-green);">$0</div></div>
+                <div class="summary-item"><label id="l_tpg">Apreciere Preț</label><div id="v_total_pg">$0</div></div>
+                <div class="summary-item"><label id="l_ttax">Taxe Plătite</label><div id="v_total_tax" style="color:#ff3b30;">$0</div></div>
             </div>
         </div>
         <div class="table-wrap">
-            <table id="tipranks_table">
+            <table>
                 <thead>
-                    <tr>
-                        <th>An</th><th>Acțiuni</th><th>Div. per Acțiune</th><th>Div. Anual Total</th><th>DRIP (Cumul)</th><th>Contrib.</th><th>Preț Final</th><th style="color:var(--neon-green)">Balanță Nouă</th>
+                    <tr id="th_row">
+                        <th>An</th><th>Acțiuni</th><th>Div/Acțiune</th><th>Div. Anual</th><th>Reinvestit</th><th>Contrib.</th><th>Preț Final</th><th style="color:var(--neon-green)">Sold Final</th>
                     </tr>
                 </thead>
                 <tbody id="tb_div"></tbody>
@@ -196,11 +191,11 @@
             <div><label id="l_ca">Ani</label><input type="number" id="ca" value="15"></div>
             <div><label id="l_cf">Compunere</label><select id="cfreq"><option value="12">Lunar</option><option value="1">Anual</option></select></div>
         </div>
-        <button class="btn-calc" style="color:var(--neon-blue); border-color:var(--neon-blue);" onclick="calcComp()">CALCULEAZĂ CREȘTEREA</button>
+        <button class="btn-calc" style="color:var(--neon-blue); border-color:var(--neon-blue);" id="b_calc2" onclick="calcComp()">Calculează Creșterea</button>
     </div>
     <div id="res_comp" style="display:none;">
         <div class="res-box" style="border-color:var(--neon-blue);">
-            <label>BALANȚĂ NETĂ FINALĂ</label>
+            <label id="l_cfinal">BALANȚĂ NETĂ FINALĂ</label>
             <div id="cv_final" style="font-size:32px; font-weight:900; color:var(--neon-blue);">$0</div>
         </div>
         <div class="chart-wrap"><canvas id="cComp"></canvas></div>
@@ -208,7 +203,7 @@
 </div>
 
 <nav class="tab-bar">
-    <div class="tab-item active" onclick="tab('div', this)"><span>💰</span><div id="m_div">DIVIDENDE</div></div>
+    <div class="tab-item active" onclick="tab('div', this)"><span>💰</span><div id="m_div">PROIECȚII</div></div>
     <div class="tab-item" onclick="tab('comp', this)"><span>📈</span><div id="m_comp">DOBÂNDĂ</div></div>
 </nav>
 
@@ -228,55 +223,31 @@ function liveSum() {
 }
 
 function calcDiv() {
-    let p = parseFloat(document.getElementById('p').value);
-    let s = parseFloat(document.getElementById('s').value);
-    let y = parseFloat(document.getElementById('y').value)/100;
-    let a = parseInt(document.getElementById('a').value);
-    let dg = parseFloat(document.getElementById('dg').value)/100;
-    let pg = parseFloat(document.getElementById('pg').value)/100;
-    let c = parseFloat(document.getElementById('c').value);
-    let t = parseFloat(document.getElementById('t').value)/100;
-    let df = parseInt(document.getElementById('dfreq').value);
-    let drip = document.getElementById('drip').value === 'yes';
+    let p = parseFloat(document.getElementById('p').value), s = parseFloat(document.getElementById('s').value);
+    let y = parseFloat(document.getElementById('y').value)/100, a = parseInt(document.getElementById('a').value);
+    let dg = parseFloat(document.getElementById('dg').value)/100, pg = parseFloat(document.getElementById('pg').value)/100;
+    let c = parseFloat(document.getElementById('c').value), t = parseFloat(document.getElementById('t').value)/100;
+    let df = parseInt(document.getElementById('dfreq').value), drip = document.getElementById('drip').value === 'yes';
 
     let curS = s, curP = p, dps = p * y, labs = [], vals = [];
     let totInv = p * s, totDivNet = 0, totTax = 0, dripCumul = 0;
     let html = '';
 
     for(let i=1; i<=a; i++) {
-        let divAnualBrut = 0;
-        // Simulăm compunerea pe parcursul anului (Lunar sau Trimestrial)
+        let annDivBrut = 0;
         for(let f=0; f<df; f++) {
-            let dPerPeriod = (curS * (dps / df));
-            divAnualBrut += dPerPeriod;
-            let netP = dPerPeriod * (1 - t);
-            totTax += (dPerPeriod * t);
-            if(drip) {
-                curS += (netP / curP);
-                dripCumul += netP;
-            }
+            let pDiv = (curS * (dps / df));
+            annDivBrut += pDiv;
+            let net = pDiv * (1 - t);
+            totTax += (pDiv * t);
+            if(drip) { curS += (net / curP); dripCumul += net; }
         }
-        
-        curS += (c / curP); // Contribuția anuală
-        totInv += c;
-        totDivNet += (divAnualBrut * (1 - t));
-        
-        curP *= (1 + pg); // Creștere preț
-        dps *= (1 + dg);  // Creștere dividend
-        
+        curS += (c / curP); totInv += c; totDivNet += (annDivBrut * (1 - t));
+        curP *= (1 + pg); dps *= (1 + dg);
         let bal = curS * curP;
         labs.push(i); vals.push(Math.round(bal));
 
-        html += `<tr>
-            <td>${i}</td>
-            <td>${curS.toFixed(2)}</td>
-            <td>$${(dps).toFixed(2)}</td>
-            <td>$${divAnualBrut.toLocaleString(undefined,{maximumFractionDigits:0})}</td>
-            <td>$${dripCumul.toLocaleString(undefined,{maximumFractionDigits:0})}</td>
-            <td>$${c.toLocaleString()}</td>
-            <td>$${curP.toFixed(2)}</td>
-            <td class="highlight-td">$${Math.round(bal).toLocaleString()}</td>
-        </tr>`;
+        html += `<tr><td>${i}</td><td>${curS.toFixed(2)}</td><td>$${dps.toFixed(2)}</td><td>$${Math.round(annDivBrut).toLocaleString()}</td><td>$${Math.round(dripCumul).toLocaleString()}</td><td>$${c.toLocaleString()}</td><td>$${curP.toFixed(2)}</td><td class="highlight-td">$${Math.round(bal).toLocaleString()}</td></tr>`;
     }
 
     document.getElementById('tb_div').innerHTML = html;
@@ -290,40 +261,33 @@ function calcDiv() {
     if(dChart) dChart.destroy();
     dChart = new Chart(document.getElementById('cDiv'), {
         type: 'line',
-        data: { labels: labs, datasets: [{ data: vals, borderColor: '#34c759', fill: true, backgroundColor: 'rgba(52,199,89,0.1)', tension: 0.3 }] },
+        data: { labels: labs, datasets: [{ data: vals, borderColor: '#34c759', backgroundColor: 'rgba(52,199,89,0.1)', fill: true, tension: 0.3 }] },
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
     });
 }
 
 function calcComp() {
     let p = parseFloat(document.getElementById('cp').value), m = parseFloat(document.getElementById('cm').value);
-    let r = parseFloat(document.getElementById('cr').value)/100, t = parseFloat(document.getElementById('ct').value)/100;
-    let a = parseInt(document.getElementById('ca').value), f = parseInt(document.getElementById('cfreq').value);
+    let r = parseFloat(document.getElementById('cr').value)/100, tax = parseFloat(document.getElementById('ct').value)/100;
+    let ani = parseInt(document.getElementById('ca').value), freq = parseInt(document.getElementById('cfreq').value);
 
-    let labs = [], dDep = [], dMth = [], dProf = [], cur = p, inv = p, profitBrut = 0;
-
-    for(let i=1; i<=a; i++) {
-        let startAn = cur;
+    let labs = [], dDep = [], dMth = [], dProf = [], cur = p, inv = p, pBrut = 0;
+    for(let i=1; i<=ani; i++) {
+        let sAn = cur;
         for(let j=0; j<12; j++) {
             cur += m; inv += m;
-            if(f === 12) cur *= (1 + r/12);
+            if(freq === 12) cur *= (1 + r/12);
         }
-        if(f === 1) cur *= (1 + r);
-        profitBrut += (cur - startAn - (m * 12));
-        labs.push(2025+i); dDep.push(p); dMth.push(inv-p); dProf.push(Math.round(profitBrut*(1-t)));
+        if(freq === 1) cur *= (1 + r);
+        pBrut += (cur - sAn - (m * 12));
+        labs.push(2025+i); dDep.push(p); dMth.push(inv-p); dProf.push(Math.round(pBrut*(1-tax)));
     }
-
-    document.getElementById('cv_final').innerText = "$" + Math.round(inv + profitBrut*(1-t)).toLocaleString();
+    document.getElementById('cv_final').innerText = "$" + Math.round(inv + pBrut*(1-tax)).toLocaleString();
     document.getElementById('res_comp').style.display = 'block';
-
     if(cChart) cChart.destroy();
     cChart = new Chart(document.getElementById('cComp'), {
         type: 'bar',
-        data: { labels: labs, datasets: [
-            { label: 'Inițial', data: dDep, backgroundColor: '#0d47a1' },
-            { label: 'Depuneri', data: dMth, backgroundColor: '#1976d2' },
-            { label: 'Profit Net', data: dProf, backgroundColor: '#34c759' }
-        ]},
+        data: { labels: labs, datasets: [{ label: 'Capital', data: dDep, backgroundColor: '#0d47a1' }, { label: 'Depuneri', data: dMth, backgroundColor: '#1976d2' }, { label: 'Profit', data: dProf, backgroundColor: '#34c759' }] },
         options: { responsive: true, maintainAspectRatio: false, scales: { x: { stacked: true }, y: { stacked: true } } }
     });
 }
@@ -331,26 +295,24 @@ function calcComp() {
 function updateLang() {
     const l = document.getElementById('lang').value;
     const map = {
-        ro: { p: "Preț Acțiune", s: "Nr. Acțiuni", y: "Yield Anual %", a: "Ani", dg: "Creșt. Div %", pg: "Creșt. Preț %", c: "Contrib. Anuală", t: "Impozit Div %", df: "Frecv. Dividend", dr: "DRIP", m_div: "DIVIDENDE", m_comp: "DOBÂNDĂ" },
-        en: { p: "Stock Price", s: "Shares Owned", y: "Annual Yield %", a: "Years", dg: "Div Growth %", pg: "Price Growth %", c: "Annual Contrib.", t: "Tax on Div %", df: "Div Frequency", dr: "DRIP", m_div: "DIVIDENDS", m_comp: "COMPOUND" },
-        es: { p: "Precio Acción", s: "Acciones", y: "Rendimiento %", a: "Años", dg: "Crec. Div %", pg: "Crec. Precio %", c: "Contrib. Anual", t: "Impuesto %", df: "Frecuencia", dr: "DRIP", m_div: "DIVIDENDOS", m_comp: "INTERÉS" },
-        fr: { p: "Prix Action", s: "Actions", y: "Rendement %", a: "Années", dg: "Croiss. Div %", pg: "Croiss. Prix %", c: "Contrib. Annuelle", t: "Impôt %", df: "Fréquence", dr: "DRIP", m_div: "DIVIDENDES", m_comp: "INTÉRÊT" },
-        de: { p: "Aktienpreis", s: "Aktien", y: "Rendite %", a: "Jahre", dg: "Div-Wachstum %", pg: "Kurs-Wachstum %", c: "Jährl. Beitrag", t: "Steuer %", df: "Frequenz", dr: "DRIP", m_div: "DIVIDENDEN", m_comp: "ZINSESZINS" },
-        cn: { p: "股价", s: "持股数", y: "股息率 %", a: "年数", dg: "股息增长 %", pg: "股价增长 %", c: "年投入", t: "税率 %", df: "派息频率", dr: "再投资", m_div: "股息", m_comp: "复利" }
+        ro: { p: "Preț Acțiune", s: "Nr. Acțiuni", y: "Yield Anual %", a: "Ani Proiecție", dg: "Creșt. Div %", pg: "Creșt. Preț %", c: "Contrib. Anuală", t: "Impozit Div %", df: "Frecv. Dividend", dr: "Strategie", bc: "Generează Raport", bc2: "Calculează", md: "PROIECȚII", mc: "DOBÂNDĂ", ti: "Total Investit", dn: "Dividende Net", ap: "Apreciere", tp: "Taxe", init: "INVESTIȚIE INIȚIALĂ:" },
+        en: { p: "Stock Price", s: "Shares Owned", y: "Annual Yield %", a: "Projection Years", dg: "Div Growth %", pg: "Price Growth %", c: "Annual Contrib.", t: "Div Tax %", df: "Div Frequency", dr: "Strategy", bc: "Generate Report", bc2: "Calculate", md: "PROJECTIONS", mc: "COMPOUND", ti: "Total Invested", dn: "Net Dividends", ap: "Appreciation", tp: "Taxes", init: "INITIAL INVESTMENT:" },
+        es: { p: "Precio Acción", s: "Acciones", y: "Rendimiento %", a: "Años", dg: "Crec. Div %", pg: "Crec. Precio %", c: "Contrib. Anual", t: "Impuesto %", df: "Frecuencia", dr: "Estrategia", bc: "Generar Informe", bc2: "Calcular", md: "PROYECCIONES", mc: "INTERÉS", ti: "Total Invertido", dn: "Dividendos", ap: "Plusvalía", tp: "Impuestos", init: "INVERSIÓN INICIAL:" },
+        fr: { p: "Prix Action", s: "Actions", y: "Rendement %", a: "Années", dg: "Croiss. Div %", pg: "Croiss. Prix %", c: "Contrib. Annuelle", t: "Impôt %", df: "Fréquence", dr: "Stratégie", bc: "Générer Rapport", bc2: "Calculer", md: "PROJECTIONS", mc: "INTÉRÊT", ti: "Total Investi", dn: "Dividendes", ap: "Plus-value", tp: "Impôts", init: "INVESTISSEMENT INITIAL:" },
+        de: { p: "Kurs", s: "Aktien", y: "Rendite %", a: "Jahre", dg: "Wachstum Div %", pg: "Wachstum Kurs %", c: "Beitrag", t: "Steuer %", df: "Frequenz", dr: "Strategie", bc: "Bericht Erstellen", bc2: "Berechnen", md: "PROGNOSE", mc: "ZINSESZINS", ti: "Investiert", dn: "Dividenden", ap: "Zuwachs", tp: "Steuern", init: "STARTKAPITAL:" },
+        cn: { p: "股价", s: "持股量", y: "股息率 %", a: "年数", dg: "股息增长 %", pg: "股价增长 %", c: "年投入", t: "税率 %", df: "频率", dr: "策略", bc: "生成报告", bc2: "计算", md: "项目预测", mc: "复利计算", ti: "总投入", dn: "净股息", ap: "市值增值", tp: "总税收", init: "初始投资:" }
     };
     const t = map[l];
-    document.getElementById('l_p').innerText = t.p;
-    document.getElementById('l_s').innerText = t.s;
-    document.getElementById('l_y').innerText = t.y;
-    document.getElementById('l_a').innerText = t.a;
-    document.getElementById('l_dg').innerText = t.dg;
-    document.getElementById('l_pg').innerText = t.pg;
-    document.getElementById('l_c').innerText = t.c;
-    document.getElementById('l_t').innerText = t.t;
-    document.getElementById('l_df').innerText = t.df;
-    document.getElementById('l_dr').innerText = t.dr;
-    document.getElementById('m_div').innerText = t.m_div;
-    document.getElementById('m_comp').innerText = t.m_comp;
+    document.getElementById('l_p').innerText = t.p; document.getElementById('l_s').innerText = t.s;
+    document.getElementById('l_y').innerText = t.y; document.getElementById('l_a').innerText = t.a;
+    document.getElementById('l_dg').innerText = t.dg; document.getElementById('l_pg').innerText = t.pg;
+    document.getElementById('l_c').innerText = t.c; document.getElementById('l_t').innerText = t.t;
+    document.getElementById('l_df').innerText = t.df; document.getElementById('l_dr').innerText = t.dr;
+    document.getElementById('b_calc').innerText = t.bc; document.getElementById('b_calc2').innerText = t.bc2;
+    document.getElementById('m_div').innerText = t.md; document.getElementById('m_comp').innerText = t.mc;
+    document.getElementById('l_total_inv').innerText = t.ti; document.getElementById('l_total_div').innerText = t.dn;
+    document.getElementById('l_total_pg').innerText = t.ap; document.getElementById('l_total_tax').innerText = t.tp;
+    document.getElementById('l_init').innerText = t.init;
 }
 </script>
 </body>
