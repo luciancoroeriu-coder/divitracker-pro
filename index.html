@@ -22,9 +22,8 @@
             padding: 55px 20px 15px; background: linear-gradient(180deg, #333 0%, #111 100%);
             border-bottom: 2px solid #444; display: flex; justify-content: space-between; align-items: center;
         }
-        .container { padding: 15px; max-width: 850px; margin: 0 auto; display: none; }
-        .container.active { display: block; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .container { padding: 15px; max-width: 900px; margin: 0 auto; display: none; }
+        .container.active { display: block; }
         .card {
             background: #2a2a2a; border-radius: 16px; padding: 20px; margin-bottom: 20px;
             box-shadow: inset 2px 2px 5px #111, inset -1px -1px 3px #444, 8px 8px 20px rgba(0,0,0,0.5);
@@ -50,8 +49,8 @@
         .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
         .summary-item { background: #1a1a1a; padding: 10px; border-radius: 8px; border: 1px solid #333; }
         .table-wrap { overflow-x: auto; background: #111; border-radius: 12px; border: 1px solid #333; margin-top: 20px; }
-        table { width: 100%; border-collapse: collapse; font-size: 10px; min-width: 800px; }
-        th { background: #222; color: #777; padding: 12px; border-bottom: 2px solid #333; text-transform: uppercase; font-weight: 900; }
+        table { width: 100%; border-collapse: collapse; font-size: 10px; min-width: 850px; }
+        th { background: #222; color: #777; padding: 12px; border-bottom: 2px solid #333; text-transform: uppercase; font-weight: 900; text-align: center; }
         td { padding: 12px; text-align: center; border-bottom: 1px solid #222; color: #bbb; }
         .tab-bar { position: fixed; bottom: 0; width: 100%; height: 75px; background: #111; display: flex; border-top: 1px solid #333; }
         .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #555; font-size: 10px; font-weight: 800; }
@@ -119,8 +118,8 @@
             <table>
                 <thead>
                     <tr>
-                        <th id="h1">Year</th><th id="h2">Shares</th><th id="h3">Div/Share</th><th id="h4">Ann. Div</th>
-                        <th id="h5">Reinvested</th><th id="h6">Contrib.</th><th id="h7">End Price</th><th id="h8">Final Bal</th>
+                        <th id="h1">YEAR</th><th id="h2">SHARES</th><th id="h3">DIV/SHARE</th><th id="h4">ANN. DIV</th>
+                        <th id="h5">REINVESTED</th><th id="h6">CONTRIB.</th><th id="h7">END PRICE</th><th id="h8">FINAL BAL</th>
                     </tr>
                 </thead>
                 <tbody id="tb_div"></tbody>
@@ -183,6 +182,7 @@ function calcDiv() {
     let c = parseFloat(document.getElementById('c').value), t = parseFloat(document.getElementById('t').value)/100;
     let df = parseInt(document.getElementById('dfreq').value), drip = document.getElementById('drip').value === 'yes';
     let curS = s, curP = p, dps = p * y, labs = [], vals = [], totInv = p * s, totD = 0, totT = 0, dripC = 0, html = '';
+    
     for(let i=1; i<=a; i++) {
         let annB = 0;
         for(let f=0; f<df; f++) {
@@ -224,11 +224,11 @@ function calcComp() {
 function updateLang() {
     const l = document.getElementById('lang').value;
     const map = {
-        ro: { p:"Preț", s:"Acțiuni", y:"Yield Anual %", a:"Ani", dg:"Creșt. Div %", pg:"Creșt. Preț %", c:"Contrib. Anuală", t:"Impozit Div %", df:"Compunere", dr:"Strategie", bc:"GENEREAZĂ ANALIZA", md:"PROIECȚII", mc:"DOBÂNDĂ", ti:"Investit", dn:"Dividende Net", ap:"Apreciere", tx:"Taxe", rf:"VALOARE ESTIMATĂ", init:"INVESTIȚIE INIȚIALĂ:", cp:"Depozit Inițial", cm:"Depunere Lunară", cr:"Dobândă %", ct:"Impozit Profit %", ca:"Ani", cf:"Compunere", b2:"CALCULEAZĂ", cf1:"BALANȚĂ NETĂ FINALĂ", om:"Lunar (Compus)", oy:"Anual (Simplu)", h1:"An", h2:"Acțiuni", h3:"Div/Acțiune", h4:"Div. Anual", h5:"Reinvestit", h6:"Contrib.", h7:"Preț Final", h8:"Sold Final" },
-        en: { p:"Price", s:"Shares", y:"Annual Yield %", a:"Years", dg:"Div Growth %", pg:"Price Growth %", c:"Annual Contrib.", t:"Div Tax %", df:"Compounding", dr:"Strategy", bc:"GENERATE ANALYSIS", md:"PROJECTIONS", mc:"COMPOUND", ti:"Invested", dn:"Net Dividends", ap:"Appreciation", tx:"Taxes", rf:"ESTIMATED VALUE", init:"INITIAL INVESTMENT:", cp:"Initial Deposit", cm:"Monthly Contribution", cr:"Interest Rate %", ct:"Profit Tax %", ca:"Years", cf:"Compounding", b2:"CALCULATE", cf1:"ESTIMATED FINAL NET BALANCE", om:"Monthly (Compound)", oy:"Yearly (Simple)", h1:"Year", h2:"Shares", h3:"Div/Share", h4:"Ann. Div", h5:"Reinvested", h6:"Contrib.", h7:"End Price", h8:"Final Bal" },
-        es: { p:"Precio", s:"Acciones", y:"Rendimiento %", a:"Años", dg:"Crec. Div %", pg:"Crec. Precio %", c:"Contribución", t:"Impuesto %", df:"Compuesto", dr:"Estrategia", bc:"GENERAR ANÁLISIS", md:"PROYECCIONES", mc:"INTERÉS", ti:"Invertido", dn:"Dividendos", ap:"Plusvalía", tx:"Impuestos", rf:"VALOR ESTIMADO", init:"INVERSIÓN INICIAL:", cp:"Depósito Inicial", cm:"Contribución Mensual", cr:"Interés %", ct:"Impuesto %", ca:"Años", cf:"Compuesto", b2:"CALCULAR", cf1:"BALANCE NETO FINAL", om:"Mensual", oy:"Anual", h1:"Año", h2:"Acciones", h3:"Div/Acc.", h4:"Div. Anual", h5:"Reinversión", h6:"Contrib.", h7:"Precio Final", h8:"Saldo Final" },
-        fr: { p:"Prix", s:"Actions", y:"Rendement %", a:"Années", dg:"Croiss. Div %", pg:"Croiss. Prix %", c:"Contrib. Annuelle", t:"Impôt %", df:"Composition", dr:"Stratégie", bc:"GÉNÉRER ANALYSE", md:"PROJECTIONS", mc:"INTÉRÊT", ti:"Investi", dn:"Dividendes", ap:"Plus-value", tx:"Impôts", rf:"VALEUR ESTIMÉE", init:"INVESTISSEMENT INITIAL:", cp:"Dépôt Initial", cm:"Contribution Mensuelle", cr:"Intérêt %", ct:"Impôt %", ca:"Années", cf:"Composition", b2:"CALCULER", cf1:"SOLDE NET FINAL ESTIMÉ", om:"Mensuel", oy:"Annuel", h1:"Année", h2:"Actions", h3:"Div/Action", h4:"Div. Annuel", h5:"Réinvesti", h6:"Contrib.", h7:"Prix Final", h8:"Solde Final" },
-        de: { p:"Kurs", s:"Aktien", y:"Rendite %", a:"Jahre", dg:"Div-Wachstum %", pg:"Kurs-Wachstum %", c:"Beitrag", t:"Steuer %", df:"Zinseszins", dr:"Strategie", bc:"ANALYSE ERSTELLEN", md:"PROGNOSE", mc:"ZINSESZINS", ti:"Investiert", dn:"Dividenden", ap:"Zuwachs", tx:"Steuern", rf:"SCHÄTZWERT", init:"STARTKAPITAL:", cp:"Anfangskapital", cm:"Monatl. Beitrag", cr:"Zinsatz %", ct:"Steuer %", ca:"Jahre", cf:"Zinseszins", b2:"BERECHNEN", cf1:"GESCHÄTZTER NETTOSALDO", om:"Monatlich", oy:"Jährlich", h1:"Jahr", h2:"Aktien", h3:"Div/Aktie", h4:"Div. Jährl.", h5:"Reinvestiert", h6:"Beitrag", h7:"Endpreis", h8:"Endsaldo" },
+        ro: { p:"Preț", s:"Acțiuni", y:"Yield Anual %", a:"Ani", dg:"Creșt. Div %", pg:"Creșt. Preț %", c:"Contrib. Anuală", t:"Impozit Div %", df:"Compunere", dr:"Strategie", bc:"GENEREAZĂ ANALIZA", md:"PROIECȚII", mc:"DOBÂNDĂ", ti:"Investit", dn:"Dividende Net", ap:"Apreciere", tx:"Taxe", rf:"VALOARE ESTIMATĂ", init:"INVESTIȚIE INIȚIALĂ:", cp:"Depozit Inițial", cm:"Depunere Lunară", cr:"Dobândă %", ct:"Impozit Profit %", ca:"Ani", cf:"Compunere", b2:"CALCULEAZĂ", cf1:"BALANȚĂ NETĂ FINALĂ", om:"Lunar (Compus)", oy:"Anual (Simplu)", h1:"AN", h2:"ACȚIUNI", h3:"DIV/ACȚIUNE", h4:"DIV. ANUAL", h5:"REINVESTIT", h6:"CONTRIB.", h7:"PREȚ FINAL", h8:"SOLD FINAL" },
+        en: { p:"Price", s:"Shares", y:"Annual Yield %", a:"Years", dg:"Div Growth %", pg:"Price Growth %", c:"Annual Contrib.", t:"Div Tax %", df:"Compounding", dr:"Strategy", bc:"GENERATE ANALYSIS", md:"PROJECTIONS", mc:"COMPOUND", ti:"Invested", dn:"Net Dividends", ap:"Appreciation", tx:"Taxes", rf:"ESTIMATED VALUE", init:"INITIAL INVESTMENT:", cp:"Initial Deposit", cm:"Monthly Contribution", cr:"Interest Rate %", ct:"Profit Tax %", ca:"Years", cf:"Compounding", b2:"CALCULATE", cf1:"ESTIMATED FINAL NET BALANCE", om:"Monthly (Compound)", oy:"Yearly (Simple)", h1:"YEAR", h2:"SHARES", h3:"DIV/SHARE", h4:"ANN. DIV", h5:"REINVESTED", h6:"CONTRIB.", h7:"END PRICE", h8:"FINAL BAL" },
+        es: { p:"Precio", s:"Acciones", y:"Rendimiento %", a:"Años", dg:"Crec. Div %", pg:"Crec. Precio %", c:"Contribución", t:"Impuesto %", df:"Compuesto", dr:"Estrategia", bc:"GENERAR ANÁLISIS", md:"PROYECCIONES", mc:"INTERÉS", ti:"Invertido", dn:"Dividendos", ap:"Plusvalía", tx:"Impuestos", rf:"VALOR ESTIMADO", init:"INVERSIÓN INICIAL:", cp:"Depósito Inicial", cm:"Contribución Mensual", cr:"Interés %", ct:"Impuesto %", ca:"Años", cf:"Compuesto", b2:"CALCULAR", cf1:"BALANCE NETO FINAL", om:"Mensual", oy:"Anual", h1:"AÑO", h2:"ACCIONES", h3:"DIV/ACC.", h4:"DIV. ANUAL", h5:"REINVERTIDO", h6:"CONTRIB.", h7:"PRECIO FINAL", h8:"SALDO FINAL" },
+        fr: { p:"Prix", s:"Actions", y:"Rendement %", a:"Années", dg:"Croiss. Div %", pg:"Croiss. Prix %", c:"Contrib. Annuelle", t:"Impôt %", df:"Composition", dr:"Stratégie", bc:"GÉNÉRER ANALYSE", md:"PROJECTIONS", mc:"INTÉRÊT", ti:"Investi", dn:"Dividendes", ap:"Plus-value", tx:"Impôts", rf:"VALEUR ESTIMÉE", init:"INVESTISSEMENT INITIAL:", cp:"Dépôt Initial", cm:"Contribution Mensuelle", cr:"Intérêt %", ct:"Impôt %", ca:"Années", cf:"Composition", b2:"CALCULER", cf1:"SOLDE NET FINAL ESTIMÉ", om:"Mensuel", oy:"Annuel", h1:"ANNÉE", h2:"ACTIONS", h3:"DIV/ACTION", h4:"DIV. ANNUEL", h5:"RÉINVESTI", h6:"CONTRIB.", h7:"PRIX FINAL", h8:"SOLDE FINAL" },
+        de: { p:"Kurs", s:"Aktien", y:"Rendite %", a:"Jahre", dg:"Div-Wachstum %", pg:"Kurs-Wachstum %", c:"Beitrag", t:"Steuer %", df:"Zinseszins", dr:"Strategie", bc:"ANALYSE ERSTELLEN", md:"PROGNOSE", mc:"ZINSESZINS", ti:"Investiert", dn:"Dividenden", ap:"Zuwachs", tx:"Steuern", rf:"SCHÄTZWERT", init:"STARTKAPITAL:", cp:"Anfangskapital", cm:"Monatl. Beitrag", cr:"Zinsatz %", ct:"Steuer %", ca:"Jahre", cf:"Zinseszins", b2:"BERECHNEN", cf1:"GESCHÄTZTER NETTOSALDO", om:"Monatlich", oy:"Jährlich", h1:"JAHR", h2:"AKTIEN", h3:"DIV/AKTIE", h4:"DIV. JÄHRL.", h5:"REINVESTIERT", h6:"BEITRAG", h7:"ENDPREIS", h8:"ENDSALDO" },
         cn: { p:"股价", s:"持股量", y:"股息率 %", a:"年数", dg:"股息增长 %", pg:"股价增长 %", c:"年投入", t:"税率 %", df:"频率", dr: "策略", bc:"生成分析", md:"项目预测", mc:"复利计算", ti:"总投入", dn:"净股息", ap:"市值增值", tx:"总税收", rf:"预估总值", init:"初始投资:", cp:"初始存款", cm: "每月投入", cr:"利率 %", ct:"税率 %", ca:"年数", cf:"复利频率", b2:"计算", cf1:"预估最终净余额", om:"每月", oy:"每年", h1:"年份", h2:"持股", h3:"每股股息", h4:"年度股息", h5:"再投资", h6:"投入", h7:"最终价格", h8:"最终余额" }
     };
     const t = map[l];
@@ -242,7 +242,7 @@ function updateLang() {
     document.getElementById('l_tinv').innerText = t.ti; document.getElementById('l_tdiv').innerText = t.dn;
     document.getElementById('l_tpg').innerText = t.ap; document.getElementById('l_ttax').innerText = t.tx;
     document.getElementById('l_res_final').innerText = t.rf; document.getElementById('l_init').innerText = t.init;
-    // Traduceri Capete Tabel (Coloane)
+    // REPARAT COLOANE AICI:
     document.getElementById('h1').innerText = t.h1; document.getElementById('h2').innerText = t.h2;
     document.getElementById('h3').innerText = t.h3; document.getElementById('h4').innerText = t.h4;
     document.getElementById('h5').innerText = t.h5; document.getElementById('h6').innerText = t.h6;
