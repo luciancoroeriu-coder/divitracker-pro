@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+       <!DOCTYPE html>
 <html lang="ro">
 <head>
     <meta charset="UTF-8">
@@ -6,7 +6,6 @@
     <title>DiviTracker Pro</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="DiviTracker">
     <style>
         :root {
             --bg-dark: #000000;
@@ -14,26 +13,26 @@
             --input-bg: #1e1e1e;
             --text-main: #ffffff;
             --text-muted: #8e8e93;
-            --accent: #34c759; /* Verde nativ iOS */
+            --accent: #34c759;
             --blue: #007aff;
+            --red: #ff3b30;
             --border: #2c2c2e;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             margin: 0; background-color: var(--bg-dark); color: var(--text-main);
-            padding-bottom: 90px; /* Spatiu pentru tab bar */
-            -webkit-user-select: none; user-select: none;
+            padding-bottom: 100px; -webkit-tap-highlight-color: transparent;
         }
 
         .header {
-            padding: 15px 20px; font-size: 20px; font-weight: bold; text-align: center;
-            border-bottom: 1px solid var(--border); background-color: rgba(0,0,0,0.8);
+            padding: 15px; font-size: 20px; font-weight: 800; text-align: center;
+            border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.8);
             position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px);
         }
         .header span { color: var(--accent); }
 
-        .container { padding: 15px; display: none; }
+        .container { padding: 15px; display: none; max-width: 600px; margin: 0 auto; }
         .container.active { display: block; }
 
         .card {
@@ -41,362 +40,200 @@
             margin-bottom: 15px; border: 1px solid var(--border);
         }
         
-        .card-title { margin-top: 0; margin-bottom: 15px; font-size: 16px; color: var(--text-main); font-weight: 700; }
-
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+        .input-group label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 4px; display:block; }
         
-        .input-group { display: flex; flex-direction: column; }
-        .input-group label {
-            font-size: 10px; color: var(--text-muted); text-transform: uppercase;
-            letter-spacing: 0.5px; margin-bottom: 4px; font-weight: 600;
-        }
-        
-        input, select {
+        input {
             background-color: var(--input-bg); color: var(--text-main);
-            border: 1px solid var(--border); padding: 10px; border-radius: 8px;
+            border: 1px solid var(--border); padding: 12px; border-radius: 8px;
             font-size: 16px; outline: none; width: 100%; box-sizing: border-box;
         }
-        input:focus, select:focus { border-color: var(--blue); }
+        input:focus { border-color: var(--blue); }
 
         .drip-toggle {
-            display: flex; background: var(--input-bg); border-radius: 8px; overflow: hidden;
-            margin-bottom: 15px; border: 1px solid var(--border);
+            display: flex; background: var(--input-bg); border-radius: 8px; margin-bottom: 15px; border: 1px solid var(--border);
         }
-        .drip-btn {
-            flex: 1; padding: 10px; text-align: center; font-size: 13px; font-weight: bold;
-            color: var(--text-muted); cursor: pointer; transition: 0.2s;
-        }
-        .drip-btn.active { background-color: var(--accent); color: #000; }
+        .drip-btn { flex: 1; padding: 10px; text-align: center; font-size: 12px; font-weight: bold; color: var(--text-muted); cursor: pointer; }
+        .drip-btn.active { background-color: var(--accent); color: #000; border-radius: 6px; }
 
-        .btn-calc {
-            background-color: var(--accent); color: #000; font-size: 16px; font-weight: bold;
-            padding: 14px; border: none; border-radius: 10px; width: 100%; cursor: pointer;
-            transition: 0.1s;
-        }
-        .btn-calc:active { opacity: 0.7; transform: scale(0.98); }
+        .btn-main { background-color: var(--accent); color: #000; font-size: 16px; font-weight: 800; padding: 15px; border: none; border-radius: 10px; width: 100%; cursor: pointer; }
+        .btn-reset { background: none; color: var(--red); border: 1px solid var(--red); padding: 8px; border-radius: 8px; font-size: 12px; margin-top: 10px; width: 100%; font-weight: 600; cursor: pointer; }
 
-        /* SUMAR REZULTATE (APORT PROPRIU) */
-        .summary-box { display: none; margin-top: 20px; }
-        .grid-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .summary-item { background-color: #1a1a1a; padding: 12px; border-radius: 8px; border: 1px solid #333; }
-        .summary-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-bottom: 4px; }
-        .summary-value { font-size: 16px; font-weight: 800; color: var(--text-main); }
-        .summary-total { font-size: 22px; color: var(--accent); font-weight: 800; }
+        .summary-box { display: none; margin-top: 20px; animation: fadeIn 0.4s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* TABEL REZULTATE DETALIAT */
-        .table-container { overflow-x: auto; background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border); }
-        table { width: 100%; border-collapse: collapse; font-size: 12px; white-space: nowrap; }
-        th, td { padding: 10px 12px; text-align: right; border-bottom: 1px solid var(--border); }
-        th { color: var(--text-muted); font-weight: 600; background: #161616; text-transform: uppercase; font-size: 10px; }
-        th:first-child, td:first-child { text-align: center; font-weight: bold; }
-        td { color: var(--text-main); }
-        .text-green { color: var(--accent); font-weight: bold; }
+        .summary-item { background: #1c1c1e; padding: 12px; border-radius: 10px; margin-bottom: 10px; border-left: 4px solid var(--accent); }
+        .val-big { font-size: 24px; font-weight: 900; color: var(--accent); }
 
-        /* TAB BAR (NAVIGARE JOS) */
+        .table-wrap { overflow-x: auto; background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border); margin-top: 10px; }
+        table { width: 100%; border-collapse: collapse; font-size: 11px; white-space: nowrap; }
+        th, td { padding: 12px; text-align: right; border-bottom: 1px solid var(--border); }
+        th { color: var(--text-muted); background: #161616; font-size: 9px; text-transform: uppercase; }
+
+        .disclaimer { font-size: 9px; color: #444; text-align: center; margin-top: 25px; padding: 0 20px; line-height: 1.4; }
+
         .tab-bar {
-            position: fixed; bottom: 0; left: 0; width: 100%; height: 75px;
-            background-color: rgba(18, 18, 18, 0.95); border-top: 1px solid var(--border);
-            display: flex; justify-content: space-around; padding-top: 10px;
-            backdrop-filter: blur(15px); z-index: 1000; box-sizing: border-box;
+            position: fixed; bottom: 0; left:0; width: 100%; height: 75px; background: rgba(18,18,18,0.95);
+            border-top: 1px solid var(--border); display: flex; backdrop-filter: blur(15px); z-index: 1000;
         }
-        .tab-item {
-            flex: 1; display: flex; flex-direction: column; align-items: center;
-            color: var(--text-muted); cursor: pointer; text-decoration: none; transition: 0.2s;
-        }
+        .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-muted); font-size: 10px; font-weight: 700; cursor: pointer; }
         .tab-item.active { color: var(--accent); }
-        .tab-icon { font-size: 24px; margin-bottom: 4px; }
-        .tab-label { font-size: 11px; font-weight: 600; }
+        .tab-icon { font-size: 20px; margin-bottom: 4px; }
+
+        .btn-copy { background: var(--blue); color: white; border: none; padding: 12px; border-radius: 8px; width: 100%; margin-top: 10px; font-weight: 700; font-size: 14px; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div class="header">Divi<span>Tracker</span> Pro</div>
 
-    <div id="dividende_content" class="container active">
+    <div id="div_tab" class="container active">
         <div class="card">
-            <h3 class="card-title">💰 Setări Calculator Dividende</h3>
             <div class="grid-2">
-                <div class="input-group">
-                    <label>Preț Acțiune ($)</label>
-                    <input type="number" id="in_price" value="27" placeholder="e.g. 27">
-                </div>
-                <div class="input-group">
-                    <label>Nr. Acțiuni</label>
-                    <input type="number" id="in_shares" value="250" placeholder="e.g. 250">
-                </div>
+                <div class="input-group"><label>Preț Acțiune ($)</label><input type="number" id="p" value="27" min="0"></div>
+                <div class="input-group"><label>Nr. Acțiuni</label><input type="number" id="s" value="250" min="0"></div>
             </div>
             <div class="grid-2">
-                <div class="input-group">
-                    <label>Yield Anual (%)</label>
-                    <input type="number" id="in_yield" value="4" step="0.1">
-                </div>
-                <div class="input-group">
-                    <label>Nr. Ani Proiecție</label>
-                    <input type="number" id="in_years" value="10">
-                </div>
+                <div class="input-group"><label>Yield Anual (%)</label><input type="number" id="y" value="4" min="0"></div>
+                <div class="input-group"><label>Ani Proiecție</label><input type="number" id="a" value="10" min="1"></div>
             </div>
             <div class="grid-2">
-                <div class="input-group">
-                    <label>Creștere Div. / An (%)</label>
-                    <input type="number" id="in_div_growth" value="5" step="0.1">
-                </div>
-                <div class="input-group">
-                    <label>Creștere Preț / An (%)</label>
-                    <input type="number" id="in_price_growth" value="7" step="0.1">
-                </div>
+                <div class="input-group"><label>↑ Div/An (%)</label><input type="number" id="dg" value="5" min="0"></div>
+                <div class="input-group"><label>↑ Preț/An (%)</label><input type="number" id="pg" value="7" min="0"></div>
             </div>
             <div class="grid-2">
-                <div class="input-group">
-                    <label>Contrib. Anuală ($)</label>
-                    <input type="number" id="in_contrib" value="1200">
-                </div>
-                <div class="input-group">
-                    <label>Impozit Div. (%)</label>
-                    <input type="number" id="in_tax" value="10" step="0.1">
-                </div>
+                <div class="input-group"><label>Contrib. Anuală ($)</label><input type="number" id="c" value="1200" min="0"></div>
+                <div class="input-group"><label>Impozit (%)</label><input type="number" id="t" value="10" min="0"></div>
             </div>
-            <label style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-bottom: 6px; display:block;">Plan Reinvestire (DRIP)</label>
             <div class="drip-toggle">
-                <div class="drip-btn active" id="btn_drip_on" onclick="setDrip(true)">REINVESTEȘTE (CU DRIP)</div>
-                <div class="drip-btn" id="btn_drip_off" onclick="setDrip(false)"> CASH (FĂRĂ DRIP)</div>
+                <div class="drip-btn active" id="d_on" onclick="setD(true)">CU REINVESTIRE (DRIP)</div>
+                <div class="drip-btn" id="d_off" onclick="setD(false)">CASH (FĂRĂ DRIP)</div>
             </div>
-            <button class="btn-calc" onclick="calculateDividend()">CALCULEAZĂ PORTOFOLIUL</button>
+            <button class="btn-main" onclick="calcDiv()">CALCULEAZĂ PORTOFOLIUL</button>
+            <button class="btn-reset" onclick="location.reload()">RESETEAZĂ TOATE DATELE</button>
         </div>
 
-        <div class="summary-box" id="div_results_box">
-            <div class="card" style="border-color: #333;">
-                <h3 class="card-title" style="color: var(--text-muted);">📊 Sumar Aport Propriu (Investiția Ta)</h3>
-                <div class="grid-summary">
-                    <div class="summary-item">
-                        <div class="summary-label">Suma Inițială Cotizată</div>
-                        <div class="summary-value" id="res_div_initial_aport">$0.00</div>
-                    </div>
-                    <div class="summary-item">
-                        <div class="summary-label">Total Cotizații Anuale</div>
-                        <div class="summary-value" id="res_div_total_contrib">$0.00</div>
-                    </div>
-                </div>
-                <div style="text-align:center;">
-                    <div class="summary-label" style="font-size: 12px;">Valoare Finală Portofoliu (Acțiuni + Cash)</div>
-                    <div class="summary-total" id="res_div_portfolio_value">$0.00</div>
-                </div>
+        <div class="summary-box" id="res_box">
+            <div class="summary-item">
+                <label style="font-size: 10px; color: var(--text-muted);">VALOARE FINALĂ ESTIMATĂ</label>
+                <div class="val-big" id="v_final">$0.00</div>
             </div>
-
-            <div class="card" style="padding: 0; overflow:hidden;">
-                <h3 class="card-title" style="padding: 15px 15px 0;">📋 Evoluție Anuală Detaliată</h3>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>An</th>
-                                <th>Acțiuni Start An</th>
-                                <th>Div. / Acțiune (Brut)</th>
-                                <th>Total Dividend An</th>
-                                <th>Contrib. Anuală</th>
-                                <th>Preț Final Acțiune</th>
-                                <th>Acțiuni Final An</th>
-                                <th>Sold Final (Portofoliu)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="div_table_body">
-                            </tbody>
-                    </table>
-                </div>
+            <div class="grid-2">
+                <div class="summary-item" style="border-left-color: var(--blue);"><label>INVESTIȚIA TA (BANI PUȘI)</label><div id="v_inv" style="font-weight:800; font-size: 16px;">$0</div></div>
+                <div class="summary-item" style="border-left-color: #ff9500;"><label>PROFIT TOTAL</label><div id="v_profit" style="font-weight:800; font-size: 16px;">$0</div></div>
             </div>
+            <button class="btn-copy" onclick="copyRes()">📋 COPIAZĂ REZULTATUL PENTRU WHATSAPP</button>
+            
+            <h3 style="font-size: 14px; margin: 25px 0 10px; color: var(--text-muted); text-transform: uppercase;">Evoluție Anuală</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>An</th><th>Acțiuni</th><th>Div/Acț</th><th>Div. Anual (Brut)</th><th>Sold Portofoliu</th></tr></thead>
+                    <tbody id="tb"></tbody>
+                </table>
+            </div>
+            <p class="disclaimer">Calculele sunt bazate pe proiecții matematice și nu garantează rezultate viitoare. Bursa implică riscuri de capital.</p>
         </div>
     </div>
 
-    <div id="compound_content" class="container">
+    <div id="comp_tab" class="container">
         <div class="card">
-            <h3 class="card-title">📈 Calculator Dobândă Compusă Standard</h3>
-            <div class="input-group" style="margin-bottom: 12px;">
-                <label>Suma Inițială ($)</label>
-                <input type="number" id="comp_principal" value="10000" placeholder="e.g. 10000">
-            </div>
-            <div class="input-group" style="margin-bottom: 12px;">
-                <label>Depunere Lunară ($)</label>
-                <input type="number" id="comp_monthly" value="200" placeholder="e.g. 200">
-            </div>
-            <div class="input-group" style="margin-bottom: 12px;">
-                <label>Dobândă Anuală Estimată (%)</label>
-                <input type="number" id="comp_rate" value="8" step="0.1" placeholder="e.g. 8">
-            </div>
-            <div class="input-group" style="margin-bottom: 15px;">
-                <label>Perioadă (Ani)</label>
-                <input type="number" id="comp_years" value="15" placeholder="e.g. 15">
-            </div>
-            <button class="btn-calc" style="background-color: var(--blue);" onclick="calculateCompound()">CALCULEAZĂ DOBÂNDA</button>
+            <h3 style="margin-top:0; font-size: 16px;">📈 Dobândă Compusă</h3>
+            <div class="input-group"><label>Suma Inițială ($)</label><input type="number" id="cp" value="10000"></div><br>
+            <div class="input-group"><label>Depunere Lunară ($)</label><input type="number" id="cm" value="200"></div><br>
+            <div class="input-group"><label>Dobândă Anuală (%)</label><input type="number" id="cr" value="8"></div><br>
+            <div class="input-group"><label>Perioadă (Ani)</label><input type="number" id="ca" value="15"></div><br>
+            <button class="btn-main" style="background: var(--blue); color:white;" onclick="calcComp()">CALCULEAZĂ DOBÂNDA</button>
         </div>
-
-        <div class="summary-box" id="comp_results_box">
-            <div class="card" style="text-align:center;">
-                <div class="summary-label" style="font-size: 12px;">Suma Finală Acumulată</div>
-                <div class="summary-total" style="color: var(--blue);" id="res_comp_final_total">$0.00</div>
-                
-                <div class="grid-summary" style="margin-top: 15px;">
-                    <div class="summary-item">
-                        <div class="summary-label">Total Investit de Tine</div>
-                        <div class="summary-value" id="res_comp_total_invested">$0.00</div>
-                    </div>
-                    <div class="summary-item">
-                        <div class="summary-label">Câștig din Dobândă</div>
-                        <div class="summary-value" style="color: var(--blue);" id="res_comp_profit">$0.00</div>
-                    </div>
-                </div>
-            </div>
+        <div class="summary-box" id="c_res_box">
+            <div class="summary-item" style="border-left-color: var(--blue);"><label>SUMA FINALĂ ACUMULATĂ</label><div class="val-big" id="cv_f" style="color:var(--blue); font-size: 28px;">$0</div></div>
         </div>
     </div>
 
     <nav class="tab-bar">
-        <div class="tab-item active" onclick="switchTab('dividende')">
-            <div class="tab-icon">💰</div>
-            <div class="tab-label">Dividende Pro</div>
-        </div>
-        <div class="tab-item" onclick="switchTab('compound')">
-            <div class="tab-icon">📈</div>
-            <div class="tab-label">Dobândă Compusă</div>
-        </div>
+        <div class="tab-item active" onclick="tab('div')"><div class="tab-icon">💰</div><div class="tab-label">DIVIDENDE</div></div>
+        <div class="tab-item" onclick="tab('comp')"><div class="tab-icon">📈</div><div class="tab-label">DOBÂNDĂ</div></div>
     </nav>
 
     <script>
-        let isDripActive = true;
-
-        // Navigare intre tab-uri
-        function switchTab(tabName) {
+        let drip = true;
+        function setD(s){ drip=s; document.getElementById('d_on').classList.toggle('active', s); document.getElementById('d_off').classList.toggle('active', !s); }
+        function tab(t){ 
             document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-item').forEach(i => i.classList.remove('active'));
+            document.getElementById(t+'_tab').classList.add('active');
+            event.currentTarget.classList.add('active');
+            window.scrollTo(0,0);
+        }
+        function f(n){ return n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+
+        function calcDiv(){
+            // Citire date
+            let pr = parseFloat(document.getElementById('p').value) || 0;
+            let sh = parseFloat(document.getElementById('s').value) || 0;
+            let yi = (parseFloat(document.getElementById('y').value) || 0) / 100;
+            let an = parseInt(document.getElementById('a').value) || 1;
+            let dg = (parseFloat(document.getElementById('dg').value) || 0) / 100;
+            let pg = (parseFloat(document.getElementById('pg').value) || 0) / 100;
+            let co = parseFloat(document.getElementById('c').value) || 0;
+            let tx = (parseFloat(document.getElementById('t').value) || 0) / 100;
             
-            if (tabName === 'dividende') {
-                document.getElementById('dividende_content').classList.add('active');
-                event.currentTarget.classList.add('active');
-            } else {
-                document.getElementById('compound_content').classList.add('active');
-                event.currentTarget.classList.add('active');
-            }
-            window.scrollTo(0, 0); // Reset scroll position
-        }
+            let curSh = sh, curPr = pr, curDivVal = (pr * yi), cash = 0, html = '';
+            let initialInvested = pr * sh;
 
-        // Configurare buton DRIP
-        function setDrip(state) {
-            isDripActive = state;
-            if(state) {
-                document.getElementById('btn_drip_on').classList.add('active');
-                document.getElementById('btn_drip_off').classList.remove('active');
-            } else {
-                document.getElementById('btn_drip_on').classList.remove('active');
-                document.getElementById('btn_drip_off').classList.add('active');
-            }
-        }
-
-        // Formatare bani
-        function fmt(num) {
-            return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        }
-
-        // MOTOR MATEMATIC: PORTOFOLIU DIVIDENDE (TIPRANKS STYLE + NET MATH)
-        function calculateDividend() {
-            // Inputs
-            let price = parseFloat(document.getElementById('in_price').value) || 0;
-            let shares = parseFloat(document.getElementById('in_shares').value) || 0;
-            let yieldPct = (parseFloat(document.getElementById('in_yield').value) || 0) / 100;
-            let years = parseInt(document.getElementById('in_years').value) || 0;
-            let divGrowth = (parseFloat(document.getElementById('in_div_growth').value) || 0) / 100;
-            let priceGrowth = (parseFloat(document.getElementById('in_price_growth').value) || 0) / 100;
-            let contrib = parseFloat(document.getElementById('in_contrib').value) || 0;
-            let tax = (parseFloat(document.getElementById('in_tax').value) || 0) / 100;
-
-            // Logica
-            let initialAport = price * shares;
-            let currentShares = shares;
-            let currentPrice = price;
-            let currentDPS = initialAport * yieldPct / currentShares; // Dividend Per Share initial
-            let totalCashCollected = 0; // Pentru Fara DRIP
-
-            let tbody = document.getElementById('div_table_body');
-            tbody.innerHTML = '';
-
-            for (let y = 1; y <= years; y++) {
-                let startShares = currentShares;
+            for(let i=1; i<=an; i++){
+                // 1. Adaugam contributia anuala (cumparam actiuni)
+                curSh += (co / curPr);
                 
-                // 1. Contributia Anuala adaugata la inceput de an (cumparam actiuni noi)
-                currentShares += (contrib / currentPrice);
+                // 2. Calculam dividendele brute si nete
+                let gross = curSh * curDivVal;
+                let net = gross * (1 - tx);
 
-                // 2. Dividendul brut si net calculat pe actiunile detinute
-                let annualDivGross = currentShares * currentDPS;
-                let annualDivNet = annualDivGross * (1 - tax);
+                // 3. DRIP sau Cash
+                if(drip) curSh += (net / curPr); else cash += net;
 
-                // 3. DRIP (Reinvestirea dividendului net) sau Cash
-                if (isDripActive) {
-                    currentShares += (annualDivNet / currentPrice);
-                } else {
-                    totalCashCollected += annualDivNet; // Strangem banii cash separat
-                }
-
-                // 4. Aprecierea pretului actiunii la final de an
-                let endPrice = currentPrice * (1 + priceGrowth);
-                let endShares = currentShares;
-
-                // 5. Calcul sold nou portofoliu
-                let newBalance = endShares * endPrice;
-                if (!isDripActive) {
-                    newBalance += totalCashCollected; // Adaugam cash-ul pus deoparte
-                }
-
-                // Adaugare in Tabel
-                let row = `<tr>
-                    <td>${y}</td>
-                    <td>${fmt(startShares)}</td>
-                    <td>$${fmt(currentDPS)}</td>
-                    <td class="text-green">$${fmt(annualDivGross)}</td>
-                    <td>$${fmt(contrib)}</td>
-                    <td>$${fmt(endPrice)}</td>
-                    <td>${fmt(endShares)}</td>
-                    <td style="font-weight:bold;">$${fmt(newBalance)}</td>
-                </tr>`;
-                tbody.innerHTML += row;
-
-                // Actualizam valorile pentru anul viitor
-                currentPrice = endPrice;
-                currentDPS *= (1 + divGrowth); // Dividendul creste an de an
+                // 4. Cresterea pretului actiunii
+                curPr *= (1 + pg);
+                
+                // 5. Sold Portofoliu
+                let bal = (curSh * curPr) + cash;
+                
+                html += `<tr><td>${i}</td><td>${f(curSh)}</td><td>$${f(curDivVal)}</td><td style="color:#34c759">$${f(gross)}</td><td>$${f(bal)}</td></tr>`;
+                
+                // Pregatim div per actiune pentru anul viitor
+                curDivVal *= (1 + dg);
             }
 
-            // Actualizare SUMAR (Aport Propriu) - FIXAT ACUM
-            let totalContribAport = contrib * years;
-            let finalPortfolioValue = currentShares * currentPrice;
-            if (!isDripActive) finalPortfolioValue += totalCashCollected;
+            document.getElementById('tb').innerHTML = html;
+            let totalFinal = (curSh * curPr) + cash;
+            let totalPutIn = initialInvested + (co * an);
 
-            document.getElementById('res_div_initial_aport').innerText = `$${fmt(initialAport)}`;
-            document.getElementById('res_div_total_contrib').innerText = `$${fmt(totalContribAport)}`;
-            document.getElementById('res_div_portfolio_value').innerText = `$${fmt(finalPortfolioValue)}`;
-            
-            document.getElementById('div_results_box').style.display = 'block';
+            document.getElementById('v_final').innerText = '$' + f(totalFinal);
+            document.getElementById('v_inv').innerText = '$' + f(totalPutIn);
+            document.getElementById('v_profit').innerText = '$' + f(totalFinal - totalPutIn);
+            document.getElementById('res_box').style.display = 'block';
         }
 
-        // MOTOR MATEMATIC: DOBANDA COMPUSA STANDARD
-        function calculateCompound() {
-            // P*(1+r)^n + PMT * [((1+r)^n - 1) / r]
-            let principal = parseFloat(document.getElementById('comp_principal').value) || 0;
-            let monthly = parseFloat(document.getElementById('comp_monthly').value) || 0;
-            let rate = (parseFloat(document.getElementById('comp_rate').value) || 0) / 100 / 12; // Rata lunara
-            let years = parseInt(document.getElementById('comp_years').value) || 0;
-            let periods = years * 12; // Luni
+        function copyRes(){
+            let text = `📈 REZULTAT DIVITRACKER PRO:\n--------------------------\n💰 Valoare Finală: ${document.getElementById('v_final').innerText}\n🏦 Investiția Ta: ${document.getElementById('v_inv').innerText}\n🚀 Profit: ${document.getElementById('v_profit').innerText}\n--------------------------\nCalculat cu DiviTracker Pro`;
+            navigator.clipboard.writeText(text);
+            alert("Rezumatul a fost copiat! Acum poți da 'Paste' pe WhatsApp.");
+        }
 
-            let finalTotal = 0;
+        function calcComp(){
+            let p = parseFloat(document.getElementById('cp').value) || 0;
+            let m = parseFloat(document.getElementById('cm').value) || 0;
+            let r = (parseFloat(document.getElementById('cr').value) || 0) / 100 / 12;
+            let a = (parseInt(document.getElementById('ca').value) || 1) * 12;
             
-            if (rate === 0) {
-                finalTotal = principal + (monthly * periods);
+            let res = 0;
+            if(r === 0) {
+                res = p + (m * a);
             } else {
-                let x = Math.pow(1 + rate, periods);
-                finalTotal = (principal * x) + (monthly * (x - 1) / rate);
+                res = p * Math.pow(1+r, a) + m * (Math.pow(1+r, a) - 1) / r;
             }
-
-            let totalInvested = principal + (monthly * periods);
-            let profit = finalTotal - totalInvested;
-
-            document.getElementById('res_comp_final_total').innerText = `$${fmt(finalTotal)}`;
-            document.getElementById('res_comp_total_invested').innerText = `$${fmt(totalInvested)}`;
-            document.getElementById('res_comp_profit').innerText = `$${fmt(profit)}`;
-            document.getElementById('comp_results_box').style.display = 'block';
+            
+            document.getElementById('cv_f').innerText = '$' + f(res);
+            document.getElementById('c_res_box').style.display = 'block';
         }
     </script>
 </body>
