@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ro">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -26,11 +26,18 @@
         }
 
         .header {
-            padding: 15px; font-size: 20px; font-weight: 800; text-align: center;
+            padding: 15px; font-size: 18px; font-weight: 800; text-align: left;
             border-bottom: 1px solid var(--border); background: rgba(0,0,0,0.8);
             position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px);
+            display: flex; justify-content: space-between; align-items: center;
         }
         .header span { color: var(--accent); }
+        
+        /* Selector Limba */
+        .lang-select {
+            background: var(--input-bg); color: var(--text-main); border: 1px solid var(--border);
+            padding: 5px 10px; border-radius: 6px; font-size: 12px; font-weight: bold; outline: none;
+        }
 
         .container { padding: 15px; display: none; max-width: 600px; margin: 0 auto; }
         .container.active { display: block; }
@@ -48,16 +55,13 @@
             border: 1px solid var(--border); padding: 12px; border-radius: 8px;
             font-size: 16px; outline: none; width: 100%; box-sizing: border-box;
         }
-        input:focus { border-color: var(--blue); }
 
-        .drip-toggle {
-            display: flex; background: var(--input-bg); border-radius: 8px; margin-bottom: 15px; border: 1px solid var(--border);
-        }
-        .drip-btn { flex: 1; padding: 10px; text-align: center; font-size: 12px; font-weight: bold; color: var(--text-muted); cursor: pointer; }
+        .drip-toggle { display: flex; background: var(--input-bg); border-radius: 8px; margin-bottom: 15px; border: 1px solid var(--border); }
+        .drip-btn { flex: 1; padding: 10px; text-align: center; font-size: 11px; font-weight: bold; color: var(--text-muted); cursor: pointer; }
         .drip-btn.active { background-color: var(--accent); color: #000; border-radius: 6px; }
 
         .btn-main { background-color: var(--accent); color: #000; font-size: 16px; font-weight: 800; padding: 15px; border: none; border-radius: 10px; width: 100%; cursor: pointer; }
-        .btn-reset { background: none; color: var(--red); border: 1px solid var(--red); padding: 8px; border-radius: 8px; font-size: 12px; margin-top: 10px; width: 100%; font-weight: 600; cursor: pointer; }
+        .btn-reset { background: none; color: var(--red); border: 1px solid var(--red); padding: 8px; border-radius: 8px; font-size: 11px; margin-top: 10px; width: 100%; font-weight: 600; cursor: pointer; }
 
         .summary-box { display: none; margin-top: 20px; animation: fadeIn 0.4s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -78,84 +82,139 @@
         }
         .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-muted); font-size: 10px; font-weight: 700; cursor: pointer; }
         .tab-item.active { color: var(--accent); }
-        .tab-icon { font-size: 20px; margin-bottom: 4px; }
 
         .btn-copy { background: var(--blue); color: white; border: none; padding: 12px; border-radius: 8px; width: 100%; margin-top: 10px; font-weight: 700; font-size: 14px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div class="header">Divi<span>Tracker</span> Pro</div>
+    <div class="header">
+        <div>Divi<span>Tracker</span> Pro</div>
+        <select class="lang-select" id="lang_switcher" onchange="changeLanguage(this.value)">
+            <option value="en">🇺🇸 EN</option>
+            <option value="ro">🇷🇴 RO</option>
+        </select>
+    </div>
 
     <div id="div_tab" class="container active">
         <div class="card">
             <div class="grid-2">
-                <div class="input-group"><label>Preț Acțiune ($)</label><input type="number" id="p" value="27"></div>
-                <div class="input-group"><label>Nr. Acțiuni</label><input type="number" id="s" value="250"></div>
+                <div class="input-group"><label id="l_p">Stock Price ($)</label><input type="number" id="p" value="27"></div>
+                <div class="input-group"><label id="l_s">Shares Owned</label><input type="number" id="s" value="250"></div>
             </div>
             <div class="grid-2">
-                <div class="input-group"><label>Yield Anual (%)</label><input type="number" id="y" value="4"></div>
-                <div class="input-group"><label>Ani Proiecție</label><input type="number" id="a" value="10"></div>
+                <div class="input-group"><label id="l_y">Dividend Yield (%)</label><input type="number" id="y" value="4"></div>
+                <div class="input-group"><label id="l_a">Years Projection</label><input type="number" id="a" value="10"></div>
             </div>
             <div class="grid-2">
-                <div class="input-group"><label>↑ Div/An (%)</label><input type="number" id="dg" value="5"></div>
-                <div class="input-group"><label>↑ Preț/An (%)</label><input type="number" id="pg" value="7"></div>
+                <div class="input-group"><label id="l_dg">↑ Div. Growth (%)</label><input type="number" id="dg" value="5"></div>
+                <div class="input-group"><label id="l_pg">↑ Price Growth (%)</label><input type="number" id="pg" value="7"></div>
             </div>
             <div class="grid-2">
-                <div class="input-group"><label>Contrib. Anuală ($)</label><input type="number" id="c" value="1200"></div>
-                <div class="input-group"><label>Impozit (%)</label><input type="number" id="t" value="10"></div>
+                <div class="input-group"><label id="l_c">Annual Contrib. ($)</label><input type="number" id="c" value="1200"></div>
+                <div class="input-group"><label id="l_t">Tax (%)</label><input type="number" id="t" value="10"></div>
             </div>
             <div class="drip-toggle">
-                <div class="drip-btn active" id="d_on" onclick="setD(true)">CU REINVESTIRE (DRIP)</div>
-                <div class="drip-btn" id="d_off" onclick="setD(false)">CASH (FĂRĂ DRIP)</div>
+                <div class="drip-btn active" id="d_on" onclick="setD(true)">WITH DRIP</div>
+                <div class="drip-btn" id="d_off" onclick="setD(false)">CASH (NO DRIP)</div>
             </div>
-            <button class="btn-main" onclick="calcDiv()">CALCULEAZĂ PORTOFOLIUL</button>
-            <button class="btn-reset" onclick="fullReset()">RESETEAZĂ TOATE DATELE</button>
+            <button class="btn-main" id="btn_calc" onclick="calcDiv()">CALCULATE PORTFOLIO</button>
+            <button class="btn-reset" id="btn_reset" onclick="fullReset()">RESET ALL DATA</button>
         </div>
 
         <div class="summary-box" id="res_box">
             <div class="summary-item">
-                <label style="font-size: 10px; color: var(--text-muted);">VALOARE FINALĂ ESTIMATĂ</label>
+                <label id="l_vfinal" style="font-size: 10px; color: var(--text-muted);">ESTIMATED FINAL VALUE</label>
                 <div class="val-big" id="v_final">$0.00</div>
             </div>
             <div class="grid-2">
-                <div class="summary-item" style="border-left-color: var(--blue);"><label>INVESTIȚIA TA (BANI PUȘI)</label><div id="v_inv" style="font-weight:800; font-size: 16px;">$0</div></div>
-                <div class="summary-item" style="border-left-color: #ff9500;"><label>PROFIT TOTAL</label><div id="v_profit" style="font-weight:800; font-size: 16px;">$0</div></div>
+                <div class="summary-item" style="border-left-color: var(--blue);"><label id="l_vinv">YOUR INVESTMENT</label><div id="v_inv" style="font-weight:800; font-size: 16px;">$0</div></div>
+                <div class="summary-item" style="border-left-color: #ff9500;"><label id="l_vprof">TOTAL PROFIT</label><div id="v_profit" style="font-weight:800; font-size: 16px;">$0</div></div>
             </div>
-            <button class="btn-copy" onclick="copyRes()">📋 COPIAZĂ REZULTATUL PENTRU WHATSAPP</button>
+            <button class="btn-copy" id="btn_copy" onclick="copyRes()">📋 COPY SUMMARY FOR WHATSAPP</button>
             
-            <h3 style="font-size: 14px; margin: 25px 0 10px; color: var(--text-muted); text-transform: uppercase;">Evoluție Anuală</h3>
+            <h3 id="l_evo" style="font-size: 14px; margin: 25px 0 10px; color: var(--text-muted); text-transform: uppercase;">Annual Evolution</h3>
             <div class="table-wrap">
-                <table>
-                    <thead><tr><th>An</th><th>Acțiuni</th><th>Div/Acț</th><th>Div. Anual (Brut)</th><th>Sold Portofoliu</th></tr></thead>
+                <table id="results_table">
+                    <thead><tr id="table_head"><th>Year</th><th>Shares</th><th>Div/Share</th><th>Annual Div.</th><th>Portfolio</th></tr></thead>
                     <tbody id="tb"></tbody>
                 </table>
             </div>
-            <p class="disclaimer">Calculele sunt bazate pe proiecții matematice și nu garantează rezultate viitoare. Bursa implică riscuri de capital.</p>
+            <p id="l_disc" class="disclaimer">Calculations are based on math projections and do not guarantee future results. Investing involves risk.</p>
         </div>
     </div>
 
     <div id="comp_tab" class="container">
         <div class="card">
-            <h3 style="margin-top:0; font-size: 16px;">📈 Dobândă Compusă</h3>
-            <div class="input-group"><label>Suma Inițială ($)</label><input type="number" id="cp" value="10000"></div><br>
-            <div class="input-group"><label>Depunere Lunară ($)</label><input type="number" id="cm" value="200"></div><br>
-            <div class="input-group"><label>Dobândă Anuală (%)</label><input type="number" id="cr" value="8"></div><br>
-            <div class="input-group"><label>Perioadă (Ani)</label><input type="number" id="ca" value="15"></div><br>
-            <button class="btn-main" style="background: var(--blue); color:white;" onclick="calcComp()">CALCULEAZĂ DOBÂNDA</button>
+            <h3 id="l_ctitle" style="margin-top:0; font-size: 16px;">📈 Compound Interest</h3>
+            <div class="input-group"><label id="l_cp">Initial Deposit ($)</label><input type="number" id="cp" value="10000"></div><br>
+            <div class="input-group"><label id="l_cm">Monthly Contribution ($)</label><input type="number" id="cm" value="200"></div><br>
+            <div class="input-group"><label id="l_cr">Annual Interest (%)</label><input type="number" id="cr" value="8"></div><br>
+            <div class="input-group"><label id="l_ca">Years</label><input type="number" id="ca" value="15"></div><br>
+            <button class="btn-main" id="btn_ccalc" style="background: var(--blue); color:white;" onclick="calcComp()">CALCULATE INTEREST</button>
         </div>
         <div class="summary-box" id="c_res_box">
-            <div class="summary-item" style="border-left-color: var(--blue);"><label>SUMA FINALĂ ACUMULATĂ</label><div class="val-big" id="cv_f" style="color:var(--blue); font-size: 28px;">$0</div></div>
+            <div class="summary-item" style="border-left-color: var(--blue);"><label id="l_cf">FINAL ACCUMULATED AMOUNT</label><div class="val-big" id="cv_f" style="color:var(--blue); font-size: 28px;">$0</div></div>
         </div>
     </div>
 
     <nav class="tab-bar">
-        <div class="tab-item active" onclick="tab('div')"><div class="tab-icon">💰</div><div class="tab-label">DIVIDENDE</div></div>
-        <div class="tab-item" onclick="tab('comp')"><div class="tab-icon">📈</div><div class="tab-label">DOBÂNDĂ</div></div>
+        <div class="tab-item active" onclick="tab('div')"><span>💰</span><div id="tab_div">DIVIDENDS</div></div>
+        <div class="tab-item" onclick="tab('comp')"><span>📈</span><div id="tab_comp">COMPOUND</div></div>
     </nav>
 
     <script>
+        let currentLang = 'en';
         let drip = true;
+
+        const langData = {
+            en: {
+                l_p: "Stock Price ($)", l_s: "Shares Owned", l_y: "Dividend Yield (%)", l_a: "Years Projection",
+                l_dg: "↑ Div. Growth (%)", l_pg: "↑ Price Growth (%)", l_c: "Annual Contrib. ($)", l_t: "Tax (%)",
+                d_on: "WITH DRIP", d_off: "CASH (NO DRIP)", btn_calc: "CALCULATE PORTFOLIO", btn_reset: "RESET ALL DATA",
+                l_vfinal: "ESTIMATED FINAL VALUE", l_vinv: "YOUR INVESTMENT", l_vprof: "TOTAL PROFIT",
+                btn_copy: "📋 COPY SUMMARY FOR WHATSAPP", l_evo: "Annual Evolution", 
+                table_head: "<th>Year</th><th>Shares</th><th>Div/Share</th><th>Annual Div.</th><th>Portfolio</th>",
+                l_disc: "Calculations are based on math projections and do not guarantee future results. Investing involves risk.",
+                l_ctitle: "📈 Compound Interest", l_cp: "Initial Deposit ($)", l_cm: "Monthly Contribution ($)", 
+                l_cr: "Annual Interest (%)", l_ca: "Years", btn_ccalc: "CALCULATE INTEREST", l_cf: "FINAL ACCUMULATED AMOUNT",
+                tab_div: "DIVIDENDS", tab_comp: "COMPOUND", alert_copy: "Summary copied to clipboard!"
+            },
+            ro: {
+                l_p: "Preț Acțiune ($)", l_s: "Nr. Acțiuni", l_y: "Randament Yield (%)", l_a: "Ani Proiecție",
+                l_dg: "↑ Creșt. Div/An (%)", l_pg: "↑ Creșt. Preț/An (%)", l_c: "Contrib. Anuală ($)", l_t: "Impozit (%)",
+                d_on: "REINVESTEȘTE (DRIP)", d_off: "CASH (FĂRĂ DRIP)", btn_calc: "CALCULEAZĂ PORTOFOLIUL", btn_reset: "RESETEAZĂ DATELE",
+                l_vfinal: "VALOARE FINALĂ ESTIMATĂ", l_vinv: "INVESTIȚIA TA (BANI PUȘI)", l_vprof: "PROFIT TOTAL",
+                btn_copy: "📋 COPIAZĂ PENTRU WHATSAPP", l_evo: "Evoluție Anuală",
+                table_head: "<th>An</th><th>Acțiuni</th><th>Div/Acț</th><th>Div. Anual</th><th>Sold Final</th>",
+                l_disc: "Atenție: Calculele sunt estimative și nu reprezintă consultanță financiară. Investițiile la bursă implică riscuri.",
+                l_ctitle: "📈 Dobândă Compusă", l_cp: "Suma Inițială ($)", l_cm: "Depunere Lunară ($)", 
+                l_cr: "Dobândă Anuală (%)", l_ca: "Ani", btn_ccalc: "CALCULEAZĂ DOBÂNDA", l_cf: "SUMA FINALĂ ACUMULATĂ",
+                tab_div: "DIVIDENDE", tab_comp: "DOBÂNDĂ", alert_copy: "Rezumat copiat! Poți da Paste pe WhatsApp."
+            }
+        };
+
+        function changeLanguage(lang) {
+            currentLang = lang;
+            const data = langData[lang];
+            for (let key in data) {
+                const el = document.getElementById(key);
+                if (el) {
+                    if (key === 'table_head') el.innerHTML = data[key];
+                    else el.innerText = data[key];
+                }
+            }
+            // Update Drip Buttons
+            document.getElementById('d_on').innerText = data.d_on;
+            document.getElementById('d_off').innerText = data.d_off;
+            localStorage.setItem('diviTracker_lang', lang);
+        }
+
+        // Initialize Lang
+        const savedLang = localStorage.getItem('diviTracker_lang') || 'en';
+        document.getElementById('lang_switcher').value = savedLang;
+        changeLanguage(savedLang);
+
         function setD(s){ drip=s; document.getElementById('d_on').classList.toggle('active', s); document.getElementById('d_off').classList.toggle('active', !s); }
         function tab(t){ 
             document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
@@ -166,25 +225,12 @@
         }
         function f(n){ return n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}); }
 
-        // RESETARE COMPLETA (DATE + REZULTATE)
         function fullReset() {
-            // Valorile de baza
-            document.getElementById('p').value = 27;
-            document.getElementById('s').value = 250;
-            document.getElementById('y').value = 4;
-            document.getElementById('a').value = 10;
-            document.getElementById('dg').value = 5;
-            document.getElementById('pg').value = 7;
-            document.getElementById('c').value = 1200;
-            document.getElementById('t').value = 10;
-            
-            // Valorile Dobanda Compusa
-            document.getElementById('cp').value = 10000;
-            document.getElementById('cm').value = 200;
-            document.getElementById('cr').value = 8;
-            document.getElementById('ca').value = 15;
-
-            // Resetare UI
+            document.getElementById('p').value = 27; document.getElementById('s').value = 250; document.getElementById('y').value = 4;
+            document.getElementById('a').value = 10; document.getElementById('dg').value = 5; document.getElementById('pg').value = 7;
+            document.getElementById('c').value = 1200; document.getElementById('t').value = 10;
+            document.getElementById('cp').value = 10000; document.getElementById('cm').value = 200;
+            document.getElementById('cr').value = 8; document.getElementById('ca').value = 15;
             setD(true);
             document.getElementById('res_box').style.display = 'none';
             document.getElementById('c_res_box').style.display = 'none';
@@ -200,14 +246,10 @@
             let pg = (parseFloat(document.getElementById('pg').value) || 0) / 100;
             let co = parseFloat(document.getElementById('c').value) || 0;
             let tx = (parseFloat(document.getElementById('t').value) || 0) / 100;
-            
             let curSh = sh, curPr = pr, curDivVal = (pr * yi), cash = 0, html = '';
-            let initialInvested = pr * sh;
-
             for(let i=1; i<=an; i++){
                 curSh += (co / curPr);
-                let gross = curSh * curDivVal;
-                let net = gross * (1 - tx);
+                let gross = curSh * curDivVal, net = gross * (1 - tx);
                 if(drip) curSh += (net / curPr); else cash += net;
                 curPr *= (1 + pg);
                 let bal = (curSh * curPr) + cash;
@@ -216,7 +258,7 @@
             }
             document.getElementById('tb').innerHTML = html;
             let totalFinal = (curSh * curPr) + cash;
-            let totalPutIn = initialInvested + (co * an);
+            let totalPutIn = (pr * sh) + (co * an);
             document.getElementById('v_final').innerText = '$' + f(totalFinal);
             document.getElementById('v_inv').innerText = '$' + f(totalPutIn);
             document.getElementById('v_profit').innerText = '$' + f(totalFinal - totalPutIn);
@@ -224,16 +266,16 @@
         }
 
         function copyRes(){
-            let text = `📈 REZULTAT DIVITRACKER PRO:\n--------------------------\n💰 Valoare Finală: ${document.getElementById('v_final').innerText}\n🏦 Investiția Ta: ${document.getElementById('v_inv').innerText}\n🚀 Profit: ${document.getElementById('v_profit').innerText}\n--------------------------\nCalculat cu DiviTracker Pro`;
+            const d = langData[currentLang];
+            let text = `${d.tab_div} RESULT:\n--------------------------\n💰 ${d.l_vfinal}: ${document.getElementById('v_final').innerText}\n🏦 ${d.l_vinv}: ${document.getElementById('v_inv').innerText}\n🚀 ${d.l_vprof}: ${document.getElementById('v_profit').innerText}\n--------------------------\nDiviTracker Pro`;
             navigator.clipboard.writeText(text);
-            alert("Rezumatul a fost copiat! Acum poți da 'Paste' pe WhatsApp.");
+            alert(d.alert_copy);
         }
 
         function calcComp(){
             let p = parseFloat(document.getElementById('cp').value) || 0;
             let m = parseFloat(document.getElementById('cm').value) || 0;
-            let r = (parseFloat(document.getElementById('cr').value) || 0) / 100 / 12;
-            let a = (parseInt(document.getElementById('ca').value) || 1) * 12;
+            let r = (parseFloat(document.getElementById('cr').value) || 0) / 100 / 12, a = (parseInt(document.getElementById('ca').value) || 1) * 12;
             let res = (r === 0) ? p + (m * a) : p * Math.pow(1+r, a) + m * (Math.pow(1+r, a) - 1) / r;
             document.getElementById('cv_f').innerText = '$' + f(res);
             document.getElementById('c_res_box').style.display = 'block';
