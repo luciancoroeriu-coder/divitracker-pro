@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DiviTracker Pro</title>
+    <title>DiviTracker Pro Global</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <style>
@@ -33,38 +33,28 @@
         }
         .header span { color: var(--accent); }
         
-        /* Selector Limba */
         .lang-select {
             background: var(--input-bg); color: var(--text-main); border: 1px solid var(--border);
-            padding: 5px 10px; border-radius: 6px; font-size: 12px; font-weight: bold; outline: none;
+            padding: 5px; border-radius: 6px; font-size: 14px; outline: none;
         }
 
         .container { padding: 15px; display: none; max-width: 600px; margin: 0 auto; }
         .container.active { display: block; }
 
-        .card {
-            background-color: var(--card-bg); border-radius: 12px; padding: 15px;
-            margin-bottom: 15px; border: 1px solid var(--border);
-        }
-        
+        .card { background-color: var(--card-bg); border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid var(--border); }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
         .input-group label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 4px; display:block; }
-        
-        input {
-            background-color: var(--input-bg); color: var(--text-main);
-            border: 1px solid var(--border); padding: 12px; border-radius: 8px;
-            font-size: 16px; outline: none; width: 100%; box-sizing: border-box;
-        }
+        input { background-color: var(--input-bg); color: var(--text-main); border: 1px solid var(--border); padding: 12px; border-radius: 8px; font-size: 16px; width: 100%; box-sizing: border-box; }
 
         .drip-toggle { display: flex; background: var(--input-bg); border-radius: 8px; margin-bottom: 15px; border: 1px solid var(--border); }
-        .drip-btn { flex: 1; padding: 10px; text-align: center; font-size: 11px; font-weight: bold; color: var(--text-muted); cursor: pointer; }
+        .drip-btn { flex: 1; padding: 10px; text-align: center; font-size: 10px; font-weight: bold; color: var(--text-muted); cursor: pointer; }
         .drip-btn.active { background-color: var(--accent); color: #000; border-radius: 6px; }
 
         .btn-main { background-color: var(--accent); color: #000; font-size: 16px; font-weight: 800; padding: 15px; border: none; border-radius: 10px; width: 100%; cursor: pointer; }
         .btn-reset { background: none; color: var(--red); border: 1px solid var(--red); padding: 8px; border-radius: 8px; font-size: 11px; margin-top: 10px; width: 100%; font-weight: 600; cursor: pointer; }
 
-        .summary-box { display: none; margin-top: 20px; animation: fadeIn 0.4s; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .summary-box { display: none; margin-top: 20px; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
         .summary-item { background: #1c1c1e; padding: 12px; border-radius: 10px; margin-bottom: 10px; border-left: 4px solid var(--accent); }
         .val-big { font-size: 24px; font-weight: 900; color: var(--accent); }
@@ -74,16 +64,11 @@
         th, td { padding: 12px; text-align: right; border-bottom: 1px solid var(--border); }
         th { color: var(--text-muted); background: #161616; font-size: 9px; text-transform: uppercase; }
 
-        .disclaimer { font-size: 9px; color: #444; text-align: center; margin-top: 25px; padding: 0 20px; line-height: 1.4; }
-
-        .tab-bar {
-            position: fixed; bottom: 0; left:0; width: 100%; height: 75px; background: rgba(18,18,18,0.95);
-            border-top: 1px solid var(--border); display: flex; backdrop-filter: blur(15px); z-index: 1000;
-        }
+        .tab-bar { position: fixed; bottom: 0; left:0; width: 100%; height: 75px; background: rgba(18,18,18,0.95); border-top: 1px solid var(--border); display: flex; backdrop-filter: blur(15px); z-index: 1000; }
         .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-muted); font-size: 10px; font-weight: 700; cursor: pointer; }
         .tab-item.active { color: var(--accent); }
 
-        .btn-copy { background: var(--blue); color: white; border: none; padding: 12px; border-radius: 8px; width: 100%; margin-top: 10px; font-weight: 700; font-size: 14px; cursor: pointer; }
+        .btn-copy { background: var(--blue); color: white; border: none; padding: 12px; border-radius: 8px; width: 100%; margin-top: 10px; font-weight: 700; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -93,6 +78,10 @@
         <select class="lang-select" id="lang_switcher" onchange="changeLanguage(this.value)">
             <option value="en">🇺🇸 EN</option>
             <option value="ro">🇷🇴 RO</option>
+            <option value="es">🇪🇸 ES</option>
+            <option value="de">🇩🇪 DE</option>
+            <option value="fr">🇫🇷 FR</option>
+            <option value="zh">🇨🇳 ZH</option>
         </select>
     </div>
 
@@ -128,19 +117,16 @@
                 <div class="val-big" id="v_final">$0.00</div>
             </div>
             <div class="grid-2">
-                <div class="summary-item" style="border-left-color: var(--blue);"><label id="l_vinv">YOUR INVESTMENT</label><div id="v_inv" style="font-weight:800; font-size: 16px;">$0</div></div>
-                <div class="summary-item" style="border-left-color: #ff9500;"><label id="l_vprof">TOTAL PROFIT</label><div id="v_profit" style="font-weight:800; font-size: 16px;">$0</div></div>
+                <div class="summary-item" style="border-left-color: var(--blue);"><label id="l_vinv">YOUR INVESTMENT</label><div id="v_inv" style="font-weight:800;">$0</div></div>
+                <div class="summary-item" style="border-left-color: #ff9500;"><label id="l_vprof">TOTAL PROFIT</label><div id="v_profit" style="font-weight:800;">$0</div></div>
             </div>
-            <button class="btn-copy" id="btn_copy" onclick="copyRes()">📋 COPY SUMMARY FOR WHATSAPP</button>
-            
-            <h3 id="l_evo" style="font-size: 14px; margin: 25px 0 10px; color: var(--text-muted); text-transform: uppercase;">Annual Evolution</h3>
+            <button class="btn-copy" id="btn_copy" onclick="copyRes()">📋 COPY SUMMARY</button>
             <div class="table-wrap">
                 <table id="results_table">
                     <thead><tr id="table_head"><th>Year</th><th>Shares</th><th>Div/Share</th><th>Annual Div.</th><th>Portfolio</th></tr></thead>
                     <tbody id="tb"></tbody>
                 </table>
             </div>
-            <p id="l_disc" class="disclaimer">Calculations are based on math projections and do not guarantee future results. Investing involves risk.</p>
         </div>
     </div>
 
@@ -151,10 +137,10 @@
             <div class="input-group"><label id="l_cm">Monthly Contribution ($)</label><input type="number" id="cm" value="200"></div><br>
             <div class="input-group"><label id="l_cr">Annual Interest (%)</label><input type="number" id="cr" value="8"></div><br>
             <div class="input-group"><label id="l_ca">Years</label><input type="number" id="ca" value="15"></div><br>
-            <button class="btn-main" id="btn_ccalc" style="background: var(--blue); color:white;" onclick="calcComp()">CALCULATE INTEREST</button>
+            <button class="btn-main" id="btn_ccalc" style="background: var(--blue); color:white;" onclick="calcComp()">CALCULATE</button>
         </div>
         <div class="summary-box" id="c_res_box">
-            <div class="summary-item" style="border-left-color: var(--blue);"><label id="l_cf">FINAL ACCUMULATED AMOUNT</label><div class="val-big" id="cv_f" style="color:var(--blue); font-size: 28px;">$0</div></div>
+            <div class="summary-item" style="border-left-color: var(--blue);"><label id="l_cf">FINAL AMOUNT</label><div class="val-big" id="cv_f" style="color:var(--blue); font-size: 28px;">$0</div></div>
         </div>
     </div>
 
@@ -173,24 +159,60 @@
                 l_dg: "↑ Div. Growth (%)", l_pg: "↑ Price Growth (%)", l_c: "Annual Contrib. ($)", l_t: "Tax (%)",
                 d_on: "WITH DRIP", d_off: "CASH (NO DRIP)", btn_calc: "CALCULATE PORTFOLIO", btn_reset: "RESET ALL DATA",
                 l_vfinal: "ESTIMATED FINAL VALUE", l_vinv: "YOUR INVESTMENT", l_vprof: "TOTAL PROFIT",
-                btn_copy: "📋 COPY SUMMARY FOR WHATSAPP", l_evo: "Annual Evolution", 
-                table_head: "<th>Year</th><th>Shares</th><th>Div/Share</th><th>Annual Div.</th><th>Portfolio</th>",
-                l_disc: "Calculations are based on math projections and do not guarantee future results. Investing involves risk.",
+                btn_copy: "📋 COPY SUMMARY", table_head: "<th>Year</th><th>Shares</th><th>Div/Share</th><th>Annual Div.</th><th>Portfolio</th>",
                 l_ctitle: "📈 Compound Interest", l_cp: "Initial Deposit ($)", l_cm: "Monthly Contribution ($)", 
-                l_cr: "Annual Interest (%)", l_ca: "Years", btn_ccalc: "CALCULATE INTEREST", l_cf: "FINAL ACCUMULATED AMOUNT",
-                tab_div: "DIVIDENDS", tab_comp: "COMPOUND", alert_copy: "Summary copied to clipboard!"
+                l_cr: "Annual Interest (%)", l_ca: "Years", btn_ccalc: "CALCULATE", l_cf: "FINAL AMOUNT",
+                tab_div: "DIVIDENDS", tab_comp: "COMPOUND", alert_copy: "Copied!"
             },
             ro: {
                 l_p: "Preț Acțiune ($)", l_s: "Nr. Acțiuni", l_y: "Randament Yield (%)", l_a: "Ani Proiecție",
                 l_dg: "↑ Creșt. Div/An (%)", l_pg: "↑ Creșt. Preț/An (%)", l_c: "Contrib. Anuală ($)", l_t: "Impozit (%)",
                 d_on: "REINVESTEȘTE (DRIP)", d_off: "CASH (FĂRĂ DRIP)", btn_calc: "CALCULEAZĂ PORTOFOLIUL", btn_reset: "RESETEAZĂ DATELE",
-                l_vfinal: "VALOARE FINALĂ ESTIMATĂ", l_vinv: "INVESTIȚIA TA (BANI PUȘI)", l_vprof: "PROFIT TOTAL",
-                btn_copy: "📋 COPIAZĂ PENTRU WHATSAPP", l_evo: "Evoluție Anuală",
-                table_head: "<th>An</th><th>Acțiuni</th><th>Div/Acț</th><th>Div. Anual</th><th>Sold Final</th>",
-                l_disc: "Atenție: Calculele sunt estimative și nu reprezintă consultanță financiară. Investițiile la bursă implică riscuri.",
+                l_vfinal: "VALOARE FINALĂ ESTIMATĂ", l_vinv: "INVESTIȚIA TA", l_vprof: "PROFIT TOTAL",
+                btn_copy: "📋 COPIAZĂ REZUMATUL", table_head: "<th>An</th><th>Acțiuni</th><th>Div/Acț</th><th>Div. Anual</th><th>Sold Final</th>",
                 l_ctitle: "📈 Dobândă Compusă", l_cp: "Suma Inițială ($)", l_cm: "Depunere Lunară ($)", 
-                l_cr: "Dobândă Anuală (%)", l_ca: "Ani", btn_ccalc: "CALCULEAZĂ DOBÂNDA", l_cf: "SUMA FINALĂ ACUMULATĂ",
-                tab_div: "DIVIDENDE", tab_comp: "DOBÂNDĂ", alert_copy: "Rezumat copiat! Poți da Paste pe WhatsApp."
+                l_cr: "Dobândă Anuală (%)", l_ca: "Ani", btn_ccalc: "CALCULEAZĂ", l_cf: "SUMA FINALĂ",
+                tab_div: "DIVIDENDE", tab_comp: "DOBÂNDĂ", alert_copy: "Copiat!"
+            },
+            es: {
+                l_p: "Precio Acción ($)", l_s: "Acciones", l_y: "Rendimiento (%)", l_a: "Años",
+                l_dg: "↑ Crec. Div (%)", l_pg: "↑ Crec. Precio (%)", l_c: "Contrib. Anual ($)", l_t: "Impuesto (%)",
+                d_on: "CON DRIP", d_off: "EFECTIVO (SIN DRIP)", btn_calc: "CALCULAR CARTERA", btn_reset: "REINICIAR DATOS",
+                l_vfinal: "VALOR FINAL ESTIMADO", l_vinv: "TU INVERSIÓN", l_vprof: "BENEFICIO TOTAL",
+                btn_copy: "📋 COPIAR RESUMEN", table_head: "<th>Año</th><th>Acciones</th><th>Div/Acc</th><th>Div. Anual</th><th>Cartera</th>",
+                l_ctitle: "📈 Interés Compuesto", l_cp: "Depósito Inicial", l_cm: "Contrib. Mensual", 
+                l_cr: "Interés Anual (%)", l_ca: "Años", btn_ccalc: "CALCULAR", l_cf: "MONTO FINAL",
+                tab_div: "DIVIDENDOS", tab_comp: "INTERÉS", alert_copy: "¡Copiado!"
+            },
+            de: {
+                l_p: "Aktienkurs ($)", l_s: "Aktienanzahl", l_y: "Dividendenrendite (%)", l_a: "Jahre",
+                l_dg: "↑ Div. Wachstum (%)", l_pg: "↑ Kurswachstum (%)", l_c: "Jährl. Beitrag ($)", l_t: "Steuer (%)",
+                d_on: "MIT DRIP", d_off: "CASH (KEIN DRIP)", btn_calc: "PORTFOLIO BERECHNEN", btn_reset: "DATEN ZURÜCKSETZEN",
+                l_vfinal: "GESCHÄTZTER ENDWERT", l_vinv: "IHR INVESTMENT", l_vprof: "GESAMTGEWINN",
+                btn_copy: "📋 ZUSAMMENFASSUNG KOPIEREN", table_head: "<th>Jahr</th><th>Aktien</th><th>Div/Aktie</th><th>Jährl. Div.</th><th>Portfolio</th>",
+                l_ctitle: "📈 Zinseszins", l_cp: "Anfangskapital", l_cm: "Monatl. Beitrag", 
+                l_cr: "Zinssatz (%)", l_ca: "Jahre", btn_ccalc: "BERECHNEN", l_cf: "ENDRECHNUNG",
+                tab_div: "DIVIDENDEN", tab_comp: "ZINSEN", alert_copy: "Kopiert!"
+            },
+            fr: {
+                l_p: "Prix Action ($)", l_s: "Actions", l_y: "Rendement (%)", l_a: "Années",
+                l_dg: "↑ Croiss. Div (%)", l_pg: "↑ Croiss. Prix (%)", l_c: "Contrib. Annuelle ($)", l_t: "Impôt (%)",
+                d_on: "AVEC DRIP", d_off: "CASH (SANS DRIP)", btn_calc: "CALCULER PORTEFEUILLE", btn_reset: "RÉINITIALISER",
+                l_vfinal: "VALEUR FINALE ESTIMÉE", l_vinv: "VOTRE INVESTISSEMENT", l_vprof: "PROFIT TOTAL",
+                btn_copy: "📋 COPIER LE RÉSUMÉ", table_head: "<th>Année</th><th>Actions</th><th>Div/Act</th><th>Div. Annuel</th><th>Total</th>",
+                l_ctitle: "📈 Intérêts Composés", l_cp: "Dépôt Initial", l_cm: "Mensualité", 
+                l_cr: "Intérêt Annuel (%)", l_ca: "Années", btn_ccalc: "CALCULER", l_cf: "MONTANT FINAL",
+                tab_div: "DIVIDENDES", tab_comp: "INTÉRÊTS", alert_copy: "Copié!"
+            },
+            zh: {
+                l_p: "股价 ($)", l_s: "持有股数", l_y: "股息率 (%)", l_a: "预测年数",
+                l_dg: "↑ 股息增长 (%)", l_pg: "↑ 股价增长 (%)", l_c: "年度投入 ($)", l_t: "税率 (%)",
+                d_on: "股息再投资", d_off: "现金 (不投)", btn_calc: "计算投资组合", btn_reset: "重置数据",
+                l_vfinal: "预估最终价值", l_vinv: "你的投入", l_vprof: "总利润",
+                btn_copy: "📋 复制摘要", table_head: "<th>年份</th><th>股数</th><th>每股股息</th><th>年度总股息</th><th>组合价值</th>",
+                l_ctitle: "📈 复利计算", l_cp: "初始存款", l_cm: "每月投入", 
+                l_cr: "年利率 (%)", l_ca: "年数", btn_ccalc: "计算", l_cf: "最终金额",
+                tab_div: "股息", tab_comp: "复利", alert_copy: "已复制!"
             }
         };
 
@@ -204,13 +226,11 @@
                     else el.innerText = data[key];
                 }
             }
-            // Update Drip Buttons
             document.getElementById('d_on').innerText = data.d_on;
             document.getElementById('d_off').innerText = data.d_off;
             localStorage.setItem('diviTracker_lang', lang);
         }
 
-        // Initialize Lang
         const savedLang = localStorage.getItem('diviTracker_lang') || 'en';
         document.getElementById('lang_switcher').value = savedLang;
         changeLanguage(savedLang);
@@ -221,16 +241,13 @@
             document.querySelectorAll('.tab-item').forEach(i => i.classList.remove('active'));
             document.getElementById(t+'_tab').classList.add('active');
             event.currentTarget.classList.add('active');
-            window.scrollTo(0,0);
         }
         function f(n){ return n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}); }
 
+        // RESETARE FORȚATĂ
         function fullReset() {
-            document.getElementById('p').value = 27; document.getElementById('s').value = 250; document.getElementById('y').value = 4;
-            document.getElementById('a').value = 10; document.getElementById('dg').value = 5; document.getElementById('pg').value = 7;
-            document.getElementById('c').value = 1200; document.getElementById('t').value = 10;
-            document.getElementById('cp').value = 10000; document.getElementById('cm').value = 200;
-            document.getElementById('cr').value = 8; document.getElementById('ca').value = 15;
+            const defaults = { p:27, s:250, y:4, a:10, dg:5, pg:7, c:1200, t:10, cp:10000, cm:200, cr:8, ca:15 };
+            for (let id in defaults) { document.getElementById(id).value = defaults[id]; }
             setD(true);
             document.getElementById('res_box').style.display = 'none';
             document.getElementById('c_res_box').style.display = 'none';
@@ -238,14 +255,10 @@
         }
 
         function calcDiv(){
-            let pr = parseFloat(document.getElementById('p').value) || 0;
-            let sh = parseFloat(document.getElementById('s').value) || 0;
-            let yi = (parseFloat(document.getElementById('y').value) || 0) / 100;
-            let an = parseInt(document.getElementById('a').value) || 1;
-            let dg = (parseFloat(document.getElementById('dg').value) || 0) / 100;
-            let pg = (parseFloat(document.getElementById('pg').value) || 0) / 100;
-            let co = parseFloat(document.getElementById('c').value) || 0;
-            let tx = (parseFloat(document.getElementById('t').value) || 0) / 100;
+            let pr = parseFloat(document.getElementById('p').value) || 0, sh = parseFloat(document.getElementById('s').value) || 0;
+            let yi = (parseFloat(document.getElementById('y').value) || 0) / 100, an = parseInt(document.getElementById('a').value) || 1;
+            let dg = (parseFloat(document.getElementById('dg').value) || 0) / 100, pg = (parseFloat(document.getElementById('pg').value) || 0) / 100;
+            let co = parseFloat(document.getElementById('c').value) || 0, tx = (parseFloat(document.getElementById('t').value) || 0) / 100;
             let curSh = sh, curPr = pr, curDivVal = (pr * yi), cash = 0, html = '';
             for(let i=1; i<=an; i++){
                 curSh += (co / curPr);
@@ -257,8 +270,7 @@
                 curDivVal *= (1 + dg);
             }
             document.getElementById('tb').innerHTML = html;
-            let totalFinal = (curSh * curPr) + cash;
-            let totalPutIn = (pr * sh) + (co * an);
+            let totalFinal = (curSh * curPr) + cash, totalPutIn = (pr * sh) + (co * an);
             document.getElementById('v_final').innerText = '$' + f(totalFinal);
             document.getElementById('v_inv').innerText = '$' + f(totalPutIn);
             document.getElementById('v_profit').innerText = '$' + f(totalFinal - totalPutIn);
@@ -267,14 +279,12 @@
 
         function copyRes(){
             const d = langData[currentLang];
-            let text = `${d.tab_div} RESULT:\n--------------------------\n💰 ${d.l_vfinal}: ${document.getElementById('v_final').innerText}\n🏦 ${d.l_vinv}: ${document.getElementById('v_inv').innerText}\n🚀 ${d.l_vprof}: ${document.getElementById('v_profit').innerText}\n--------------------------\nDiviTracker Pro`;
-            navigator.clipboard.writeText(text);
-            alert(d.alert_copy);
+            let text = `${d.tab_div} RESULT:\n💰 ${d.l_vfinal}: ${document.getElementById('v_final').innerText}\n🏦 ${d.l_vinv}: ${document.getElementById('v_inv').innerText}\n🚀 ${d.l_vprof}: ${document.getElementById('v_profit').innerText}\nDiviTracker Pro`;
+            navigator.clipboard.writeText(text).then(() => alert(d.alert_copy));
         }
 
         function calcComp(){
-            let p = parseFloat(document.getElementById('cp').value) || 0;
-            let m = parseFloat(document.getElementById('cm').value) || 0;
+            let p = parseFloat(document.getElementById('cp').value) || 0, m = parseFloat(document.getElementById('cm').value) || 0;
             let r = (parseFloat(document.getElementById('cr').value) || 0) / 100 / 12, a = (parseInt(document.getElementById('ca').value) || 1) * 12;
             let res = (r === 0) ? p + (m * a) : p * Math.pow(1+r, a) + m * (Math.pow(1+r, a) - 1) / r;
             document.getElementById('cv_f').innerText = '$' + f(res);
