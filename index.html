@@ -1,142 +1,85 @@
 <!DOCTYPE html>
-<html lang="ro">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="icon.png">
+    <link rel="manifest" href="manifest.json">
+    <script>if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }</script>
     <title>DiviTracker Pro</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --stone-bg: #1e1e1e;
-            --concrete: #2c2c2c;
-            --neon-green: #34c759;
-            --neon-blue: #007aff;
-            --gold: #d4af37;
-            /* Textura de beton prin gradienti si noise */
-            --concrete-texture: 
-                radial-gradient(circle at 50% 50%, rgba(255,255,255,0.05) 0%, transparent 80%),
-                repeating-radial-gradient(rgba(0,0,0,0.2) 0, rgba(0,0,0,0.2) 1px, transparent 1px, transparent 100%);
+            --neon-green: #34c759; --neon-blue: #007aff; --gold: #d4af37;
+            --concrete-bg: #121212; --concrete-card: #1e1e1e;
         }
-
         body {
             font-family: -apple-system, system-ui, sans-serif;
-            background-color: #121212;
-            background-image: var(--concrete-texture);
-            background-size: 4px 4px;
-            color: #eee; margin: 0; padding-bottom: 100px;
+            background-color: var(--concrete-bg);
+            background-image: radial-gradient(circle at 2px 2px, #333 1px, transparent 0);
+            background-size: 24px 24px; color: #eee; margin: 0; padding-bottom: 100px;
             -webkit-tap-highlight-color: transparent;
         }
-
         .header {
-            padding: 55px 20px 15px;
-            background: linear-gradient(180deg, #333 0%, #111 100%);
-            border-bottom: 2px solid #444;
-            display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.8);
+            padding: 55px 20px 15px; background: linear-gradient(180deg, #222 0%, #000 100%);
+            border-bottom: 2px solid #333; display: flex; justify-content: space-between; align-items: center;
         }
-
-        .container { padding: 15px; max-width: 900px; margin: 0 auto; display: none; }
-        .container.active { display: block; animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
-
-        /* Stilul Beton Brut / Săpat */
+        .container { padding: 15px; max-width: 1000px; margin: 0 auto; display: none; }
+        .container.active { display: block; }
+        
+        /* Beton Industrial Look */
         .card {
-            background: #252525;
-            border-radius: 20px;
-            padding: 22px;
-            margin-bottom: 20px;
-            /* Efect de umbră exterioară și "bevel" interior pentru aspect de piatră */
-            box-shadow: 
-                8px 8px 16px #0a0a0a, 
-                -4px -4px 12px #3a3a3a,
-                inset 1px 1px 2px rgba(255,255,255,0.1);
+            background: var(--concrete-card); border-radius: 20px; padding: 20px; margin-bottom: 20px;
+            box-shadow: 10px 10px 20px #080808, -5px -5px 15px #2a2a2a, inset 1px 1px 1px rgba(255,255,255,0.03);
             border: 1px solid #222;
         }
-
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 12px; }
-        label { font-size: 10px; color: #777; text-transform: uppercase; font-weight: 900; letter-spacing: 1px; display: block; margin-bottom: 6px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; }
+        label { font-size: 9px; color: #666; text-transform: uppercase; font-weight: 900; letter-spacing: 1px; display: block; margin-bottom: 4px; }
         
-        /* Câmpurile par "săpate" în beton */
         input, select {
-            background: #1a1a1a;
-            color: var(--gold);
-            border: none;
-            padding: 14px;
-            border-radius: 12px;
-            font-size: 16px;
-            width: 100%;
-            box-sizing: border-box;
-            box-shadow: inset 5px 5px 10px #000, inset -2px -2px 5px #333;
-            outline: none;
-            font-weight: bold;
+            background: #0f0f0f; color: var(--gold); border: none; padding: 14px;
+            border-radius: 12px; font-size: 16px; width: 100%; box-sizing: border-box;
+            box-shadow: inset 4px 4px 10px #000, inset -1px -1px 2px #333; outline: none; font-weight: bold;
         }
-
         .btn-calc {
-            background: linear-gradient(145deg, #222, #111);
-            color: var(--neon-green);
-            font-weight: 900;
-            padding: 20px;
-            border: 2px solid var(--neon-green);
-            border-radius: 15px;
-            width: 100%;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 0 15px rgba(52, 199, 89, 0.4);
-            margin-top: 15px;
-            cursor: pointer;
+            background: linear-gradient(145deg, #222, #050505); color: var(--neon-green);
+            font-weight: 900; padding: 20px; border: 2px solid var(--neon-green);
+            border-radius: 15px; width: 100%; text-transform: uppercase; cursor: pointer;
+            box-shadow: 0 0 15px rgba(52, 199, 89, 0.2); margin-top: 10px;
         }
 
+        /* Results Display */
         .res-box {
-            border: 2px solid var(--neon-green);
-            background: rgba(0,0,0,0.5);
-            border-radius: 20px;
-            padding: 25px;
-            text-align: center;
-            box-shadow: 0 0 25px rgba(52, 199, 89, 0.2), inset 0 0 15px rgba(0,0,0,0.5);
-            margin: 25px 0;
+            border: 2px solid var(--neon-green); background: rgba(0,0,0,0.8);
+            border-radius: 20px; padding: 25px; text-align: center; margin: 25px 0;
         }
+        .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .summary-item { background: #0a0a0a; padding: 12px; border-radius: 12px; border: 1px solid #222; box-shadow: inset 2px 2px 5px #000; }
+        .summary-item div { font-size: 16px; font-weight: 800; margin-top: 5px; }
 
-        .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 18px; }
-        .summary-item { 
-            background: #181818; 
-            padding: 12px; 
-            border-radius: 12px; 
-            border: 1px solid #333; 
-            box-shadow: inset 2px 2px 5px #000;
-        }
+        /* Full Detail Table */
+        .table-wrap { overflow-x: auto; background: #000; border-radius: 15px; border: 1px solid #333; margin-top: 25px; }
+        table { width: 100%; border-collapse: collapse; font-size: 10px; min-width: 950px; }
+        th { background: #111; color: #555; padding: 16px; border-bottom: 2px solid #333; text-transform: uppercase; letter-spacing: 0.5px; }
+        td { padding: 14px; text-align: center; border-bottom: 1px solid #111; color: #999; }
+        .hl-row { color: var(--neon-green); font-weight: bold; }
 
-        .table-wrap { 
-            overflow-x: auto; 
-            background: #111; 
-            border-radius: 15px; 
-            border: 1px solid #333; 
-            margin-top: 25px;
-            box-shadow: inset 0 0 10px #000;
-        }
-        table { width: 100%; border-collapse: collapse; font-size: 10px; min-width: 850px; }
-        th { background: #1a1a1a; color: #666; padding: 15px; border-bottom: 2px solid #333; font-weight: 900; }
-        td { padding: 14px; text-align: center; border-bottom: 1px solid #222; color: #999; }
-
-        .tab-bar { position: fixed; bottom: 0; width: 100%; height: 85px; background: #0c0c0c; display: flex; border-top: 1px solid #333; padding-bottom: 15px; }
-        .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #444; font-size: 10px; font-weight: 900; }
+        .tab-bar { position: fixed; bottom: 0; width: 100%; height: 80px; background: #000; display: flex; border-top: 1px solid #333; padding-bottom: env(safe-area-inset-bottom); }
+        .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #444; font-size: 10px; font-weight: 800; }
         .tab-item.active { color: var(--neon-green); }
-        .tab-item span { font-size: 24px; margin-bottom: 4px; }
+        .tab-item span { font-size: 22px; margin-bottom: 4px; }
     </style>
 </head>
 <body onload="updateLang()">
 
 <div class="header">
-    <div style="font-weight: 900; font-size: 22px; letter-spacing: -1px;">DIVITRACKER <span style="color:var(--neon-green)">PRO</span></div>
-    <select id="lang" style="width: auto; padding: 8px; border-radius: 10px; background: #222;" onchange="updateLang()">
-        <option value="ro">🇷🇴 RO</option>
-        <option value="en" selected>🇺🇸 EN</option>
-        <option value="es">🇪🇸 ES</option>
-        <option value="fr">🇫🇷 FR</option>
-        <option value="de">🇩🇪 DE</option>
-        <option value="cn">🇨🇳 CN</option>
+    <div style="font-weight: 900; font-size: 20px;">DIVITRACKER <span style="color:var(--neon-green)">PRO</span></div>
+    <select id="lang" style="width: auto; padding: 5px; border-radius: 8px;" onchange="updateLang()">
+        <option value="ro">🇷🇴 RO</option><option value="en" selected>🇺🇸 EN</option>
+        <option value="es">🇪🇸 ES</option><option value="fr">🇫🇷 FR</option>
+        <option value="de">🇩🇪 DE</option><option value="cn">🇨🇳 CN</option>
     </select>
 </div>
 
@@ -146,8 +89,8 @@
             <div><label id="l_p">Price</label><input type="number" id="p" value="100" oninput="liveSum()"></div>
             <div><label id="l_s">Shares</label><input type="number" id="s" value="250" oninput="liveSum()"></div>
         </div>
-        <div style="text-align:center; margin-bottom:18px; font-size:12px; color:#666;">
-            <span id="l_init">INITIAL INVESTMENT:</span> <span id="cur_init" style="color:var(--neon-green); font-size: 18px; font-weight: 900;">$25.000</span>
+        <div style="text-align:center; margin-bottom:15px; font-size:12px; font-weight: 900; color: #555;">
+            <span id="l_init">INITIAL INVESTMENT:</span> <span id="cur_init" style="color:var(--neon-green); font-size: 16px;">$25.000</span>
         </div>
         <div class="grid">
             <div><label id="l_y">Annual Yield %</label><input type="number" id="y" value="4.4" step="0.1"></div>
@@ -158,14 +101,14 @@
             <div><label id="l_pg">Price Growth %</label><input type="number" id="pg" value="7"></div>
         </div>
         <div class="grid">
-            <div><label id="l_c">Annual Contribution</label><input type="number" id="c" value="1200"></div>
+            <div><label id="l_c">Ann. Contribution</label><input type="number" id="c" value="1200"></div>
             <div><label id="l_t">Div Tax %</label><input type="number" id="t" value="10"></div>
         </div>
         <div class="grid">
             <div><label id="l_df">Compounding</label>
                 <select id="dfreq">
-                    <option value="4" id="o_q">Quarterly (4x)</option>
-                    <option value="12" id="o_m">Monthly (12x)</option>
+                    <option value="4" id="o_q">4 times/year</option>
+                    <option value="12" id="o_m">12 times/year</option>
                 </select>
             </div>
             <div><label id="l_dr">Strategy</label>
@@ -180,36 +123,29 @@
 
     <div id="res_div" style="display:none;">
         <div class="res-box">
-            <label id="l_res_final" style="color:#888;">ESTIMATED PORTFOLIO VALUE</label>
-            <div id="v_final" style="font-size:38px; font-weight:900; color:var(--neon-green); text-shadow: 0 0 15px var(--neon-green);">$0</div>
-            <div class="summary-grid">
-                <div class="summary-item"><label id="l_tinv">Invested</label><div id="v_total_inv" style="font-weight:bold;">$0</div></div>
-                <div class="summary-item"><label id="l_tdiv">Net Dividends</label><div id="v_total_div" style="color:var(--neon-green); font-weight:bold;">$0</div></div>
-                <div class="summary-item"><label id="l_tpg">Appreciation</label><div id="v_total_pg" style="font-weight:bold;">$0</div></div>
-                <div class="summary-item"><label id="l_ttax">Taxes</label><div id="v_total_tax" style="color:#ff3b30; font-weight:bold;">$0</div></div>
-            </div>
+            <label id="l_res_final">ESTIMATED PORTFOLIO VALUE</label>
+            <div id="v_final" style="font-size:42px; font-weight:900; color:var(--neon-green);">$0</div>
         </div>
         <div class="table-wrap">
             <table>
                 <thead>
                     <tr>
-                        <th id="h1">YEAR</th><th id="h2">SHARES</th><th id="h3">DIV/SHARE</th><th id="h4">ANN. DIV</th>
-                        <th id="h5">REINVESTED</th><th id="h6">CONTRIB.</th><th id="h7">END PRICE</th><th id="h8">FINAL BAL</th>
+                        <th id="h1">YEAR</th><th id="h2">SHARES OWNED</th><th id="h3">ANNUAL DIV PER SHARE</th>
+                        <th id="h4">ANNUAL DIVIDEND</th><th id="h5">COMPOUND FREQ.</th><th id="h6">WITH DRIP (CUMUL.)</th>
+                        <th id="h7">ANNUAL CONTRIB.</th><th id="h8">YEAR-END STOCK PRICE</th><th id="h9">NEW BALANCE</th>
                     </tr>
                 </thead>
                 <tbody id="tb_div"></tbody>
             </table>
         </div>
-        <div class="chart-wrap"><canvas id="cDiv"></canvas></div>
+        <div class="card" style="margin-top:20px; background:#000;"><canvas id="cDiv"></canvas></div>
     </div>
 </div>
 
 <div id="comp_tab" class="container">
     <div class="card">
         <label id="l_cp">Initial Deposit</label><input type="number" id="cp" value="10000">
-        <br>
         <label id="l_cm">Monthly Contribution</label><input type="number" id="cm" value="500">
-        <br>
         <div class="grid">
             <div><label id="l_cr">Interest Rate %</label><input type="number" id="cr" value="8"></div>
             <div><label id="l_ct">Profit Tax %</label><input type="number" id="ct" value="10"></div>
@@ -223,14 +159,21 @@
                 </select>
             </div>
         </div>
-        <button class="btn-calc" style="color:var(--neon-blue); border-color:var(--neon-blue); box-shadow: 0 0 15px rgba(0,122,255,0.3);" id="b_calc2" onclick="calcComp()">CALCULATE</button>
+        <button class="btn-calc" style="color:var(--neon-blue); border-color:var(--neon-blue);" id="b_calc2" onclick="calcComp()">CALCULATE</button>
     </div>
+    
     <div id="res_comp" style="display:none;">
-        <div class="res-box" style="border-color:var(--neon-blue); box-shadow: 0 0 25px rgba(0,122,255,0.2);">
-            <label id="l_cfinal" style="color:#888;">ESTIMATED FINAL NET BALANCE</label>
-            <div id="cv_final" style="font-size:38px; font-weight:900; color:var(--neon-blue); text-shadow: 0 0 15px var(--neon-blue);">$0</div>
+        <div class="res-box" style="border-color:var(--neon-blue);">
+            <label id="l_cfinal">FINAL NET BALANCE</label>
+            <div id="cv_final" style="font-size:42px; font-weight:900; color:var(--neon-blue);">$0</div>
+            <div class="summary-grid">
+                <div class="summary-item"><label id="s_inv">Total Invested</label><div id="v_inv">$0</div></div>
+                <div class="summary-item"><label id="s_prof">Total Profit (Net)</label><div id="v_prof" style="color:var(--neon-green);">$0</div></div>
+                <div class="summary-item"><label id="s_tax">Total Taxes</label><div id="v_tax" style="color:#ff3b30;">$0</div></div>
+                <div class="summary-item"><label id="s_yield">Avg. Annual Yield</label><div id="v_yield">$0</div></div>
+            </div>
         </div>
-        <div class="chart-wrap"><canvas id="cComp"></canvas></div>
+        <div class="card" style="background:#000;"><canvas id="cComp"></canvas></div>
     </div>
 </div>
 
@@ -244,7 +187,7 @@ let dChart = null, cChart = null;
 function tab(t, el) {
     document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
     document.querySelectorAll('.tab-item').forEach(i => i.classList.remove('active'));
-    document.getElementById(t+'_tab').classList.add('active'); el.classList.add('active'); window.scrollTo(0,0);
+    document.getElementById(t+'_tab').classList.add('active'); el.classList.add('active');
 }
 function liveSum() {
     let p = document.getElementById('p').value, s = document.getElementById('s').value;
@@ -256,26 +199,23 @@ function calcDiv() {
     let dg = parseFloat(document.getElementById('dg').value)/100, pg = parseFloat(document.getElementById('pg').value)/100;
     let c = parseFloat(document.getElementById('c').value), t = parseFloat(document.getElementById('t').value)/100;
     let df = parseInt(document.getElementById('dfreq').value), drip = document.getElementById('drip').value === 'yes';
-    let curS = s, curP = p, dps = p * y, labs = [], vals = [], totInv = p * s, totD = 0, totT = 0, dripC = 0, html = '';
+    let curS = s, curP = p, dps = p * y, labs = [], vals = [], dripC = 0, html = '';
+    const freqTxt = document.getElementById('lang').value === 'ro' ? "de 4 ori pe an" : "4 times/year";
     for(let i=1; i<=a; i++) {
         let annB = 0;
         for(let f=0; f<df; f++) {
-            let pD = (curS * (dps / df)); annB += pD; let net = pD * (1 - t); totT += (pD * t);
+            let pD = (curS * (dps / df)); annB += pD; let net = pD * (1 - t);
             if(drip) { curS += (net / curP); dripC += net; }
         }
-        curS += (c / curP); totInv += c; totD += (annB * (1 - t)); curP *= (1 + pg); dps *= (1 + dg);
+        curS += (c / curP); curP *= (1 + pg); dps *= (1 + dg);
         let bal = curS * curP; labs.push(i); vals.push(Math.round(bal));
-        html += `<tr><td>${i}</td><td>${curS.toFixed(1)}</td><td>$${dps.toFixed(2)}</td><td>$${Math.round(annB).toLocaleString()}</td><td>$${Math.round(dripC).toLocaleString()}</td><td>$${c.toLocaleString()}</td><td>$${Math.round(curP)}</td><td style="color:var(--neon-green);font-weight:bold;">$${Math.round(bal).toLocaleString()}</td></tr>`;
+        html += `<tr><td>${i}</td><td>${curS.toFixed(2)}</td><td>$${dps.toFixed(2)}</td><td>$${annB.toLocaleString()}</td><td>${df === 4 ? freqTxt : "12"}</td><td>$${dripC.toLocaleString()}</td><td>$${c.toLocaleString()}</td><td>$${curP.toFixed(2)}</td><td class="hl-row">$${Math.round(bal).toLocaleString()}</td></tr>`;
     }
     document.getElementById('tb_div').innerHTML = html;
     document.getElementById('v_final').innerText = "$" + Math.round(vals[a-1]).toLocaleString();
-    document.getElementById('v_total_inv').innerText = "$" + Math.round(totInv).toLocaleString();
-    document.getElementById('v_total_div').innerText = "$" + Math.round(totD).toLocaleString();
-    document.getElementById('v_total_pg').innerText = "$" + Math.round(vals[a-1] - totInv - totD).toLocaleString();
-    document.getElementById('v_total_tax').innerText = "$" + Math.round(totT).toLocaleString();
     document.getElementById('res_div').style.display = 'block';
     if(dChart) dChart.destroy();
-    dChart = new Chart(document.getElementById('cDiv'), { type: 'line', data: { labels: labs, datasets: [{ data: vals, borderColor: '#34c759', backgroundColor: 'rgba(52,199,89,0.1)', fill: true, tension: 0.3 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } });
+    dChart = new Chart(document.getElementById('cDiv'), { type: 'line', data: { labels: labs, datasets: [{ label: 'Portfolio', data: vals, borderColor: '#34c759', backgroundColor: 'rgba(52,199,89,0.1)', fill: true, tension: 0.3 }] }, options: { responsive: true, maintainAspectRatio: false } });
 }
 function calcComp() {
     let p = parseFloat(document.getElementById('cp').value), m = parseFloat(document.getElementById('cm').value);
@@ -288,48 +228,49 @@ function calcComp() {
         if(freq === 1) cur *= (1 + r);
         pBrut += (cur - sAn - (m * 12)); labs.push(2026+i); dDep.push(p); dMth.push(inv-p); dProf.push(Math.round(pBrut*(1-tax)));
     }
-    document.getElementById('cv_final').innerText = "$" + Math.round(inv + pBrut*(1-tax)).toLocaleString();
+    let netProf = pBrut * (1 - tax);
+    document.getElementById('cv_final').innerText = "$" + Math.round(inv + netProf).toLocaleString();
+    document.getElementById('v_inv').innerText = "$" + Math.round(inv).toLocaleString();
+    document.getElementById('v_prof').innerText = "$" + Math.round(netProf).toLocaleString();
+    document.getElementById('v_tax').innerText = "$" + Math.round(pBrut * tax).toLocaleString();
+    document.getElementById('v_yield').innerText = (r * 100).toFixed(1) + "%";
     document.getElementById('res_comp').style.display = 'block';
     if(cChart) cChart.destroy();
     cChart = new Chart(document.getElementById('cComp'), { type: 'bar', data: { labels: labs, datasets: [{ label: 'Initial', data: dDep, backgroundColor: '#0d47a1' }, { label: 'Contributions', data: dMth, backgroundColor: '#1976d2' }, { label: 'Profit', data: dProf, backgroundColor: '#34c759' }] }, options: { responsive: true, maintainAspectRatio: false, scales: { x: { stacked: true }, y: { stacked: true } } } });
 }
-
 function updateLang() {
     const l = document.getElementById('lang').value;
     const map = {
-        ro: { p:"Preț Acțiune", s:"Acțiuni Deținute", y:"Yield Anual %", a:"Ani Proiecție", dg:"Creștere Dividend", pg:"Creștere Preț (Apreciere)", c:"Contribuție Anuală", t:"Impozit Div", df:"Compunere Dividend", dr:"Reinvestire", bc:"GENEREAZĂ ANALIZA", md:"PROIECȚII", mc:"INTERES", ti:"Capital Investit", dn:"Dividende Net", ap:"Creștere Preț (Apreciere)", tx:"Taxe Plătite", rf:"VALOARE ESTIMATĂ PORTOFOLIU", init:"Investiție Inițială:", cp:"Depozit Inițial", cm:"Depunere Lunară", cr:"Dobândă Rate", ct:"Impozit Profit", ca:"Ani", cf:"Frecvență Compunere", b2:"CALCULEAZĂ", cf1:"BALANȚĂ FINALĂ NETĂ", om:"Lunar (Compus)", oy:"Anual (Simplu)", h1:"An", h2:"Acțiuni", h3:"Div/Acțiune", h4:"Div. Anual", h5:"Reinvestit", h6:"Contrib.", h7:"Preț Final", h8:"Sold Final", oq:"Trimestrial (4z)", om_div:"Lunar (12z)", od_on:"ACTIV (DRIP)", od_off:"LIFESTYLE (CASH)" },
-        en: { p:"Stock Price", s:"Shares Owned", y:"Annual Yield %", a:"Projection Years", dg:"Div Growth", pg:"Price Growth (Appreciation)", c:"Annual Contribution", t:"Div Tax", df:"Dividend Compounding", dr:"Reinvestment", bc:"GENERATE ANALYSIS", md:"PROJECTIONS", mc:"INTEREST", ti:"Capital Invested", dn:"Net Dividends", ap:"Price Growth (Appreciation)", tx:"Taxes Paid", rf:"ESTIMATED PORTFOLIO VALUE", init:"Initial Investment:", cp:"Initial Deposit", cm:"Monthly Deposit", cr:"Interest Rate", ct:"Profit Tax", ca:"Years", cf:"Compounding Frequency", b2:"CALCULATE", cf1:"NET FINAL BALANCE", om:"Monthly (Compounded)", oy:"Yearly (Simple)", h1:"Year", h2:"Shares", h3:"Div/Share", h4:"Annual Div", h5:"Reinvested", h6:"Contrib.", h7:"End Price", h8:"Final Balance", oq:"Quarterly (4x)", om_div:"Monthly (12x)", od_on:"DRIP ON", od_off:"DRIP OFF" },
-        es: { p:"Precio Acción", s:"Acciones", y:"Rendimiento %", a:"Años", dg:"Crec. Div", pg:"Crec. Precio", c:"Contribución Anual", t:"Impuesto Div", df:"Compuesto Div", dr:"Reinversión", bc:"GENERAR ANÁLISIS", md:"PROYECCIONES", mc:"INTERÉS", ti:"Capital Invertido", dn:"Dividendos Netos", ap:"Crecimiento Precio", tx:"Impuestos", rf:"VALOR ESTIMADO", init:"Inversión Inicial:", cp:"Depósito Inicial", cm:"Depósito Mensual", cr:"Tasa Interés", ct:"Impuesto Beneficio", ca:"Años", cf:"Frecuencia", b2:"CALCULAR", cf1:"BALANCE NETO FINAL", om:"Mensual", oy:"Anual", h1:"Año", h2:"Acciones", h3:"Div/Acc.", h4:"Div. Anual", h5:"Reinversión", h6:"Contrib.", h7:"Precio Final", h8:"Saldo Final", oq:"Trimestral", om_div:"Mensual", od_on:"DRIP ON", od_off:"DRIP OFF" },
-        fr: { p:"Prix Action", s:"Actions", y:"Rendement %", a:"Années", dg:"Croiss. Div", pg:"Croiss. Prix", c:"Contrib. Annuelle", t:"Impôt Div", df:"Composition Div", dr:"Réinvestissement", bc:"GÉNÉRER ANALYSE", md:"PROJECTIONS", mc:"INTÉRÊT", ti:"Capital Investi", dn:"Dividendes Nets", ap:"Croissance Prix", tx:"Impôts Payés", rf:"VALEUR ESTIMÉE", init:"Investissement Initial:", cp:"Dépôt Initial", cm:"Dépôt Mensuel", cr:"Taux d'Intérêt", ct:"Impôt Profit", ca:"Années", cf:"Fréquence", b2:"CALCULER", cf1:"SOLDE NET FINAL", om:"Mensuel", oy:"Annuel", h1:"Année", h2:"Actions", h3:"Div/Action", h4:"Div. Annuel", h5:"Réinvesti", h6:"Contrib.", h7:"Prix Final", h8:"Solde Final", oq:"Trimestriel", om_div:"Mensuel", od_on:"DRIP ON", od_off:"DRIP OFF" },
-        de: { p:"Aktienkurs", s:"Aktien", y:"Rendite %", a:"Jahre", dg:"Div-Wachstum", pg:"Kurs-Wachstum", c:"Jährl. Beitrag", t:"Div-Steuer", df:"Zinseszins Div", dr:"Reinvestition", bc:"ANALYSE ERSTELLEN", md:"PROGNOSE", mc:"ZINSEN", ti:"Kapital Investiert", dn:"Netto-Dividenden", ap:"Kurs-Wachstum", tx:"Steuern Gezahlt", rf:"SCHÄTZWERT", init:"Startkapital:", cp:"Einzahlung", cm:"Monatl. Einzahlung", cr:"Zinssatz", ct:"Gewinnsteuer", ca:"Jahre", cf:"Zinseszins", b2:"BERECHNEN", cf1:"NETTO-ENDSALDO", om:"Monatlich", oy:"Jährlich", h1:"Jahr", h2:"Aktien", h3:"Div/Aktie", h4:"Div. Jährl.", h5:"Reinvestiert", h6:"Beitrag", h7:"Endpreis", h8:"Endsaldo", oq:"Quartalsweise", om_div:"Monatlich", od_on:"DRIP AN", od_off:"DRIP AUS" },
-        cn: { p:"股价", s:"持股量", y:"股息率 %", a:"年数", dg:"股息增长", pg:"股价增长", c:"年投入", t:"税率", df:"复利", dr: "策略", bc:"生成分析", md:"项目预测", mc:"复利计算", ti:"总投入", dn:"净股息", ap:"市值增值", tx:"总税收", rf:"预估总值", init:"初始投资:", cp:"初始存款", cm: "每月投入", cr:"利率", ct:"税率", ca:"年数", cf:"频率", b2:"计算", cf1:"预估最终净余额", om:"每月", oy:"每年", h1:"年份", h2:"持股", h3:"每股股息", h4:"年度股息", h5:"再投资", h6:"投入", h7:"最终价格", h8:"最终余额", oq:"每季度", om_div:"每月", od_on:"开启", od_off:"关闭" }
+        ro: { p:"Preț", s:"Acțiuni", y:"Yield Anual %", a:"Ani", dg:"Creșt. Div %", pg:"Creșt. Preț %", c:"Contrib. Anuală", t:"Impozit Div %", df:"Compunere", dr:"Strategie", bc:"GENEREAZĂ ANALIZA", md:"PROIECȚII", mc:"DOBÂNDĂ", rf:"VALOARE ESTIMATĂ", init:"INVESTIȚIE INIȚIALĂ:", cp:"Depozit Inițial", cm:"Depunere Lunară", cr:"Dobândă %", ct:"Impozit Profit %", ca:"Ani", cf:"Compunere", b2:"CALCULEAZĂ", cf1:"BALANȚĂ NETĂ FINALĂ", oq:"4 ori pe an", om:"Lunar (12x)", od_on:"ACTIV (DRIP)", od_off:"LIFESTYLE", h1:"AN", h2:"ACȚIUNI DEȚINUTE", h3:"DIV. ANUAL PER ACȚIUNE", h4:"DIVIDEND ANUAL", h5:"FRECV. COMPUNERE", h6:"CU DRIP (CUMULATIV)", h7:"CONTRIB. ANUALĂ", h8:"PREȚ ACȚIUNE FINAL", h9:"BALANȚĂ NOUĂ", s1:"Total Investit", s2:"Profit Net", s3:"Taxe Totale", s4:"Yield Mediu" },
+        en: { p:"Price", s:"Shares", y:"Yield %", a:"Years", dg:"Div Growth %", pg:"Price Growth %", c:"Ann. Contrib.", t:"Div Tax %", df:"Compounding", dr:"Strategy", bc:"GENERATE ANALYSIS", md:"PROJECTIONS", mc:"COMPOUND", rf:"ESTIMATED VALUE", init:"INITIAL INVESTMENT:", cp:"Initial Deposit", cm:"Monthly Contribution", cr:"Interest Rate %", ct:"Profit Tax %", ca:"Years", cf:"Compounding", b2:"CALCULATE", cf1:"FINAL NET BALANCE", oq:"4 times/year", om:"Monthly (12x)", od_on:"DRIP ON", od_off:"CASH OUT", h1:"YEAR", h2:"SHARES OWNED", h3:"ANNUAL DIV PER SHARE", h4:"ANNUAL DIVIDEND", h5:"COMPOUND FREQ.", h6:"WITH DRIP (CUMUL.)", h7:"ANNUAL CONTRIB.", h8:"END STOCK PRICE", h9:"NEW BALANCE", s1:"Total Invested", s2:"Net Profit", s3:"Total Taxes", s4:"Avg Yield" },
+        es: { p:"Precio", s:"Acciones", y:"Rendimiento %", a:"Años", dg:"Crec. Div %", pg:"Crec. Precio %", c:"Contribución", t:"Impuesto Div", df:"Compuesto", dr:"Estrategia", bc:"GENERAR ANÁLISIS", md:"PROYECCIONES", mc:"INTERÉS", rf:"VALOR ESTIMADO", init:"INVERSIÓN INICIAL:", cp:"Depósito Inicial", cm:"Contribución Mensual", cr:"Interés %", ct:"Impuesto %", ca:"Años", cf:"Compuesto", b2:"CALCULAR", cf1:"BALANCE NETO FINAL", oq:"4 veces al año", om:"Mensual", od_on:"ACTIVADO", od_off:"EFECTIVO", h1:"AÑO", h2:"ACCIONES", h3:"DIV POR ACC.", h4:"DIV ANUAL", h5:"FRECUENCIA", h6:"CON DRIP", h7:"CONTRIB.", h8:"PRECIO FINAL", h9:"BALANCE", s1:"Invertido", s2:"Beneficio", s3:"Impuestos", s4:"Rendimiento" },
+        fr: { p:"Prix", s:"Actions", y:"Rendement %", a:"Années", dg:"Croiss. Div %", pg:"Croiss. Prix %", c:"Contrib. Annuelle", t:"Impôt Div", df:"Composition", dr:"Stratégie", bc:"GÉNÉRER ANALYSE", md:"PROJECTIONS", mc:"INTÉRÊT", rf:"VALEUR ESTIMÉE", init:"INVESTISSEMENT INITIAL:", cp:"Dépôt Initial", cm:"Contribution Mensuelle", cr:"Intérêt %", ct:"Impôt %", ca:"Années", cf:"Composition", b2:"CALCULER", cf1:"SOLDE NET FINAL", oq:"4 fois/an", om:"Mensuel", od_on:"ACTIVÉ", od_off:"ESPÈCES", h1:"ANNÉE", h2:"ACTIONS", h3:"DIV PAR ACTION", h4:"DIV ANNUEL", h5:"FRÉQUENCE", h6:"AVEC DRIP", h7:"CONTRIB.", h8:"PRIX FINAL", h9:"SOLDE", s1:"Investi", s2:"Profit", s3:"Impôts", s4:"Rendement" },
+        de: { p:"Kurs", s:"Aktien", y:"Rendite %", a:"Jahre", dg:"Div-Wachstum %", pg:"Kurs-Wachstum %", c:"Beitrag", t:"Steuer %", df:"Zinseszins", dr:"Strategie", bc:"ANALYSE ERSTELLEN", md:"PROGNOSE", mc:"ZINSEN", rf:"SCHÄTZWERT", init:"STARTKAPITAL:", cp:"Anfangskapital", cm:"Monatl. Beitrag", cr:"Zinssatz", ct:"Steuer", ca:"Jahre", cf:"Zinseszins", b2:"BERECHNEN", cf1:"NETTO-ENDSALDO", oq:"4 mal pro Jahr", om:"Monatlich", od_on:"AN", od_off:"AUS", h1:"JAHR", h2:"AKTIEN", h3:"DIV PRO AKTIE", h4:"DIV JÄHRLICH", h5:"FREQ.", h6:"MIT DRIP", h7:"BEITRAG", h8:"ENDKURS", h9:"KONTOSTAND", s1:"Investiert", s2:"Profit", s3:"Steuern", s4:"Rendite" },
+        cn: { p:"股价", s:"持股量", y:"股息率 %", a:"年数", dg:"股息增长", pg:"股价增长", c:"年投入", t:"税率", df:"频率", dr: "策略", bc:"生成分析", md:"项目预测", mc:"复利计算", rf:"预估总值", init:"初始投资:", cp:"初始存款", cm: "每月投入", cr:"利率", ct:"税率", ca:"年数", cf:"频率", b2:"计算", cf1:"最终余额", oq:"每年4次", om:"每月", od_on:"开启", od_off:"关闭", h1:"年份", h2:"持股", h3:"每股股息", h4:"年度股息", h5:"频率", h6:"再投资", h7:"投入", h8:"最终价格", h9:"余额", s1:"总投入", s2:"净利润", s3:"总税收", s4:"收益率" }
     };
     const t = map[l];
-    // Pagina 1
     document.getElementById('l_p').innerText = t.p; document.getElementById('l_s').innerText = t.s;
     document.getElementById('l_y').innerText = t.y; document.getElementById('l_a').innerText = t.a;
     document.getElementById('l_dg').innerText = t.dg; document.getElementById('l_pg').innerText = t.pg;
     document.getElementById('l_c').innerText = t.c; document.getElementById('l_t').innerText = t.t;
     document.getElementById('l_df').innerText = t.df; document.getElementById('l_dr').innerText = t.dr;
     document.getElementById('b_calc').innerText = t.bc; document.getElementById('m_div').innerText = t.md;
-    document.getElementById('l_tinv').innerText = t.ti; document.getElementById('l_tdiv').innerText = t.dn;
-    document.getElementById('l_tpg').innerText = t.ap; document.getElementById('l_ttax').innerText = t.tx;
     document.getElementById('l_res_final').innerText = t.rf; document.getElementById('l_init').innerText = t.init;
-    // Capete Tabel
     document.getElementById('h1').innerText = t.h1; document.getElementById('h2').innerText = t.h2;
     document.getElementById('h3').innerText = t.h3; document.getElementById('h4').innerText = t.h4;
     document.getElementById('h5').innerText = t.h5; document.getElementById('h6').innerText = t.h6;
     document.getElementById('h7').innerText = t.h7; document.getElementById('h8').innerText = t.h8;
-    // Dropdowns Tab 1
-    document.getElementById('o_q').innerText = t.oq; document.getElementById('o_m').innerText = t.om_div;
+    document.getElementById('h9').innerText = t.h9;
+    document.getElementById('o_q').innerText = t.oq; document.getElementById('o_m').innerText = t.om;
     document.getElementById('o_don').innerText = t.od_on; document.getElementById('o_doff').innerText = t.od_off;
-    // Pagina 2
     document.getElementById('l_cp').innerText = t.cp; document.getElementById('l_cm').innerText = t.cm;
     document.getElementById('l_cr').innerText = t.cr; document.getElementById('l_ct').innerText = t.ct;
     document.getElementById('l_ca').innerText = t.ca; document.getElementById('l_cf').innerText = t.cf;
     document.getElementById('b_calc2').innerText = t.b2; document.getElementById('l_cfinal').innerText = t.cf1;
     document.getElementById('m_comp').innerText = t.mc;
-    document.getElementById('opt_m').innerText = t.om; document.getElementById('opt_y').innerText = t.oy;
+    document.getElementById('s_inv').innerText = t.s1; document.getElementById('s_prof').innerText = t.s2;
+    document.getElementById('s_tax').innerText = t.s3; document.getElementById('s_yield').innerText = t.s4;
+    document.getElementById('opt_m').innerText = t.om; document.getElementById('opt_y').innerText = t.oq;
 }
 </script>
 </body>
