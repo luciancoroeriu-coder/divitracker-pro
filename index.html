@@ -3,51 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DiviTracker Pro - Master Edition</title>
+    <title>DiviTracker Pro - Master</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <style>
         :root { --bg: #000; --card: #121212; --accent: #34c759; --text: #fff; --muted: #8e8e93; --border: #2c2c2e; --blue: #007aff; --red: #ff3b30; }
         body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 90px; -webkit-tap-highlight-color: transparent; }
-        
         .header { padding: 15px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.9); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
         .lang-select { background: #1e1e1e; color: #fff; border: 1px solid var(--border); padding: 5px; border-radius: 5px; font-size: 14px; outline: none; }
-
-        .container { padding: 15px; max-width: 800px; margin: 0 auto; display: none; }
+        .container { padding: 15px; max-width: 600px; margin: 0 auto; display: none; }
         .container.active { display: block; }
-
         .card { background: var(--card); border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid var(--border); }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; }
-        label { font-size: 10px; color: var(--muted); text-transform: uppercase; font-weight: 800; display: block; margin-bottom: 5px; letter-spacing: 0.5px; }
-        input, select { background: #1e1e1e; color: #fff; border: 1px solid var(--border); padding: 12px; border-radius: 8px; font-size: 16px; width: 100%; box-sizing: border-box; outline: none; }
-        
-        .btn-calc { background: var(--accent); color: #000; font-weight: 900; padding: 16px; border: none; border-radius: 10px; width: 100%; font-size: 16px; cursor: pointer; text-transform: uppercase; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+        label { font-size: 10px; color: var(--muted); text-transform: uppercase; font-weight: 800; display: block; margin-bottom: 4px; }
+        input { background: #1e1e1e; color: #fff; border: 1px solid var(--border); padding: 12px; border-radius: 8px; font-size: 16px; width: 100%; box-sizing: border-box; outline: none; }
+        .drip-toggle { display: flex; background: #1e1e1e; border-radius: 8px; margin-bottom: 15px; border: 1px solid var(--border); overflow: hidden; }
+        .drip-btn { flex: 1; padding: 10px; text-align: center; font-size: 11px; font-weight: bold; color: var(--muted); cursor: pointer; }
+        .drip-btn.active { background: var(--accent); color: #000; }
+        .btn-calc { background: var(--accent); color: #000; font-weight: 900; padding: 15px; border: none; border-radius: 10px; width: 100%; font-size: 16px; cursor: pointer; }
         .btn-reset { background: none; color: var(--red); border: 1px solid var(--red); padding: 10px; border-radius: 8px; width: 100%; margin-top: 10px; font-size: 11px; font-weight: bold; cursor: pointer; }
-
-        .res-box { display: none; margin-top: 25px; animation: fadeIn 0.4s; }
+        .res-box { display: none; margin-top: 20px; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .chart-wrap { background: var(--card); border-radius: 12px; border: 1px solid var(--border); padding: 15px; margin-bottom: 15px; height: 320px; }
-        
+        .chart-wrap { background: var(--card); border-radius: 12px; border: 1px solid var(--border); padding: 10px; margin-bottom: 15px; height: 320px; }
         .summary-item { background: #1c1c1e; padding: 15px; border-radius: 10px; margin-bottom: 10px; border-left: 4px solid var(--accent); }
-        .val-big { font-size: 28px; font-weight: 900; color: var(--accent); }
-        .sub-text { font-size: 11px; color: var(--muted); margin-top: 4px; }
-
-        .table-wrap { overflow-x: auto; margin-top: 15px; border-radius: 8px; border: 1px solid var(--border); background: #0a0a0a; }
-        table { width: 100%; border-collapse: collapse; font-size: 10px; min-width: 600px; }
-        th, td { padding: 12px; text-align: right; border-bottom: 1px solid var(--border); white-space: nowrap; }
-        th { background: #161616; color: var(--muted); font-weight: 900; text-transform: uppercase; font-size: 8px; }
-        tr:nth-child(even) { background: #111; }
-
+        .val-big { font-size: 32px; font-weight: 900; color: var(--accent); }
         .tab-bar { position: fixed; bottom: 0; width: 100%; height: 75px; background: #121212; border-top: 1px solid var(--border); display: flex; z-index: 1000; }
-        .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--muted); font-size: 10px; font-weight: 800; cursor: pointer; }
+        .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--muted); font-size: 10px; font-weight: bold; cursor: pointer; }
         .tab-item.active { color: var(--accent); }
+        .table-wrap { overflow-x: auto; margin-top: 15px; border-radius: 8px; border: 1px solid var(--border); }
+        table { width: 100%; border-collapse: collapse; font-size: 10px; }
+        th, td { padding: 12px; text-align: right; border-bottom: 1px solid var(--border); white-space: nowrap; }
+        th { background: #161616; color: var(--muted); font-size: 8px; text-transform: uppercase; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <div style="font-weight: 900; font-size: 20px;">Divi<span>Tracker</span></div>
+        <div style="font-weight: 800; font-size: 18px;">Divi<span>Tracker</span> Pro</div>
         <select class="lang-select" id="lang_switcher" onchange="changeLanguage(this.value)">
             <option value="en">🇺🇸 EN</option><option value="ro">🇷🇴 RO</option>
             <option value="es">🇪🇸 ES</option><option value="de">🇩🇪 DE</option>
@@ -58,60 +50,43 @@
     <div id="div_tab" class="container active">
         <div class="card">
             <div class="grid">
-                <div><label id="l_p">Stock Price ($)</label><input type="number" id="p" value="27"></div>
-                <div><label id="l_s">Shares Owned</label><input type="number" id="s" value="250"></div>
+                <div><label id="l_p">Price ($)</label><input type="number" id="p" value="27"></div>
+                <div><label id="l_s">Shares</label><input type="number" id="s" value="250"></div>
             </div>
             <div class="grid">
                 <div><label id="l_y">Yield (%)</label><input type="number" id="y" value="4"></div>
-                <div><label id="l_a">Holding Period (Y)</label><input type="number" id="a" value="18"></div>
+                <div><label id="l_a">Years</label><input type="number" id="a" value="10"></div>
             </div>
             <div class="grid">
-                <div><label id="l_dg">Div Growth (%)</label><input type="number" id="dg" value="4"></div>
+                <div><label id="l_dg">Div Growth (%)</label><input type="number" id="dg" value="5"></div>
                 <div><label id="l_pg">Price Growth (%)</label><input type="number" id="pg" value="7"></div>
             </div>
             <div class="grid">
-                <div><label id="l_c">Annual Contribution ($)</label><input type="number" id="c" value="1200"></div>
-                <div><label id="l_t">Tax Rate (%)</label><input type="number" id="t" value="10"></div>
+                <div><label id="l_c">Annual Contrib ($)</label><input type="number" id="c" value="1200"></div>
+                <div><label id="l_t">Tax (%)</label><input type="number" id="t" value="10"></div>
             </div>
-            <div class="grid">
-                <div>
-                    <label id="l_freq">Frequency</label>
-                    <select id="freq">
-                        <option value="4">Quarterly</option>
-                        <option value="12">Monthly</option>
-                        <option value="1">Annual</option>
-                    </select>
-                </div>
-                <div>
-                    <label id="l_drip">DRIP Mode</label>
-                    <select id="drip_mode">
-                        <option value="yes">With DRIP</option>
-                        <option value="no">No DRIP</option>
-                    </select>
-                </div>
+            <div class="drip-toggle">
+                <div class="drip-btn active" id="d_on" onclick="setDrip(true)">REINVEST (DRIP ON)</div>
+                <div class="drip-btn" id="d_off" onclick="setDrip(false)">LIVE OFF (DRIP OFF)</div>
             </div>
-            <button class="btn-calc" id="btn_calc" onclick="calculateDiv()">Calculate Returns</button>
-            <button class="btn-reset" id="btn_reset" onclick="hardReset()">Reset All</button>
+            <button class="btn-calc" id="btn_calc" onclick="calculateDiv()">CALCULATE RETURNS</button>
+            <button class="btn-reset" id="btn_reset" onclick="hardReset()">RESET ALL DATA</button>
         </div>
 
         <div id="res_box" class="res-box">
             <div class="summary-item">
-                <label id="l_vfinal">Expected Balance</label>
-                <div class="val-big" id="v_final">$0.00</div>
+                <label id="l_vfinal">FINAL PORTFOLIO VALUE</label>
+                <div class="val-big" id="v_final">$0</div>
+                <div id="salary_msg" style="color:var(--blue); font-size: 11px; margin-top:5px; font-weight:bold;"></div>
             </div>
             <div class="chart-wrap"><canvas id="divChart"></canvas></div>
             <div class="grid">
-                <div class="summary-item" style="border-left-color: var(--blue);"><label id="l_vinv">Total Invested</label><div id="v_inv" style="font-weight:bold;">$0</div></div>
-                <div class="summary-item" style="border-left-color: #ff9500;"><label id="l_vprof">Total Div Income</label><div id="v_profit" style="font-weight:bold;">$0</div></div>
+                <div class="summary-item" style="border-left-color: var(--blue);"><label id="l_vinv">OUT OF POCKET</label><div id="v_inv" style="font-weight:bold;">$0</div></div>
+                <div class="summary-item" style="border-left-color: #ff9500;"><label id="l_vprof">TOTAL PROFIT</label><div id="v_profit" style="font-weight:bold;">$0</div></div>
             </div>
-            
             <div class="table-wrap">
                 <table>
-                    <thead>
-                        <tr id="table_head">
-                            <th>Year</th><th>Shares Owned</th><th>Stock Price</th><th>Div/Share</th><th>Annual Div</th><th>Contrib</th><th>Balance</th>
-                        </tr>
-                    </thead>
+                    <thead><tr id="table_head"><th>Year</th><th>Shares</th><th>Price</th><th>Div/S</th><th>Yearly Div</th><th>Balance</th></tr></thead>
                     <tbody id="tb"></tbody>
                 </table>
             </div>
@@ -121,39 +96,41 @@
     <div id="comp_tab" class="container">
         <div class="card">
             <h3 id="l_ctitle">Compound Interest</h3>
-            <label id="l_cp">Initial Deposit ($)</label><input type="number" id="cp" value="10000"><br>
-            <label id="l_cm">Monthly Contribution ($)</label><input type="number" id="cm" value="200"><br>
-            <label id="l_cr">Annual Interest (%)</label><input type="number" id="cr" value="8"><br>
+            <label id="l_cp">Initial Deposit</label><input type="number" id="cp" value="10000"><br>
+            <label id="l_cm">Monthly Contrib</label><input type="number" id="cm" value="200"><br>
+            <label id="l_cr">Annual Rate (%)</label><input type="number" id="cr" value="8"><br>
             <label id="l_ca">Years</label><input type="number" id="ca" value="15"><br>
-            <button class="btn-calc" id="btn_ccalc" style="background:var(--blue); color:#fff;" onclick="calculateComp()">Calculate Growth</button>
+            <button class="btn-calc" id="btn_ccalc" style="background:var(--blue); color:#fff;" onclick="calculateComp()">CALCULATE GROWTH</button>
         </div>
         <div id="c_res_box" class="res-box">
-            <div class="summary-item" style="border-left-color:var(--blue);"><label id="l_cf">Final Accumulated</label><div class="val-big" id="cv_f" style="color:var(--blue)">$0</div></div>
+            <div class="summary-item" style="border-left-color:var(--blue);"><label id="l_cf">FINAL AMOUNT</label><div class="val-big" id="cv_f" style="color:var(--blue)">$0</div></div>
             <div class="chart-wrap" style="height: 400px;"><canvas id="compChart"></canvas></div>
         </div>
     </div>
 
     <nav class="tab-bar">
-        <div class="tab-item active" id="t_div" onclick="switchTab('div')">💰 <span id="tab_div">DIVIDENDS</span></div>
-        <div class="tab-item" id="t_comp" onclick="switchTab('comp')">📈 <span id="tab_comp">COMPOUND</span></div>
+        <div class="tab-item active" id="t_div" onclick="switchTab('div')">💰 <div id="tab_div">DIVIDENDS</div></div>
+        <div class="tab-item" id="t_comp" onclick="switchTab('comp')">📈 <div id="tab_comp">COMPOUND</div></div>
     </nav>
 
     <script>
         Chart.register(ChartDataLabels);
-        let dChart = null, cChart = null, curL = 'en';
+        let dChart = null, cChart = null, dripOn = true, curL = 'en';
 
         const langData = {
             en: {
-                l_p:"Stock Price", l_s:"Shares Owned", l_y:"Yield %", l_a:"Holding Period", l_dg:"Div Growth %", l_pg:"Price Growth %", l_c:"Annual Contrib", l_t:"Tax Rate",
-                l_freq:"Frequency", l_drip:"DRIP Mode", btn_calc:"Calculate Returns", btn_reset:"Reset All", l_vfinal:"Expected Balance", l_vinv:"Total Invested", l_vprof:"Total Div Income",
-                table_head:"<th>Year</th><th>Shares Owned</th><th>Stock Price</th><th>Div/Share</th><th>Annual Div</th><th>Contrib</th><th>Balance</th>",
-                l_ctitle:"Compound Interest", l_cp:"Initial Deposit", l_cm:"Monthly Contrib", l_cr:"Rate %", l_ca:"Years", btn_ccalc:"Calculate Growth", l_cf:"Final Accumulated", tab_div:"DIVIDENDS", tab_comp:"COMPOUND"
+                l_p:"Price", l_s:"Shares", l_y:"Yield %", l_a:"Years", l_dg:"Div Growth %", l_pg:"Price Growth %", l_c:"Contrib", l_t:"Tax %",
+                d_on:"REINVEST (DRIP ON)", d_off:"LIVE OFF (DRIP OFF)", btn_calc:"CALCULATE", btn_reset:"RESET ALL DATA",
+                l_vfinal:"FINAL PORTFOLIO VALUE", l_vinv:"OUT OF POCKET", l_vprof:"TOTAL PROFIT",
+                table_head:"<th>Year</th><th>Shares</th><th>Price</th><th>Div/S</th><th>Yearly Div</th><th>Balance</th>",
+                salary:"Total Dividends Withdrawn: ", tab_div:"DIVIDENDS", tab_comp:"COMPOUND"
             },
             ro: {
-                l_p:"Preț Acțiune", l_s:"Acțiuni Deținute", l_y:"Yield %", l_a:"Ani deținere", l_dg:"Creșt. Div %", l_pg:"Creșt. Preț %", l_c:"Depunere Anuală", l_t:"Impozit %",
-                l_freq:"Frecvență", l_drip:"Mod DRIP", btn_calc:"Calculează Profitul", btn_reset:"Resetează Tot", l_vfinal:"Sold Estimat", l_vinv:"Bani Investiți", l_vprof:"Venit Dividende",
-                table_head:"<th>An</th><th>Acțiuni</th><th>Preț</th><th>Div/Acț</th><th>Div. Anual</th><th>Depunere</th><th>Sold Nou</th>",
-                l_ctitle:"Dobândă Compusă", l_cp:"Suma Inițială", l_cm:"Depunere Lunară", l_cr:"Dobândă %", l_ca:"Ani", btn_ccalc:"Calculează", l_cf:"Suma Finală", tab_div:"DIVIDENDE", tab_comp:"DOBÂNDĂ"
+                l_p:"Preț", l_s:"Acțiuni", l_y:"Yield %", l_a:"Ani", l_dg:"Creșt. Div %", l_pg:"Creșt. Preț %", l_c:"Depunere", l_t:"Impozit %",
+                d_on:"REINVESTEȘTE (DRIP)", d_off:"TRĂIEȘTE (SCOATE CASH)", btn_calc:"CALCULEAZĂ", btn_reset:"RESETEAZĂ TOT",
+                l_vfinal:"VALOARE PORTOFOLIU", l_vinv:"BANI DIN BUZUNAR", l_vprof:"PROFIT TOTAL",
+                table_head:"<th>An</th><th>Acțiuni</th><th>Preț</th><th>Div/Acț</th><th>Div. Anual</th><th>Sold Final</th>",
+                salary:"Total Dividende Încasate (Salariu): ", tab_div:"DIVIDENDE", tab_comp:"DOBÂNDĂ"
             }
         };
 
@@ -162,20 +139,13 @@
             for(let id in d){ const el=document.getElementById(id); if(el){ if(id==='table_head') el.innerHTML=d[id]; else el.innerText=d[id]; } }
         }
 
-        function switchTab(t){
-            document.querySelectorAll('.container').forEach(c=>c.classList.remove('active'));
-            document.querySelectorAll('.tab-item').forEach(i=>i.classList.remove('active'));
-            document.getElementById(t+'_tab').classList.add('active');
-            document.getElementById('t_'+t).classList.add('active');
-        }
+        function setDrip(v){ dripOn=v; document.getElementById('d_on').classList.toggle('active', v); document.getElementById('d_off').classList.toggle('active', !v); }
+        function switchTab(t){ document.querySelectorAll('.container').forEach(c=>c.classList.remove('active')); document.querySelectorAll('.tab-item').forEach(i=>i.classList.remove('active')); document.getElementById(t+'_tab').classList.add('active'); document.getElementById('t_'+t).classList.add('active'); }
 
         function hardReset(){
-            document.getElementById('p').value=27; document.getElementById('s').value=250; document.getElementById('y').value=4;
-            document.getElementById('a').value=18; document.getElementById('dg').value=4; document.getElementById('pg').value=7;
-            document.getElementById('c').value=1200; document.getElementById('t').value=10;
-            document.getElementById('cp').value=10000; document.getElementById('cm').value=200;
-            document.getElementById('cr').value=8; document.getElementById('ca').value=15;
-            document.getElementById('res_box').style.display='none'; document.getElementById('c_res_box').style.display='none';
+            const def = { p:27, s:250, y:4, a:10, dg:5, pg:7, c:1200, t:10, cp:10000, cm:200, cr:8, ca:15 };
+            for(let id in def) document.getElementById(id).value = def[id];
+            setDrip(true); document.getElementById('res_box').style.display='none'; document.getElementById('c_res_box').style.display='none';
             if(dChart) dChart.destroy(); if(cChart) cChart.destroy();
         }
 
@@ -184,40 +154,47 @@
             const Y = parseFloat(document.getElementById('y').value)/100, A = parseInt(document.getElementById('a').value);
             const DG = parseFloat(document.getElementById('dg').value)/100, PG = parseFloat(document.getElementById('pg').value)/100;
             const C = parseFloat(document.getElementById('c').value), T = parseFloat(document.getElementById('t').value)/100;
-            const dripOn = document.getElementById('drip_mode').value === 'yes';
 
-            let curS = S, curP = P, curDivPerS = P * Y, invested = P * S, totalDiv = 0;
-            let html = '', labs = [], vals = [], invs = [];
+            let curS = S, curP = P, curDiv = P*Y, invested = P*S, html = '', labs = [], vals = [];
+            let totalWithdrawn = 0;
 
             for(let i=1; i<=A; i++){
                 invested += C;
-                curS += (C / curP); // Contributie transformata in actiuni
-                
-                let yearlyDivBrut = curS * curDivPerS;
-                let yearlyDivNet = yearlyDivBrut * (1 - T);
-                totalDiv += yearlyDivNet;
+                curS += (C/curP); // Acțiuni luate din depunere
 
-                if(dripOn) curS += (yearlyDivNet / curP);
+                let annDiv = curS * curDiv;
+                let netDiv = annDiv * (1-T);
+                
+                if(dripOn) {
+                    curS += (netDiv/curP);
+                } else {
+                    totalWithdrawn += netDiv; // Banii ies din sistem pentru trait
+                }
 
-                let yearEndVal = curS * curP;
-                labs.push(i); vals.push(yearEndVal.toFixed(0)); invs.push(invested.toFixed(0));
-                
-                html += `<tr><td>${i}</td><td>${curS.toFixed(2)}</td><td>$${curP.toFixed(2)}</td><td>$${curDivPerS.toFixed(2)}</td><td>$${yearlyDivBrut.toFixed(2)}</td><td>$${C}</td><td>$${yearEndVal.toLocaleString()}</td></tr>`;
-                
-                curP *= (1 + PG);
-                curDivPerS *= (1 + DG);
+                curP *= (1+PG);
+                curDiv *= (1+DG);
+
+                let balance = curS * curP;
+                labs.push(i); vals.push(Math.round(balance));
+                html += `<tr><td>${i}</td><td>${curS.toFixed(1)}</td><td>$${curP.toFixed(1)}</td><td>$${(curDiv/curP*curP).toFixed(2)}</td><td>$${annDiv.toFixed(0)}</td><td>$${Math.round(balance).toLocaleString()}</td></tr>`;
             }
 
             document.getElementById('tb').innerHTML = html;
-            document.getElementById('v_final').innerText = "$" + (curS * (curP / (1+PG))).toLocaleString();
+            document.getElementById('v_final').innerText = "$" + Math.round(vals[vals.length-1]).toLocaleString();
             document.getElementById('v_inv').innerText = "$" + invested.toLocaleString();
-            document.getElementById('v_profit').innerText = "$" + totalDiv.toLocaleString();
+            document.getElementById('v_profit').innerText = "$" + Math.round(vals[vals.length-1] + totalWithdrawn - invested).toLocaleString();
+            
+            if(!dripOn) {
+                document.getElementById('salary_msg').innerText = langData[curL].salary + "$" + Math.round(totalWithdrawn).toLocaleString();
+            } else {
+                document.getElementById('salary_msg').innerText = "";
+            }
+            
             document.getElementById('res_box').style.display = 'block';
 
             if(dChart) dChart.destroy();
             dChart = new Chart(document.getElementById('divChart'), {
-                type: 'line',
-                data: { labels: labs, datasets: [{ label: 'Portfolio', data: vals, borderColor: '#34c759', fill: true, tension: 0.3 }, { label: 'Invested', data: invs, borderColor: '#007aff', borderDash: [5,5] }] },
+                type: 'line', data: { labels: labs, datasets: [{ label: 'Portfolio', data: vals, borderColor: '#34c759', fill: true, tension: 0.3 }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#2c2c2e' } }, x: { grid: { display: false } } } }
             });
         }
@@ -232,26 +209,19 @@
             }
             document.getElementById('cv_f').innerText = '$' + data[data.length-1].toLocaleString();
             document.getElementById('c_res_box').style.display = 'block';
-            
             if(cChart) cChart.destroy();
             cChart = new Chart(document.getElementById('compChart'), {
-                type: 'bar',
-                data: { labels: labels, datasets: [{ data: data, backgroundColor: '#34c759', borderRadius: 5 }] },
+                type: 'bar', data: { labels: labels, datasets: [{ data: data, backgroundColor: '#34c759' }] },
                 options: { 
-                    responsive: true, 
-                    maintainAspectRatio: false,
+                    responsive: true, maintainAspectRatio: false,
                     plugins: { 
                         legend: { display: false },
-                        datalabels: {
-                            anchor: 'end', align: 'top', color: '#34c759', font: { weight: 'bold', size: 9 },
-                            formatter: (v) => '$' + (v/1000).toFixed(0) + 'k'
-                        }
+                        datalabels: { anchor: 'end', align: 'top', color: '#34c759', font: { weight: 'bold', size: 10 }, formatter: (v) => '$' + (v/1000).toFixed(0) + 'k' }
                     },
                     scales: { y: { display: false }, x: { grid: { display: false }, ticks: { color: '#8e8e93' } } }
                 }
             });
         }
-
         window.onload = () => changeLanguage('en');
     </script>
 </body>
