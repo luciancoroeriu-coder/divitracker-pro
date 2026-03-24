@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DiviTracker Pro - Global Edition</title>
+    <title>DiviTracker Pro - Omni Edition</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { --bg: #000; --card: #121212; --accent: #34c759; --text: #fff; --muted: #8e8e93; --border: #2c2c2e; --blue: #007aff; --red: #ff3b30; }
@@ -12,17 +12,16 @@
         .header { padding: 15px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.9); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
         .lang-select { background: #1e1e1e; color: #fff; border: 1px solid var(--border); padding: 5px; border-radius: 5px; font-size: 14px; outline: none; }
 
-        .container { padding: 15px; max-width: 550px; margin: 0 auto; display: none; }
+        .container { padding: 15px; max-width: 600px; margin: 0 auto; display: none; }
         .container.active { display: block; }
 
         .card { background: var(--card); border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid var(--border); }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
         label { font-size: 10px; color: var(--muted); text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 4px; }
         input { background: #1e1e1e; color: #fff; border: 1px solid var(--border); padding: 12px; border-radius: 8px; font-size: 16px; width: 100%; box-sizing: border-box; outline: none; }
-        input:focus { border-color: var(--blue); }
-
+        
         .drip-toggle { display: flex; background: #1e1e1e; border-radius: 8px; margin-bottom: 15px; border: 1px solid var(--border); overflow: hidden; }
-        .drip-btn { flex: 1; padding: 10px; text-align: center; font-size: 10px; font-weight: bold; color: var(--muted); cursor: pointer; }
+        .drip-btn { flex: 1; padding: 10px; text-align: center; font-size: 11px; font-weight: bold; color: var(--muted); cursor: pointer; }
         .drip-btn.active { background: var(--accent); color: #000; }
 
         .btn-calc { background: var(--accent); color: #000; font-weight: 800; padding: 15px; border: none; border-radius: 10px; width: 100%; font-size: 16px; cursor: pointer; }
@@ -31,20 +30,20 @@
         .res-box { display: none; margin-top: 20px; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .chart-wrap { background: var(--card); border-radius: 12px; border: 1px solid var(--border); padding: 10px; margin-bottom: 15px; height: 230px; }
+        .chart-wrap { background: var(--card); border-radius: 12px; border: 1px solid var(--border); padding: 10px; margin-bottom: 15px; height: 250px; }
         
         .summary-item { background: #1c1c1e; padding: 15px; border-radius: 10px; margin-bottom: 10px; border-left: 4px solid var(--accent); }
         .val-big { font-size: 26px; font-weight: 900; color: var(--accent); }
-        .comp-info { font-size: 11px; color: var(--muted); margin-top: 5px; }
+        .sub-info { font-size: 11px; color: var(--muted); margin-top: 5px; }
 
         .tab-bar { position: fixed; bottom: 0; width: 100%; height: 75px; background: #121212; border-top: 1px solid var(--border); display: flex; z-index: 1000; }
         .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--muted); font-size: 10px; font-weight: bold; cursor: pointer; }
         .tab-item.active { color: var(--accent); }
 
         .table-wrap { overflow-x: auto; margin-top: 15px; border-radius: 8px; border: 1px solid var(--border); }
-        table { width: 100%; border-collapse: collapse; font-size: 11px; }
-        th, td { padding: 12px; text-align: right; border-bottom: 1px solid var(--border); white-space: nowrap; }
-        th { background: #161616; color: var(--muted); font-size: 9px; }
+        table { width: 100%; border-collapse: collapse; font-size: 10px; }
+        th, td { padding: 10px; text-align: right; border-bottom: 1px solid var(--border); white-space: nowrap; }
+        th { background: #161616; color: var(--muted); font-size: 8px; text-transform: uppercase; }
     </style>
 </head>
 <body>
@@ -66,41 +65,38 @@
             </div>
             <div class="grid">
                 <div><label id="l_y">Yield (%)</label><input type="number" id="y" value="4"></div>
-                <div><label id="l_a">Years</label><input type="number" id="a" value="10"></div>
+                <div><label id="l_a">Years</label><input type="number" id="a" value="18"></div>
             </div>
             <div class="grid">
-                <div><label id="l_dg">Div Growth (%)</label><input type="number" id="dg" value="5"></div>
+                <div><label id="l_dg">Div Growth (%)</label><input type="number" id="dg" value="4"></div>
                 <div><label id="l_pg">Price Growth (%)</label><input type="number" id="pg" value="7"></div>
             </div>
             <div class="grid">
                 <div><label id="l_c">Annual Contrib ($)</label><input type="number" id="c" value="1200"></div>
-                <div><label id="l_t">Tax (%)</label><input type="number" id="t" value="10"></div>
+                <div><label id="l_t">Tax (%)</label><input type="number" id="t" value="0"></div>
             </div>
             <div class="drip-toggle">
-                <div class="drip-btn active" id="d_on" onclick="setDrip(true)">DRIP ON</div>
-                <div class="drip-btn" id="d_off" onclick="setDrip(false)">DRIP OFF</div>
+                <div class="drip-btn active" id="d_on" onclick="setDrip(true)">WITH DRIP</div>
+                <div class="drip-btn" id="d_off" onclick="setDrip(false)">NO DRIP</div>
             </div>
-            <button class="btn-calc" id="btn_calc" onclick="calculateDiv()">CALCULATE</button>
-            <button class="btn-reset" id="btn_reset" onclick="forceReset()">RESET ALL DATA</button>
+            <button class="btn-calc" id="btn_calc" onclick="calculateDiv()">CALCULATE PORTOFOLIO</button>
+            <button class="btn-reset" id="btn_reset" onclick="hardReset()">RESET EVERYTHING</button>
         </div>
 
         <div id="res_box" class="res-box">
             <div class="summary-item">
-                <label id="l_vfinal">ESTIMATED FINAL VALUE</label>
+                <label id="l_vfinal">FINAL VALUE</label>
                 <div class="val-big" id="v_final">$0.00</div>
-                <div class="comp-info" id="nodrip_msg"></div>
+                <div class="sub-info" id="nodrip_msg"></div>
             </div>
-
             <div class="chart-wrap"><canvas id="divChart"></canvas></div>
-
             <div class="grid">
-                <div class="summary-item" style="border-left-color: var(--blue);"><label id="l_vinv">INVESTED</label><div id="v_inv" style="font-weight:bold;">$0</div></div>
-                <div class="summary-item" style="border-left-color: #ff9500;"><label id="l_vprof">PROFIT</label><div id="v_profit" style="font-weight:bold;">$0</div></div>
+                <div class="summary-item" style="border-left-color: var(--blue);"><label id="l_vinv">YOUR INVESTMENT</label><div id="v_inv" style="font-weight:bold;">$0</div></div>
+                <div class="summary-item" style="border-left-color: #ff9500;"><label id="l_vprof">TOTAL PROFIT</label><div id="v_profit" style="font-weight:bold;">$0</div></div>
             </div>
-
             <div class="table-wrap">
                 <table>
-                    <thead><tr id="table_head"><th>Year</th><th>Shares</th><th>Div/Year</th><th>Value</th></tr></thead>
+                    <thead><tr id="table_head"><th>Year</th><th>Shares</th><th>Div/Share</th><th>Annual Div</th><th>Stock Price</th><th>Balance</th></tr></thead>
                     <tbody id="tb"></tbody>
                 </table>
             </div>
@@ -111,10 +107,10 @@
         <div class="card">
             <h3 id="l_ctitle">📈 Compound Interest</h3>
             <label id="l_cp">Initial Deposit ($)</label><input type="number" id="cp" value="10000"><br>
-            <label id="l_cm">Monthly ($)</label><input type="number" id="cm" value="200"><br>
-            <label id="l_cr">Interest (%)</label><input type="number" id="cr" value="8"><br>
+            <label id="l_cm">Monthly Contribution ($)</label><input type="number" id="cm" value="200"><br>
+            <label id="l_cr">Annual Interest (%)</label><input type="number" id="cr" value="8"><br>
             <label id="l_ca">Years</label><input type="number" id="ca" value="15"><br>
-            <button class="btn-calc" id="btn_ccalc" style="background:var(--blue); color:#fff;" onclick="calculateComp()">CALCULATE</button>
+            <button class="btn-calc" id="btn_ccalc" style="background:var(--blue); color:#fff;" onclick="calculateComp()">CALCULATE INTEREST</button>
         </div>
         <div id="c_res_box" class="res-box">
             <div class="summary-item" style="border-left-color:var(--blue);"><label id="l_cf">FINAL AMOUNT</label><div class="val-big" id="cv_f" style="color:var(--blue)">$0</div></div>
@@ -128,40 +124,42 @@
     </nav>
 
     <script>
-        let dChart = null, cChart = null, isDrip = true, curL = 'en';
+        let divChart = null, compChart = null, drip = true, curL = 'en';
+
         const langData = {
             en: {
                 l_p:"Price", l_s:"Shares", l_y:"Yield %", l_a:"Years", l_dg:"Div Growth %", l_pg:"Price Growth %", l_c:"Contrib", l_t:"Tax %",
-                d_on:"DRIP ON", d_off:"DRIP OFF", btn_calc:"CALCULATE", btn_reset:"RESET ALL DATA", l_vfinal:"FINAL VALUE", l_vinv:"INVESTED", l_vprof:"PROFIT",
-                table_head:"<th>Year</th><th>Shares</th><th>Div/Year</th><th>Total</th>", nodrip:"Without DRIP, total would be: ",
+                d_on:"WITH DRIP", d_off:"NO DRIP", btn_calc:"CALCULATE", btn_reset:"RESET EVERYTHING", l_vfinal:"FINAL VALUE", l_vinv:"INVESTED", l_vprof:"PROFIT",
+                table_head:"<th>Year</th><th>Shares</th><th>Div/Share</th><th>Ann. Div</th><th>Price</th><th>Balance</th>", nodrip:"Without DRIP: ",
                 l_ctitle:"Compound Interest", l_cp:"Initial", l_cm:"Monthly", l_cr:"Rate %", l_ca:"Years", btn_ccalc:"CALCULATE", l_cf:"FINAL AMOUNT", tab_div:"DIVIDENDS", tab_comp:"COMPOUND"
             },
             ro: {
                 l_p:"Preț", l_s:"Acțiuni", l_y:"Yield %", l_a:"Ani", l_dg:"Creșt. Div %", l_pg:"Creșt. Preț %", l_c:"Depunere", l_t:"Impozit %",
                 d_on:"CU DRIP", d_off:"FĂRĂ DRIP", btn_calc:"CALCULEAZĂ", btn_reset:"RESETEAZĂ TOT", l_vfinal:"VALOARE FINALĂ", l_vinv:"INVESTIT", l_vprof:"PROFIT",
-                table_head:"<th>An</th><th>Acțiuni</th><th>Div/An</th><th>Total</th>", nodrip:"Fără DRIP, suma ar fi fost: ",
+                table_head:"<th>An</th><th>Acțiuni</th><th>Div/Acț</th><th>Div. Anual</th><th>Preț</th><th>Sold Final</th>", nodrip:"Fără DRIP: ",
                 l_ctitle:"Dobândă Compusă", l_cp:"Suma Inițială", l_cm:"Depunere Lunară", l_cr:"Dobândă %", l_ca:"Ani", btn_ccalc:"CALCULEAZĂ", l_cf:"SUMA FINALĂ", tab_div:"DIVIDENDE", tab_comp:"DOBÂNDĂ"
             },
-            es: { l_p:"Precio", l_s:"Acciones", l_y:"Rend.", l_a:"Años", l_dg:"Crec. Div.", l_pg:"Crec. Precio", l_c:"Contrib.", l_t:"Impuesto", d_on:"CON DRIP", d_off:"SIN DRIP", btn_calc:"CALCULAR", btn_reset:"REINICIAR", l_vfinal:"VALOR FINAL", l_vinv:"INVERTIDO", l_vprof:"GANANCIA", table_head:"<th>Año</th><th>Acciones</th><th>Div/Año</th><th>Total</th>", nodrip:"Sin DRIP sería: ", l_ctitle:"Interés Compuesto", l_cp:"Inicial", l_cm:"Mensual", l_cr:"Interés", l_ca:"Años", btn_ccalc:"CALCULAR", l_cf:"MONTO FINAL", tab_div:"DIVIDENDOS", tab_comp:"INTERÉS" },
-            de: { l_p:"Preis", l_s:"Aktien", l_y:"Rendite", l_a:"Jahre", l_dg:"Div.Wachs.", l_pg:"Kurs.Wachs.", l_c:"Beitrag", l_t:"Steuer", d_on:"MIT DRIP", d_off:"OHNE DRIP", btn_calc:"BERECHNEN", btn_reset:"RESET", l_vfinal:"ENDWERT", l_vinv:"INVESTIERT", l_vprof:"GEWINN", table_head:"<th>Jahr</th><th>Aktien</th><th>Div/Jahr</th><th>Gesamt</th>", nodrip:"Ohne DRIP wäre: ", l_ctitle:"Zinseszins", l_cp:"Start", l_cm:"Monatlich", l_cr:"Zins %", l_ca:"Jahre", btn_ccalc:"BERECHNEN", l_cf:"ENDBETRAG", tab_div:"DIVIDENDEN", tab_comp:"ZINSEN" },
-            fr: { l_p:"Prix", l_s:"Actions", l_y:"Rendement", l_a:"Années", l_dg:"Croiss. Div.", l_pg:"Croiss. Prix", l_c:"Contrib.", l_t:"Impôt", d_on:"AVEC DRIP", d_off:"SANS DRIP", btn_calc:"CALCULER", btn_reset:"RESET", l_vfinal:"VALEUR FINALE", l_vinv:"INVESTI", l_vprof:"PROFIT", table_head:"<th>Année</th><th>Actions</th><th>Div/An</th><th>Total</th>", nodrip:"Sans DRIP serait: ", l_ctitle:"Intérêts Composés", l_cp:"Initial", l_cm:"Mensuel", l_cr:"Intérêt", l_ca:"Années", btn_ccalc:"CALCULER", l_cf:"MONTANT FINAL", tab_div:"DIVIDENDES", tab_comp:"INTÉRÊTS" },
-            zh: { l_p:"价格", l_s:"股数", l_y:"收益率", l_a:"年数", l_dg:"增长率", l_pg:"股价增长", l_c:"投入", l_t:"税率", d_on:"开启再投资", d_off:"关闭再投资", btn_calc:"计算", btn_reset:"重置", l_vfinal:"最终价值", l_vinv:"总投入", l_vprof:"利润", table_head:"<th>年份</th><th>股数</th><th>年度股息</th><th>总价值</th>", nodrip:"无再投资将为: ", l_ctitle:"复利计算", l_cp:"初始", l_cm:"每月", l_cr:"利率", l_ca:"年数", btn_ccalc:"计算", l_cf:"最终金额", tab_div:"股息", tab_comp:"复利" }
+            es: { l_p:"Precio", l_s:"Acciones", l_y:"Rend.", l_a:"Años", l_dg:"Crec. Div.", l_pg:"Crec. Precio", l_c:"Contrib.", l_t:"Impuesto", d_on:"CON DRIP", d_off:"SIN DRIP", btn_calc:"CALCULAR", btn_reset:"REINICIAR", l_vfinal:"VALOR FINAL", l_vinv:"INVERTIDO", l_vprof:"PROFIT", table_head:"<th>Año</th><th>Acciones</th><th>Div/Acc</th><th>Div. Anual</th><th>Precio</th><th>Saldo</th>", nodrip:"Sin DRIP: ", l_ctitle:"Interés", l_cp:"Inicial", l_cm:"Mensual", l_cr:"Tasa", l_ca:"Años", btn_ccalc:"CALCULAR", l_cf:"MONTO FINAL", tab_div:"DIVIDENDOS", tab_comp:"INTERÉS" },
+            de: { l_p:"Preis", l_s:"Aktien", l_y:"Rendite", l_a:"Jahre", l_dg:"Div.Wachs.", l_pg:"Preis.Wachs.", l_c:"Beitrag", l_t:"Steuer", d_on:"MIT DRIP", d_off:"OHNE DRIP", btn_calc:"BERECHNEN", btn_reset:"RESET", l_vfinal:"ENDWERT", l_vinv:"INVESTIERT", l_vprof:"PROFIT", table_head:"<th>Jahr</th><th>Aktien</th><th>Div/Aktie</th><th>Jährl.Div</th><th>Preis</th><th>Saldo</th>", nodrip:"Ohne DRIP: ", l_ctitle:"Zinseszins", l_cp:"Start", l_cm:"Monatlich", l_cr:"Satz %", l_ca:"Jahre", btn_ccalc:"BERECHNEN", l_cf:"ENDBETRAG", tab_div:"DIVIDENDEN", tab_comp:"ZINSEN" },
+            fr: { l_p:"Prix", l_s:"Actions", l_y:"Rendement", l_a:"Années", l_dg:"Croiss. Div.", l_pg:"Croiss. Prix", l_c:"Contrib.", l_t:"Impôt", d_on:"AVEC DRIP", d_off:"SANS DRIP", btn_calc:"CALCULER", btn_reset:"RESET", l_vfinal:"VALEUR FINALE", l_vinv:"INVESTI", l_vprof:"PROFIT", table_head:"<th>Année</th><th>Actions</th><th>Div/Act</th><th>Div.Annuel</th><th>Prix</th><th>Solde</th>", nodrip:"Sans DRIP: ", l_ctitle:"Intérêts", l_cp:"Initial", l_cm:"Mensuel", l_cr:"Taux", l_ca:"Années", btn_ccalc:"CALCULER", l_cf:"MONTANT FINAL", tab_div:"DIVIDENDES", tab_comp:"INTÉRÊTS" },
+            zh: { l_p:"价格", l_s:"持有股数", l_y:"股息率", l_a:"年数", l_dg:"股息增长", l_pg:"股价增长", l_c:"年度投入", l_t:"税率", d_on:"股息再投资", d_off:"不投", btn_calc:"计算", btn_reset:"重置", l_vfinal:"最终价值", l_vinv:"总投入", l_vprof:"利润", table_head:"<th>年份</th><th>股数</th><th>每股股息</th><th>年度总息</th><th>价格</th><th>总额</th>", nodrip:"不投资将为: ", l_ctitle:"复利", l_cp:"初始", l_cm:"每月", l_cr:"利率", l_ca:"年数", btn_ccalc:"计算", l_cf:"最终金额", tab_div:"股息", tab_comp:"复利" }
         };
 
         function changeLanguage(lang){
             curL = lang; const d = langData[lang];
             for(let id in d){ const el=document.getElementById(id); if(el){ if(id==='table_head') el.innerHTML=d[id]; else el.innerText=d[id]; } }
             document.getElementById('d_on').innerText = d.d_on; document.getElementById('d_off').innerText = d.d_off;
+            localStorage.setItem('pref_lang', lang);
         }
 
-        function setDrip(v){ isDrip=v; document.getElementById('d_on').classList.toggle('active', v); document.getElementById('d_off').classList.toggle('active', !v); }
+        function setDrip(v){ drip=v; document.getElementById('d_on').classList.toggle('active', v); document.getElementById('d_off').classList.toggle('active', !v); }
         function switchTab(t){ document.querySelectorAll('.container').forEach(c=>c.classList.remove('active')); document.querySelectorAll('.tab-item').forEach(i=>i.classList.remove('active')); document.getElementById(t+'_tab').classList.add('active'); document.getElementById('t_'+t).classList.add('active'); }
-        
-        function forceReset(){
-            const d = { p:27, s:250, y:4, a:10, dg:5, pg:7, c:1200, t:10, cp:10000, cm:200, cr:8, ca:15 };
-            for(let id in d) document.getElementById(id).value = d[id];
-            setDrip(true); document.getElementById('res_box').style.display = 'none'; document.getElementById('c_res_box').style.display = 'none';
-            if(dChart) dChart.destroy(); if(cChart) cChart.destroy(); window.scrollTo(0,0);
+
+        function hardReset(){
+            const defaults = { p:27, s:250, y:4, a:18, dg:4, pg:7, c:1200, t:0, cp:10000, cm:200, cr:8, ca:15 };
+            for(let id in defaults) document.getElementById(id).value = defaults[id];
+            setDrip(true); document.getElementById('res_box').style.display='none'; document.getElementById('c_res_box').style.display='none';
+            if(divChart) divChart.destroy(); if(compChart) compChart.destroy(); window.scrollTo(0,0);
         }
 
         function calculateDiv(){
@@ -170,31 +168,43 @@
             const DG = parseFloat(document.getElementById('dg').value)/100, PG = parseFloat(document.getElementById('pg').value)/100;
             const C = parseFloat(document.getElementById('c').value), T = parseFloat(document.getElementById('t').value)/100;
 
-            let curS = S, curP = P, curD = P*Y, totalInv = P*S, html = '', labels = [], vals = [], invs = [];
-            let noDripS = S, noDripCash = 0;
+            let curS = S, curP = P, curD = P*Y/S, invested = P*S, html = '', labs = [], vals = [], invs = [];
+            let ndS = S, ndCash = 0, ndP = P;
 
             for(let i=1; i<=A; i++){
-                totalInv += C; curS += (C/curP); noDripS += (C/curP);
-                let gross = curS * curD, net = gross * (1-T);
-                let ndGross = noDripS * curD, ndNet = ndGross * (1-T);
-                if(isDrip) curS += (net/curP); else noDripCash += net;
-                noDripCash += ndNet; // Pentru calculul comparativ fara DRIP total
-                curP *= (1+PG); curD *= (1+DG);
-                let totalVal = (curS * curP) + (isDrip ? 0 : noDripCash);
-                labels.push(i); vals.push(totalVal.toFixed(0)); invs.push(totalInv.toFixed(0));
-                html += `<tr><td>${i}</td><td>${curS.toFixed(1)}</td><td>$${gross.toFixed(0)}</td><td>$${totalVal.toLocaleString()}</td></tr>`;
+                invested += C;
+                curS += (C/curP); // Contributie anuala in actiuni
+                ndS += (C/curP);
+
+                let annDiv = curS * (curP * (curD/curP)); // Dividend brut
+                let netDiv = annDiv * (1-T);
+                
+                // Calcul No DRIP pentru comparatie
+                let ndAnnDiv = ndS * (ndP * (curD/curP)) * (1-T);
+                ndCash += ndAnnDiv;
+
+                if(drip) curS += (netDiv/curP); else ndCash += netDiv;
+
+                curP *= (1+PG);
+                ndP *= (1+PG);
+                curD *= (1+DG); // Crestere dividend per actiune
+
+                let balance = (curS * curP);
+                labs.push(i); vals.push(balance.toFixed(0)); invs.push(invested.toFixed(0));
+                
+                html += `<tr><td>${i}</td><td>${curS.toFixed(2)}</td><td>$${(curD/curP*curP).toFixed(2)}</td><td>$${annDiv.toFixed(2)}</td><td>$${curP.toFixed(2)}</td><td>$${balance.toLocaleString()}</td></tr>`;
             }
 
             document.getElementById('tb').innerHTML = html;
-            document.getElementById('v_final').innerText = "$" + vals[vals.length-1].toLocaleString();
-            document.getElementById('v_inv').innerText = "$" + totalInv.toLocaleString();
-            document.getElementById('v_profit').innerText = "$" + (vals[vals.length-1] - totalInv).toLocaleString();
-            document.getElementById('nodrip_msg').innerText = langData[curL].nodrip + "$" + ((noDripS * curP) + noDripCash).toLocaleString();
+            document.getElementById('v_final').innerText = "$" + parseFloat(vals[vals.length-1]).toLocaleString();
+            document.getElementById('v_inv').innerText = "$" + invested.toLocaleString();
+            document.getElementById('v_profit').innerText = "$" + (vals[vals.length-1] - invested).toLocaleString();
+            document.getElementById('nodrip_msg').innerText = langData[curL].nodrip + "$" + ((ndS * ndP) + ndCash).toLocaleString();
             document.getElementById('res_box').style.display = 'block';
 
-            if(dChart) dChart.destroy();
-            dChart = new Chart(document.getElementById('divChart'), {
-                type: 'line', data: { labels: labels, datasets: [{ label: 'Value', data: vals, borderColor: '#34c759', fill: true, tension: 0.3 }, { label: 'Invested', data: invs, borderColor: '#007aff', borderDash: [5,5] }] },
+            if(divChart) divChart.destroy();
+            divChart = new Chart(document.getElementById('divChart'), {
+                type: 'line', data: { labels: labs, datasets: [{ label: 'Portfolio', data: vals, borderColor: '#34c759', fill: true, tension: 0.3 }, { label: 'Invested', data: invs, borderColor: '#007aff', borderDash: [5,5] }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#2c2c2e' } }, x: { grid: { display: false } } } }
             });
         }
@@ -209,13 +219,18 @@
             }
             document.getElementById('cv_f').innerText = '$' + parseFloat(data[data.length-1]).toLocaleString();
             document.getElementById('c_res_box').style.display = 'block';
-            if(cChart) cChart.destroy();
-            cChart = new Chart(document.getElementById('compChart'), {
+            if(compChart) compChart.destroy();
+            compChart = new Chart(document.getElementById('compChart'), {
                 type: 'bar', data: { labels: labels, datasets: [{ data: data, backgroundColor: '#34c759' }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
             });
         }
-        window.onload = () => changeLanguage('en');
+
+        window.onload = () => {
+            const saved = localStorage.getItem('pref_lang') || 'en';
+            document.getElementById('lang_switcher').value = saved;
+            changeLanguage(saved);
+        };
     </script>
 </body>
 </html>
